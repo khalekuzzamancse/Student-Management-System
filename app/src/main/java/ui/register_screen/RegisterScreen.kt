@@ -22,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 
 
@@ -36,7 +37,9 @@ fun FormInputField(
     icon: ImageVector? = null,
     keyboardType: KeyboardType = KeyboardType.Text,
     hints: String = "",
-) {
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+
+    ) {
     var text by remember { mutableStateOf("") }
     OutlinedTextField(
         label = { Text(text = label) },
@@ -53,7 +56,8 @@ fun FormInputField(
         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = keyboardType),
         placeholder = {
             Text(text = hints)
-        }
+        },
+        visualTransformation = DateVisualTransformer
     )
 
 }
@@ -62,9 +66,10 @@ fun FormInputField(
 @Composable
 fun FormEachRowPreview() {
     FormInputField(
-        label = "Name",
-        icon = Icons.Default.Person,
-        onTextChanged = {}
+        label = "Date of birth",
+        icon = Icons.Default.DateRange,
+        onTextChanged = {},
+        keyboardType = KeyboardType.Number,
     )
 
 }
