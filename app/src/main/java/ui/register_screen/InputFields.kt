@@ -4,19 +4,16 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -24,25 +21,86 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.toSize
 
+
+/*
+FromInputFiled
+ */
+
+@Composable
+fun FormInputField(
+    modifier: Modifier=Modifier,
+    label: String,
+    onTextChanged: (String) -> Unit,
+    icon: ImageVector? = null,
+    keyboardType: KeyboardType = KeyboardType.Text,
+    hints: String = "",
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+
+    ) {
+    var text by remember { mutableStateOf("") }
+    OutlinedTextField(
+        modifier=modifier.fillMaxWidth(),
+        label = { Text(text = label) },
+        leadingIcon = {
+            if (icon != null) {
+                Icon(imageVector = icon, contentDescription = null)
+            }
+        },
+        value = text,
+        onValueChange = {
+            text = it
+            onTextChanged(it)
+        },
+        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = keyboardType),
+        placeholder = {
+            Text(text = hints)
+        },
+        visualTransformation = visualTransformation
+    )
+
+}
+
+@Preview
+@Composable
+fun FormEachRowPreview() {
+    FormInputField(
+        label = "Date of birth",
+        onTextChanged = {},
+        icon = Icons.Default.DateRange,
+        keyboardType = KeyboardType.Number,
+        modifier = Modifier,
+    )
+
+}
+
+
 @Composable
 fun ExposedDropdownMenu(
+    modifier: Modifier = Modifier,
     items: List<String>,
     selected: String = items[0],
     onItemSelected: (String) -> Unit,
+    label: String,
+
 ) {
     var expanded by remember { mutableStateOf(false) }
     var selectedText by remember { mutableStateOf(selected) }
-    var textfieldSize by remember { mutableStateOf(Size.Zero) }
+    var textFieldSize by remember { mutableStateOf(Size.Zero) }
     val icon =
-        if (expanded) Icons.Filled.ArrowDropUp //it requires androidx.compose.material:material-icons-extended
+        if (expanded) Icons.Filled.ArrowDropUp
         else Icons.Filled.ArrowDropDown
+    val closeMenu = { expanded = false }
+    val flipExpanded = { expanded = !expanded }
 
-    Box {
+    Box(modifier=modifier.fillMaxWidth()) {
         OutlinedTextField(
             value = selectedText,
             onValueChange = { selectedText = it },
@@ -50,22 +108,23 @@ fun ExposedDropdownMenu(
                 .fillMaxWidth()
                 .onGloballyPositioned { coordinates ->
                     //This value is used to assign to the DropDown the same width
-                    textfieldSize = coordinates.size.toSize()
+                    textFieldSize = coordinates.size.toSize()
                 },
-            label = { Text("Label") },
+            label = { Text(label) },
             trailingIcon = {
                 Icon(
                     icon,
-                    "contentDescription",
-                    Modifier.clickable { expanded = !expanded })
+                    null,
+                    Modifier.clickable { flipExpanded() })
             },
             readOnly = true
         )
         DropdownMenu(
             expanded = expanded,
-            onDismissRequest = { expanded = false },
+            onDismissRequest = closeMenu,
             modifier = Modifier
-                .width(with(LocalDensity.current) { textfieldSize.width.toDp() })
+                .width(with(LocalDensity.current)
+                { textFieldSize.width.toDp() })
         ) {
             items.forEach { label ->
                 DropdownMenuItem(
@@ -73,7 +132,7 @@ fun ExposedDropdownMenu(
                         Text(text = label)
                     }, onClick = {
                         selectedText = label
-                        expanded=false
+                        closeMenu()
                         onItemSelected(label)
                     })
             }
@@ -85,7 +144,10 @@ fun ExposedDropdownMenu(
 @Preview
 @Composable
 fun DropDownMenuPreview() {
-    val list = listOf("Rangpur", "Dhaka")
-    ExposedDropdownMenu(items = list, onItemSelected = {})
+    val list = listOf("America", "Dhaka")
+    ExposedDropdownMenu(
+        items = list, onItemSelected = {},
+        label = "label"
+    )
 
 }
