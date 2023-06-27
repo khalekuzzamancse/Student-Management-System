@@ -8,6 +8,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bloodtype
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Man
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
@@ -57,7 +58,7 @@ fun FormInputField(
         placeholder = {
             Text(text = hints)
         },
-        visualTransformation = DateVisualTransformer
+        visualTransformation = visualTransformation
     )
 
 }
@@ -115,7 +116,8 @@ fun TextualForm() {
             label = "Date of Birth",
             icon = Icons.Default.DateRange,
             onTextChanged = {},
-            keyboardType = KeyboardType.Number
+            keyboardType = KeyboardType.Number,
+            visualTransformation = DateVisualTransformer
         )
         //as a student
         FormInputField(
@@ -136,6 +138,19 @@ fun TextualForm() {
         )
         FormInputField(
             label = "Mother Phone No",
+            icon = Icons.Default.Phone,
+            onTextChanged = {},
+            keyboardType = KeyboardType.Phone
+        )
+        //For teacher
+        FormInputField(
+            label = "NID",
+            icon = Icons.Default.Info,
+            onTextChanged = {},
+            keyboardType = KeyboardType.Phone
+        )
+        FormInputField(
+            label = "Department",
             icon = Icons.Default.Phone,
             onTextChanged = {},
             keyboardType = KeyboardType.Phone
