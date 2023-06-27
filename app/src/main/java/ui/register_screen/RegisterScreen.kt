@@ -1,5 +1,6 @@
 package ui.register_screen
 
+import android.location.Address
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -9,6 +10,7 @@ import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Man
+import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.runtime.Composable
@@ -16,14 +18,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 
-
 /*
 Form
  */
 @Composable
 fun TextualForm() {
-
-    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+    Column(
+        modifier = Modifier
+            .verticalScroll(
+                rememberScrollState()
+            )
+    ) {
         FormInputField(
             label = "Name",
             onTextChanged = {},
@@ -70,21 +75,18 @@ fun TextualForm() {
             label = "Mother Name",
             onTextChanged = {},
             icon = Icons.Default.Person,
-
         )
         FormInputField(
             label = "Father Phone No",
             onTextChanged = {},
             icon = Icons.Default.Phone,
             keyboardType = KeyboardType.Phone,
-
         )
         FormInputField(
             label = "Mother Phone No",
             onTextChanged = {},
             icon = Icons.Default.Phone,
             keyboardType = KeyboardType.Phone,
-
         )
         //For teacher
         FormInputField(
@@ -98,9 +100,30 @@ fun TextualForm() {
             onItemSelected = {},
             label = "Department"
         )
-
-
+        AddressForm()
     }
+
+}
+
+@Composable
+fun AddressForm() {
+    ExposedDropdownMenu(
+        label = "District",
+        items = districtList,
+        onItemSelected = {},
+    )
+    ExposedDropdownMenu(
+        label = "SubDistrict",
+        items = districtList,
+        onItemSelected = {},
+    )
+    ReadOnlyInputField(
+        label ="Current Location",
+        onTextChanged ={},
+        initialText ="",
+        icon = Icons.Default.Map,
+    )
+
 
 
 }

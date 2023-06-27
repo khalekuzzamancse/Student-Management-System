@@ -67,7 +67,36 @@ fun FormInputField(
     )
 
 }
+@Composable
+fun ReadOnlyInputField(
+    modifier: Modifier = Modifier,
+    label: String,
+    onTextChanged: (String) -> Unit,
+    icon: ImageVector? = null,
+    hints: String = "",
+    initialText: String,
+    ) {
+    var text by remember { mutableStateOf(initialText) }
+    OutlinedTextField(
+        modifier=modifier.fillMaxWidth(),
+        label = { Text(text = label) },
+        leadingIcon = {
+            if (icon != null) {
+                Icon(imageVector = icon, contentDescription = null)
+            }
+        },
+        value = text,
+        onValueChange = {
+            text = it
+            onTextChanged(it)
+        },
+        readOnly = true,
+        placeholder = {
+            Text(text = hints)
+        },
+    )
 
+}
 @Preview
 @Composable
 fun FormEachRowPreview() {
