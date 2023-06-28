@@ -103,12 +103,9 @@ fun RegistrationForm() {
         )
         //use visual transfer for date of birth
         //use the date picker for date of birth
-        FormInputField(
+        CustomDatePicker(
             label = "Date of Birth",
-            onTextChanged = {},
             icon = Icons.Default.DateRange,
-            keyboardType = KeyboardType.Number,
-            visualTransformation = DateVisualTransformer,
         )
         ExposedDropdownMenu(
             items = FormData.registrationType,
