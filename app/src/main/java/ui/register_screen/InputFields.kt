@@ -36,7 +36,7 @@ FromInputFiled
 
 @Composable
 fun FormInputField(
-    modifier: Modifier=Modifier,
+    modifier: Modifier = Modifier,
     label: String,
     onTextChanged: (String) -> Unit,
     icon: ImageVector? = null,
@@ -47,7 +47,7 @@ fun FormInputField(
     ) {
     var text by remember { mutableStateOf("") }
     OutlinedTextField(
-        modifier=modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         label = { Text(text = label) },
         leadingIcon = {
             if (icon != null) {
@@ -67,6 +67,7 @@ fun FormInputField(
     )
 
 }
+
 @Composable
 fun ReadOnlyInputField(
     modifier: Modifier = Modifier,
@@ -75,10 +76,10 @@ fun ReadOnlyInputField(
     icon: ImageVector? = null,
     hints: String = "",
     initialText: String,
-    ) {
+) {
     var text by remember { mutableStateOf(initialText) }
     OutlinedTextField(
-        modifier=modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         label = { Text(text = label) },
         leadingIcon = {
             if (icon != null) {
@@ -97,6 +98,7 @@ fun ReadOnlyInputField(
     )
 
 }
+
 @Preview
 @Composable
 fun FormEachRowPreview() {
@@ -118,21 +120,24 @@ fun ExposedDropdownMenu(
     selected: String = items[0],
     onItemSelected: (String) -> Unit,
     label: String,
-
+    icon: ImageVector? = null,
 ) {
     var expanded by remember { mutableStateOf(false) }
-    var selectedText by remember { mutableStateOf(selected) }
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
-    val icon =
+    val trailingIcon =
         if (expanded) Icons.Filled.ArrowDropUp
         else Icons.Filled.ArrowDropDown
     val closeMenu = { expanded = false }
     val flipExpanded = { expanded = !expanded }
-
-    Box(modifier=modifier.fillMaxWidth()) {
+    var text by remember {
+        mutableStateOf("")
+    }
+    Box(modifier = modifier.fillMaxWidth()) {
         OutlinedTextField(
-            value = selectedText,
-            onValueChange = { selectedText = it },
+            value = text,
+            onValueChange = {
+
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .onGloballyPositioned { coordinates ->
@@ -140,9 +145,17 @@ fun ExposedDropdownMenu(
                     textFieldSize = coordinates.size.toSize()
                 },
             label = { Text(label) },
+            leadingIcon = {
+                if (icon != null) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null
+                    )
+                }
+            },
             trailingIcon = {
                 Icon(
-                    icon,
+                    trailingIcon,
                     null,
                     Modifier.clickable { flipExpanded() })
             },
@@ -155,14 +168,14 @@ fun ExposedDropdownMenu(
                 .width(with(LocalDensity.current)
                 { textFieldSize.width.toDp() })
         ) {
-            items.forEach { label ->
+            items.forEach { item ->
                 DropdownMenuItem(
                     text = {
-                        Text(text = label)
+                        Text(text = item)
                     }, onClick = {
-                        selectedText = label
+                        text = item
                         closeMenu()
-                        onItemSelected(label)
+                        onItemSelected(item)
                     })
             }
         }
@@ -176,7 +189,8 @@ fun DropDownMenuPreview() {
     val list = listOf("America", "Dhaka")
     ExposedDropdownMenu(
         items = list, onItemSelected = {},
-        label = "label"
+        label = "label",
+        icon = null
     )
 
 }

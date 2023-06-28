@@ -5,10 +5,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AppRegistration
 import androidx.compose.material.icons.filled.Bloodtype
+import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.LocationCity
 import androidx.compose.material.icons.filled.Man
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
@@ -93,14 +96,17 @@ fun RegistrationForm() {
             items = FormData.bloodGroupList,
             onItemSelected = {
             },
-            label = "Blood Group"
+            label = "Blood Group",
+            icon = Icons.Default.Bloodtype
         )
         ExposedDropdownMenu(
             items = FormData.genderList,
             onItemSelected = {
             },
-            label = "Gender"
+            label = "Gender",
+            icon = Icons.Default.Man
         )
+        //017
         //use visual transfer for date of birth
         //use the date picker for date of birth
         CustomDatePicker(
@@ -113,7 +119,8 @@ fun RegistrationForm() {
                 registerAsStudent = it == FormData.registrationType[0]
                 registerAsTeacher = it == FormData.registrationType[1]
             },
-            label = "Register As"
+            label = "Register As",
+            icon = Icons.Default.AppRegistration
         )
 
         if (registerAsStudent) {
@@ -151,19 +158,22 @@ fun RegistrationForm() {
             ExposedDropdownMenu(
                 items = FormData.dept,
                 onItemSelected = {},
-                label = "Department"
+                label = "Department",
+                icon = Icons.Default.Book
             )
         }
 
         ExposedDropdownMenu(
-            label = "District",
             items = FormData.districts,
             onItemSelected = {},
+            label = "District",
+            icon = Icons.Default.LocationCity,
         )
         ExposedDropdownMenu(
-            label = "SubDistrict",
             items = FormData.subDistrict,
             onItemSelected = {},
+            label = "SubDistrict",
+            icon = Icons.Default.LocationCity,
         )
     }
 
