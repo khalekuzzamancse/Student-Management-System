@@ -16,9 +16,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             StudentManagementSystemTheme {
-                GoogleMap {
-                   MarkerInfoWindowContent()
-                }
+
             }
         }
     }

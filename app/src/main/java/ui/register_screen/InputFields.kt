@@ -9,6 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Map
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -72,9 +73,11 @@ fun FormInputField(
 @Composable
 fun ReadOnlyInputField(
     modifier: Modifier = Modifier,
+    onTrailingIconClick: () -> Unit = {},
     label: String,
     onTextChanged: (String) -> Unit,
     icon: ImageVector? = null,
+    trailingIcon: ImageVector? = null,
     hints: String = "",
     initialText: String,
 ) {
@@ -96,6 +99,48 @@ fun ReadOnlyInputField(
         placeholder = {
             Text(text = hints)
         },
+        trailingIcon = {
+            trailingIcon?.let {
+                Icon(
+                    modifier = Modifier.clickable { onTrailingIconClick() },
+                    imageVector = trailingIcon,
+                    contentDescription = null
+                )
+            }
+        }
+    )
+
+}
+
+@Composable
+fun MapLocationInputField(
+    modifier: Modifier = Modifier,
+    onMapIconClick: () -> Unit = {},
+    label: String,
+    icon: ImageVector? = null,
+    text: String,
+) {
+    OutlinedTextField(
+        modifier = modifier.fillMaxWidth(),
+        label = { Text(text = label) },
+        leadingIcon = {
+            if (icon != null) {
+                Icon(imageVector = icon, contentDescription = null)
+            }
+        },
+        value = text,
+        onValueChange = {
+
+        },
+        maxLines = 1,
+        readOnly = true,
+        trailingIcon = {
+            Icon(
+                modifier = Modifier.clickable { onMapIconClick() },
+                imageVector = Icons.Default.Map,
+                contentDescription = null
+            )
+        }
     )
 
 }
