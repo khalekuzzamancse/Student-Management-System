@@ -43,9 +43,10 @@ fun FormInputField(
     keyboardType: KeyboardType = KeyboardType.Text,
     hints: String = "",
     visualTransformation: VisualTransformation = VisualTransformation.None,
+    initialText: String = "",
 
     ) {
-    var text by remember { mutableStateOf("") }
+    var text by remember { mutableStateOf(initialText) }
     OutlinedTextField(
         modifier = modifier.fillMaxWidth(),
         label = { Text(text = label) },
@@ -103,11 +104,11 @@ fun ReadOnlyInputField(
 @Composable
 fun FormEachRowPreview() {
     FormInputField(
+        modifier = Modifier,
         label = "Date of birth",
         onTextChanged = {},
         icon = Icons.Default.DateRange,
         keyboardType = KeyboardType.Number,
-        modifier = Modifier,
     )
 
 }
@@ -117,10 +118,10 @@ fun FormEachRowPreview() {
 fun ExposedDropdownMenu(
     modifier: Modifier = Modifier,
     items: List<String>,
-    selected: String = items[0],
     onItemSelected: (String) -> Unit,
     label: String,
     icon: ImageVector? = null,
+    initialText: String = "",
 ) {
     var expanded by remember { mutableStateOf(false) }
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
@@ -130,7 +131,7 @@ fun ExposedDropdownMenu(
     val closeMenu = { expanded = false }
     val flipExpanded = { expanded = !expanded }
     var text by remember {
-        mutableStateOf("")
+        mutableStateOf(initialText)
     }
     Box(modifier = modifier.fillMaxWidth()) {
         OutlinedTextField(
