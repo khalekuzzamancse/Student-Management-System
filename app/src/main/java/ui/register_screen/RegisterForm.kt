@@ -1,6 +1,5 @@
 package ui.register_screen
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,7 +18,6 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LocationCity
 import androidx.compose.material.icons.filled.Man
-import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -216,8 +214,7 @@ fun RegistrationForm(
                     showGoogleMap = false
                 },
                 onPlaceSelected = {
-                    location = it.toString()
-                    Log.i("LocationMap", it.toString())
+                    location = "${it.latitude} , ${it.longitude}"
                 }
             )
         }
