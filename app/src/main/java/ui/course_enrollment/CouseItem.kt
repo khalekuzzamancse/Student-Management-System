@@ -4,8 +4,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Book
-import androidx.compose.material.icons.filled.BookOnline
 import androidx.compose.material.icons.filled.HistoryEdu
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
@@ -13,9 +11,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TriStateCheckbox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.state.ToggleableState
@@ -23,73 +22,77 @@ import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun TriStateCheckBox() {
-    var checkBox1State by remember {
-        mutableStateOf(true)
+    val list = listOf(
+        CheckboxItem(label = "English", icon = Icons.Default.HistoryEdu),
+        CheckboxItem(label = "Math", icon = Icons.Default.HistoryEdu),
+        CheckboxItem(label = "Physics", icon = Icons.Default.HistoryEdu)
+    )
+    var checkboxItems by remember {
+        mutableStateOf(list)
     }
-    var checkBox2State by remember {
-        mutableStateOf(true)
-    }
-    var checkBox3State by remember {
-        mutableStateOf(true)
+    val updateList: (CheckboxItem) -> Unit = { checkboxItem ->
+        val updatedList = checkboxItems.map { item ->
+            if (item == checkboxItem) {
+                item.copy(isChecked = !item.isChecked)
+            } else {
+                item
+            }
+        }
+        checkboxItems = updatedList.toMutableList()
     }
 
-    val parentCheckBoxState = remember(checkBox1State, checkBox2State, checkBox3State) {
-        if (checkBox1State && checkBox2State && checkBox3State)
-            ToggleableState.On
-        else if (!checkBox1State && !checkBox2State && !checkBox3State)
-            ToggleableState.Off
-        else
-            ToggleableState.Indeterminate
+    val parentCheckboxState: ToggleableState = remember(checkboxItems) {
+        val allChecked = checkboxItems.all { it.isChecked }
+        val allUnchecked = checkboxItems.all { !it.isChecked }
+
+        if (allChecked) ToggleableState.On
+        else if (allUnchecked) ToggleableState.Off
+        else ToggleableState.Indeterminate
     }
 
     Column {
-        Row {
-            Text("Parent-CheckBox")
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                modifier = Modifier.weight(1f),
+                text = "Parent-CheckBox"
+            )
             TriStateCheckbox(
-                state = parentCheckBoxState,
+                state = parentCheckboxState,
                 onClick = {
-                    val state = parentCheckBoxState != ToggleableState.On
-                    checkBox1State = state
-                    checkBox2State = state
-                    checkBox3State = state
                 }
             )
-
         }
 
-        CourseItem(
-            isChecked = checkBox1State,
-            label = "Englig",
-            icon = Icons.Default.HistoryEdu,
-            onCheckChanged = {}
-        )
-        CourseItem(
-            isChecked = checkBox2State,
-            label = "Math",
-            icon = Icons.Default.HistoryEdu,
-            onCheckChanged = {}
-        )
-        CourseItem(
-            isChecked = checkBox3State,
-            label = "Math",
-            icon = Icons.Default.Book,
-            onCheckChanged = {}
-        )
 
+        checkboxItems.forEach { checkboxItem ->
+            CourseItem(
+                isChecked = checkboxItem.isChecked,
+                label = checkboxItem.label,
+                icon = checkboxItem.icon,
+                onCheckChanged = { updateList(checkboxItem) }
+            )
+        }
     }
 }
 
+
+data class CheckboxItem(
+    val isChecked: Boolean = false,
+    val label: String,
+    val icon: ImageVector,
+)
+
 @Composable
 fun CourseItem(
-    isChecked:Boolean,
+    isChecked: Boolean,
     modifier: Modifier = Modifier,
     icon: ImageVector,
-    onCheckChanged: (Boolean) -> Unit,
+    onCheckChanged: () -> Unit,
     label: String,
 ) {
-    var state by remember {
-        mutableStateOf(isChecked)
-    }
+
     Row(modifier = modifier.fillMaxWidth()) {
         Icon(
             imageVector = icon,
@@ -100,17 +103,19 @@ fun CourseItem(
             text = label
         )
         Checkbox(
-            checked = state,
+            checked = isChecked,
             onCheckedChange = {
-                state = !state
-                onCheckChanged(state)
+                onCheckChanged()
             }
         )
     }
 
 }
 
-@Preview
+
+@Preview(
+    showSystemUi = true
+)
 @Composable
 private fun Preview() {
     TriStateCheckBox()
