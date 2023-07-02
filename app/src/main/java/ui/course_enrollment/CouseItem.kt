@@ -27,6 +27,10 @@ fun TriStateCheckBox() {
         CheckboxItem(label = "Math", icon = Icons.Default.HistoryEdu),
         CheckboxItem(label = "Physics", icon = Icons.Default.HistoryEdu)
     )
+    val listWithAllChecked= list.map { item ->
+            item.copy(isChecked = true)
+    }
+
     var checkboxItems by remember {
         mutableStateOf(list)
     }
@@ -61,6 +65,11 @@ fun TriStateCheckBox() {
             TriStateCheckbox(
                 state = parentCheckboxState,
                 onClick = {
+                    checkboxItems = when(parentCheckboxState){
+                        ToggleableState.On-> list
+                        ToggleableState.Indeterminate-> list
+                        ToggleableState.Off-> listWithAllChecked
+                    }
                 }
             )
         }
