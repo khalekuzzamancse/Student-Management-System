@@ -24,6 +24,7 @@ fun CourseList() {
         CheckboxItem(label =  "Mathematics", icon = Icons.Default.HistoryEdu),
         )
     TriStateCheckBox(class7courses)
+    //hi
 }
 
 @Preview
