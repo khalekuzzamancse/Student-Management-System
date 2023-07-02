@@ -3,6 +3,8 @@ package ui.course_enrollment
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.HistoryEdu
 import androidx.compose.material3.Checkbox
@@ -21,12 +23,8 @@ import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun TriStateCheckBox() {
-    val list = listOf(
-        CheckboxItem(label = "English", icon = Icons.Default.HistoryEdu),
-        CheckboxItem(label = "Math", icon = Icons.Default.HistoryEdu),
-        CheckboxItem(label = "Physics", icon = Icons.Default.HistoryEdu)
-    )
+fun TriStateCheckBox(list: List<CheckboxItem>) {
+
     val listWithAllChecked= list.map { item ->
             item.copy(isChecked = true)
     }
@@ -54,7 +52,7 @@ fun TriStateCheckBox() {
         else ToggleableState.Indeterminate
     }
 
-    Column {
+    Column(modifier=Modifier.verticalScroll(rememberScrollState())) {
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -127,5 +125,11 @@ fun CourseItem(
 )
 @Composable
 private fun Preview() {
-    TriStateCheckBox()
+    TriStateCheckBox(
+        listOf(
+            CheckboxItem(label = "English", icon = Icons.Default.HistoryEdu),
+            CheckboxItem(label = "Math", icon = Icons.Default.HistoryEdu),
+            CheckboxItem(label = "Physics", icon = Icons.Default.HistoryEdu)
+        )
+    )
 }
