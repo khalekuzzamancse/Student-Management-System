@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,15 +24,39 @@ import androidx.compose.ui.unit.dp
 @Preview
 @Composable
 fun MCQStyle2() {
-    val mcq = MCQ(
-        question = "What is the name of your country ?",
-        optionA = "Bangladesh",
-        optionB = "India",
-        optionC = "Nepal",
-        optionD = "Pakistan",
-        answer = MCQOptions.B
+    val mcqList = listOf(
+        MCQ(
+            question = "What is the name of your country ?",
+            optionA = "Bangladesh",
+            optionB = "India",
+            optionC = "Nepal",
+            optionD = "Pakistan",
+            answer = MCQOptions.B
+        ), MCQ(
+            question = "Why the national food of bangladesh ?",
+            optionA = "Jack Fruit",
+            optionB = "Banana",
+            optionC = "Mango",
+            optionD = "Apple",
+            answer = MCQOptions.B
+        )
     )
-    MCQStyle2(mcq = mcq)
+    MCQQuestions(questions = mcqList)
+}
+
+@Composable
+fun MCQQuestions(modifier: Modifier = Modifier, questions: List<MCQ>) {
+    Column(modifier = modifier.padding(8.dp)
+    ) {
+        questions.forEachIndexed { index, mcq ->
+            Row(modifier = Modifier.fillMaxWidth()) {
+                val questionNo = index + 1;
+                Text(text = "$questionNo : ")
+                MCQStyle2(modifier = Modifier.weight(1f), mcq = mcq)
+            }
+
+        }
+    }
 }
 
 @Composable
