@@ -77,34 +77,41 @@ private fun AnswerRow(modifier: Modifier = Modifier) {
     var optionSelected by remember {
         mutableStateOf(MCQOptions.None)
     }
-
+    val updateSelection: (MCQOptions) -> Unit = { option ->
+        optionSelected = if (optionSelected != option)
+            option
+        else {
+            //Remove selection
+            MCQOptions.None
+        }
+    }
     Row(modifier = modifier) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(text = "A")
             RadioButton(
                 selected = optionSelected == MCQOptions.A,
-                onClick = { optionSelected = MCQOptions.A }
+                onClick = { updateSelection(MCQOptions.A) }
             )
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(text = "B")
             RadioButton(
                 selected = optionSelected == MCQOptions.B,
-                onClick = { optionSelected = MCQOptions.B }
+                onClick = { updateSelection(MCQOptions.B) }
             )
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(text = "C")
             RadioButton(
                 selected = optionSelected == MCQOptions.C,
-                onClick = { optionSelected = MCQOptions.C }
+                onClick = { updateSelection(MCQOptions.C) }
             )
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(text = "D")
             RadioButton(
                 selected = optionSelected == MCQOptions.D,
-                onClick = { optionSelected = MCQOptions.D }
+                onClick = { updateSelection(MCQOptions.D) }
             )
         }
 
