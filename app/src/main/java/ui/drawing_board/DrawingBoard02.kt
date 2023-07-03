@@ -4,6 +4,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -30,9 +31,9 @@ private fun DrawingBoardPreview() {
 @Composable
 fun DrawingBoard02() {
     var path by remember { mutableStateOf(Path()) }
-    val paths by remember { mutableStateOf(mutableListOf<Path>()) }
-    var previousPosition: Offset=Offset.Zero
-    var currentPosition: Offset=Offset.Zero
+    var paths by remember { mutableStateOf(mutableListOf<Path>()) }
+    var previousPosition: Offset = Offset.Zero
+    var currentPosition: Offset = Offset.Zero
 
 
     val updatePathOnDragStart: (Offset) -> Unit = { offset ->
@@ -40,11 +41,11 @@ fun DrawingBoard02() {
             addPath(path)
             moveTo(offset.x, offset.y)
         }
-        currentPosition=offset
-        previousPosition=currentPosition
+        currentPosition = offset
+        previousPosition = currentPosition
     }
     val updatePathOnDragging: (Offset) -> Unit = { offset ->
-        currentPosition=offset
+        currentPosition = offset
         path = Path().apply {
             addPath(path)
             quadraticBezierTo(
@@ -62,6 +63,12 @@ fun DrawingBoard02() {
             paths.removeAt(paths.size - 1)
             path = if (paths.isNotEmpty()) paths.last() else Path()
         }
+    }
+    val cleanBoard: () -> Unit = {
+        paths = mutableListOf()
+        previousPosition = Offset.Zero
+        currentPosition = Offset.Zero
+        path = Path()
     }
 
     Box(
@@ -91,9 +98,16 @@ fun DrawingBoard02() {
                     style = Stroke(width = 4.dp.toPx())
                 )
             }
-            Button(onClick = undo) {
-                Text(text = "Undo")
+            Row() {
+                Button(onClick = undo) {
+                    Text(text = "Undo")
+                }
+                Button(onClick = cleanBoard) {
+                    Text(text = "Clear")
+                }
+
             }
+
         }
 
     }
