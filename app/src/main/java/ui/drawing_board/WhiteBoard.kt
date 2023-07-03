@@ -1,15 +1,25 @@
 package ui.drawing_board
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.Minimize
+import androidx.compose.material.icons.filled.Undo
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,11 +37,12 @@ import androidx.compose.ui.unit.dp
 @Preview
 @Composable
 private fun DrawingBoardPreview() {
-    DrawingBoard02()
+    WhiteBoard(onDismissButtonClick = {})
 }
 
+
 @Composable
-fun DrawingBoard02(modifier: Modifier=Modifier) {
+fun WhiteBoard(modifier: Modifier = Modifier, onDismissButtonClick: () -> Unit) {
     var path by remember { mutableStateOf(Path()) }
     var paths by remember { mutableStateOf(mutableListOf<Path>()) }
     var previousPosition: Offset = Offset.Zero
@@ -93,6 +104,35 @@ fun DrawingBoard02(modifier: Modifier=Modifier) {
             }
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
+            Surface(shadowElevation = 5.dp) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .background(MaterialTheme.colorScheme.onPrimary)
+                ) {
+
+                    Icon(
+                        modifier = Modifier.clickable { cleanBoard() },
+                        imageVector = Icons.Default.Clear,
+                        contentDescription = null
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Icon(
+                        modifier = Modifier.clickable { undo() },
+                        imageVector = Icons.Default.Undo,
+                        contentDescription = null
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Icon(
+                        modifier = Modifier.clickable { onDismissButtonClick() },
+                        imageVector = Icons.Default.Done,
+                        contentDescription = null
+                    )
+
+                }
+            }
+
             Canvas(modifier = Modifier.weight(1f)) {
                 drawPath(
                     path = path,
@@ -100,18 +140,7 @@ fun DrawingBoard02(modifier: Modifier=Modifier) {
                     style = Stroke(width = 4.dp.toPx())
                 )
             }
-            Row(modifier = Modifier
-                .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Button(onClick = undo) {
-                    Text(text = "Undo")
-                }
-                Button(onClick = cleanBoard) {
-                    Text(text = "Clear")
-                }
 
-            }
 
         }
 
