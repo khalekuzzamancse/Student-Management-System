@@ -2,10 +2,12 @@ package ui.drawing_board
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,7 +35,7 @@ fun DrawingBoard02() {
     var path by remember { mutableStateOf(Path()) }
     var paths by remember { mutableStateOf(mutableListOf<Path>()) }
     var previousPosition: Offset = Offset.Zero
-    var currentPosition: Offset = Offset.Zero
+    var currentPosition: Offset
 
 
     val updatePathOnDragStart: (Offset) -> Unit = { offset ->
@@ -79,7 +81,7 @@ fun DrawingBoard02() {
                     onDragStart = { offset ->
                         updatePathOnDragStart(offset)
                     },
-                    onDrag = { change, offset ->
+                    onDrag = { change, _ ->
                         updatePathOnDragging(change.position)
                     },
                     onDragEnd = {
@@ -98,7 +100,10 @@ fun DrawingBoard02() {
                     style = Stroke(width = 4.dp.toPx())
                 )
             }
-            Row() {
+            Row(modifier = Modifier
+                .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
                 Button(onClick = undo) {
                     Text(text = "Undo")
                 }
