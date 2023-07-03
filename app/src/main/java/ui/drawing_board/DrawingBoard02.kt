@@ -31,7 +31,7 @@ private fun DrawingBoardPreview() {
 }
 
 @Composable
-fun DrawingBoard02() {
+fun DrawingBoard02(modifier: Modifier=Modifier) {
     var path by remember { mutableStateOf(Path()) }
     var paths by remember { mutableStateOf(mutableListOf<Path>()) }
     var previousPosition: Offset = Offset.Zero
@@ -74,7 +74,7 @@ fun DrawingBoard02() {
     }
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .pointerInput(Unit) {
                 detectDragGestures(
