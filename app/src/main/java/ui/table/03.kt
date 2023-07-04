@@ -1,18 +1,26 @@
 package ui.table
 
-import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 
+/*
+This code show basically how to calculate the coordiante
+this code have problem,such as the when text content is more then
+it will overlap then content or overflow the content
+to solve the overflow problem
+we have redefine it
+ */
 @Preview
 @Composable
 private fun TextSizeMeasurement() {
@@ -47,6 +55,12 @@ private fun TextSizeMeasurement() {
     val getTextHeight: (String) -> Float = {
         textMeasurer.measure(it).size.height.toFloat()
     }
+    val getPreviousRowUpNeighbourTextHeight: (Int) -> Float = {
+        getTextHeight(rows[it - 1].first().text)
+    }
+    val getPreviousRowUpNeighbourCoordinate: (Int, Int) -> Offset = { index, column ->
+        rows[index - 1][column].coordinate
+    }
 
 
     var previousX = 0f
@@ -69,15 +83,14 @@ private fun TextSizeMeasurement() {
 
     for (i in 1 until rows.size) {
         rows[i].forEachIndexed { index, _ ->
-            val previousRowHeight = getTextHeight(rows[i - 1].first().text)
-            //      val previousRowHeight = rows[i - 1].first().height
-            //this line is not working,find it why not work
-            val currentCellUpCellCoordinate = rows[i - 1][index].coordinate
-            val coordinate =
-                currentCellUpCellCoordinate.copy(y = currentCellUpCellCoordinate.y + previousRowHeight)
-            rows[i][index] = rows[i][index].copy(coordinate = coordinate)
+            val previousRowHeight = getPreviousRowUpNeighbourTextHeight(i)
+            val neighbourCoordinate = getPreviousRowUpNeighbourCoordinate(i, index)
+            val ordinate = neighbourCoordinate.y + previousRowHeight
+            val abscissa = neighbourCoordinate.x
+            rows[i][index] = rows[i][index].copy(coordinate = Offset(abscissa, ordinate))
         }
     }
+
 
 
     Canvas(
@@ -86,11 +99,15 @@ private fun TextSizeMeasurement() {
             .fillMaxSize()
     ) {
         rows.forEach { row ->
-            row.forEach { content ->
+            row.forEachIndexed { index, content ->
+                val headerWidth = getTextWidth(rows.first()[index].text)
+                val thisCellHeight = getTextHeight(content.text)
                 drawText(
                     topLeft = content.coordinate,
                     textMeasurer = textMeasurer,
-                    text = content.text
+                    text = content.text,
+                    size = Size(width = headerWidth, height = thisCellHeight),
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
 
