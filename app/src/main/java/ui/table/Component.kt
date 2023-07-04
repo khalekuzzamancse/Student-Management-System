@@ -108,6 +108,13 @@ data class Table(
     fun getWidth(): Float {
         return rows.maxOf { it.getWidth() }
     }
+    fun getRowMaxWidth(rowNo:Int):Float{
+        val result = table.rows.map { row ->
+            row.cells[rowNo]
+        }.maxOf { it.width }
+        return result
+    }
+
 }
 
 val table = Table(
@@ -139,10 +146,10 @@ val table = Table(
 
 
 //fun main() {
-//    println("${table.getRow(0).getWidth()}")
-//    println("${table.getRow(1).getWidth()}")
-//    println("${table.getRow(2).getWidth()}")
-//    println("${table.getHeight()},${table.getWidth()}")
+//    val result = table.rows.map { row ->
+//        row.cells.first()
+//    }.maxOf { it.width }
+//    println(result)
 //}
 
 @Preview
@@ -157,7 +164,7 @@ private fun TableComposable() {
     val getTextHeight: (String) -> Float = {
         textMeasurer.measure(it).size.height.toFloat()
     }
-    TableCell.height =getTextHeight(table.rows.first().cells.first().text)
+    TableCell.height = getTextHeight(table.rows.first().cells.first().text)
 
     var previousX = 0f
     val y = 0f
@@ -174,9 +181,15 @@ private fun TableComposable() {
         row
     }
 
-    Log.i("TABLE_CELL::Updated", "$updatedTable.")
-    Log.i("TABLE_CELL::Updated", "${table.getWidth()}")
-    Log.i("TABLE_CELL::Updated", "${table.getHeight()}")
+
+    Log.i("TABLE_CELL::Updated", "$updatedTable")
+    Log.i("TABLE_CELL::maxWith", "${table.getRowMaxWidth(0)}")
+    Log.i("TABLE_CELL::maxWith", "${table.getRowMaxWidth(1)}")
+    Log.i("TABLE_CELL::maxWith", "${table.getRowMaxWidth(2)}")
+
+//    Log.i("TABLE_CELL::Updated", "$updatedTable.")
+//    Log.i("TABLE_CELL::Updated", "${table.getWidth()}")
+//    Log.i("TABLE_CELL::Updated", "${table.getHeight()}")
 
 }
 
