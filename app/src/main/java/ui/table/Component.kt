@@ -1,9 +1,16 @@
 package ui.table
 
 import android.util.Log
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
@@ -98,6 +105,8 @@ data class Table(
     val cellPadding: Float = 0f,
 
     ) {
+    var columnsTopLeftX = mutableMapOf<Int, Float>()
+    var rowsTopLeftY = mutableMapOf<Int, Float>()
     fun getRow(rowNo: Int) = rows[rowNo]
     fun getCell(row: Int, column: Int) = rows[row].getCell(column)
     fun getHeight(): Float {
@@ -108,12 +117,39 @@ data class Table(
     fun getWidth(): Float {
         return rows.maxOf { it.getWidth() }
     }
-    fun getRowMaxWidth(rowNo:Int):Float{
+
+    fun getColumnMaxWidth(rowNo: Int): Float {
         val result = table.rows.map { row ->
             row.cells[rowNo]
         }.maxOf { it.width }
         return result
     }
+
+    fun calculateCoordinate() {
+        val columnsTopLeftX = mutableMapOf<Int, Float>()
+        val totalColumns = rows.first().cells.size
+        columnsTopLeftX[0] = 0f
+        for (column in 1 until totalColumns) {
+            val tmp = columnsTopLeftX[column - 1] ?: 0f
+            columnsTopLeftX[column] = tmp + getColumnMaxWidth(column - 1)
+        }
+        this.columnsTopLeftX = columnsTopLeftX
+        val rowsTopLeftY = mutableMapOf<Int, Float>()
+        val totalRow = rows.size
+        rowsTopLeftY[0] = 0f
+        for (row in 1 until totalRow) {
+            val tmp = rowsTopLeftY[row - 1] ?: 0f
+            rowsTopLeftY[row] = tmp + TableCell.height
+        }
+        this.rowsTopLeftY = rowsTopLeftY
+    }
+
+    fun getCellTopLeftCoordinate(row: Int, col: Int):Offset {
+        val offset = Offset(x = columnsTopLeftX[col] ?: 0f, y = rowsTopLeftY[row] ?: 0f)
+        println("TABLE_CELL::CellCoor $offset")
+        return offset
+    }
+
 
 }
 
@@ -140,23 +176,23 @@ val table = Table(
                 TableCell("EEE")
             )
         ),
+        Row(
+            listOf(
+                TableCell("03"),
+                TableCell("Salman Ali Khan"),
+                TableCell("Mathematics")
+            )
+        ),
 
         )
 )
 
 
-//fun main() {
-//    val result = table.rows.map { row ->
-//        row.cells.first()
-//    }.maxOf { it.width }
-//    println(result)
-//}
 
 @Preview
 @Composable
 private fun TableComposable() {
     val textMeasurer = rememberTextMeasurer()
-    val padding = 20.dp.value
 
     val getTextWidth: (String) -> Float = {
         textMeasurer.measure(it).size.width.toFloat()
@@ -166,15 +202,7 @@ private fun TableComposable() {
     }
     TableCell.height = getTextHeight(table.rows.first().cells.first().text)
 
-    var previousX = 0f
-    val y = 0f
-    // table.rows[i]= i th row
-    // table.rows[i].cells= i th rows all cells
-
-    Log.i("TABLE_CELL::OLD", "$table")
-    Log.i("TABLE_CELL::OLD", "${table.getWidth()}")
-    Log.i("TABLE_CELL::OLD", "${table.getHeight()}")
-    val updatedTable = table.rows.map { row ->
+    table.rows.map { row ->
         row.cells.map { cell ->
             cell.width = getTextWidth(cell.text)
         }
@@ -182,16 +210,25 @@ private fun TableComposable() {
     }
 
 
-    Log.i("TABLE_CELL::Updated", "$updatedTable")
-    Log.i("TABLE_CELL::maxWith", "${table.getRowMaxWidth(0)}")
-    Log.i("TABLE_CELL::maxWith", "${table.getRowMaxWidth(1)}")
-    Log.i("TABLE_CELL::maxWith", "${table.getRowMaxWidth(2)}")
 
-//    Log.i("TABLE_CELL::Updated", "$updatedTable.")
-//    Log.i("TABLE_CELL::Updated", "${table.getWidth()}")
-//    Log.i("TABLE_CELL::Updated", "${table.getHeight()}")
+    table.calculateCoordinate()
+    Canvas(
+        modifier = Modifier
+            .padding(10.dp)
+            .fillMaxSize()
+    ) {
+        table.rows.forEachIndexed { rowNo, row ->
+            row.cells.forEachIndexed { colNo, cell ->
+                drawText(
+                    topLeft = table.getCellTopLeftCoordinate(rowNo,colNo),
+                    textMeasurer = textMeasurer,
+                    text = cell.text,
+                )
+            }
+        }
 
-}
+    }
+    }
 
 
 
