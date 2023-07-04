@@ -1,5 +1,6 @@
 package ui.table
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.text.rememberTextMeasurer
@@ -33,13 +34,21 @@ Let each row  is a tuple,each tuple has column,
 the TableTuple has the properties:
     1.A fixed size List of TableCell
 
+Padding:x:
+    because of padding each cell top(ordinate) will get x amount extra space
+    and left
+
 
  */
 data class TableCell(
     val text: String,
-    val width: Float = 0f,
-    val coordinate: Offset = Offset(0f, 0f),
-)
+    var width: Float = 0f,
+    var coordinate: Offset = Offset(0f, 0f),
+) {
+    companion object {
+        var height = 0f
+    }
+}
 
 data class Row(
     var cells: List<TableCell>,
@@ -85,45 +94,43 @@ data class Row(
 }
 
 data class Table(
-    val eachCellHeight: Float,
     val rows: List<Row>,
+    val cellPadding: Float = 0f,
 
     ) {
     fun getRow(rowNo: Int) = rows[rowNo]
     fun getCell(row: Int, column: Int) = rows[row].getCell(column)
     fun getHeight(): Float {
         val numberOfRows = rows.size
-        return numberOfRows * eachCellHeight
+        return numberOfRows * TableCell.height
     }
 
     fun getWidth(): Float {
-
-        return eachCellHeight
+        return rows.maxOf { it.getWidth() }
     }
 }
 
 val table = Table(
-    eachCellHeight = 10f,
     rows = listOf(
         Row(
             listOf(
-                TableCell("Roll", width = 10f),
-                TableCell("Name", width = 10f),
-                TableCell("Department", width = 15f)
+                TableCell("Roll"),
+                TableCell("Name"),
+                TableCell("Department")
             )
         ),
         Row(
             listOf(
-                TableCell("01", width = 12f),
-                TableCell("Mr Bean", width = 10f),
-                TableCell("CSE", width = 15f)
+                TableCell("01"),
+                TableCell("Mr Bean"),
+                TableCell("CSE")
             )
         ),
         Row(
             listOf(
-                TableCell("02", width = 11f),
-                TableCell("Dr USA", width = 10f),
-                TableCell("EEE", width = 15f)
+                TableCell("02"),
+                TableCell("Dr USA"),
+                TableCell("EEE")
             )
         ),
 
@@ -131,12 +138,12 @@ val table = Table(
 )
 
 
-fun main() {
-    println("${table.getRow(0).getWidth()}")
-    println("${table.getRow(1).getWidth()}")
-    println("${table.getRow(2).getWidth()}")
-    println("${table.getHeight()},${table.getWidth()}")
-}
+//fun main() {
+//    println("${table.getRow(0).getWidth()}")
+//    println("${table.getRow(1).getWidth()}")
+//    println("${table.getRow(2).getWidth()}")
+//    println("${table.getHeight()},${table.getWidth()}")
+//}
 
 @Preview
 @Composable
@@ -150,6 +157,26 @@ private fun TableComposable() {
     val getTextHeight: (String) -> Float = {
         textMeasurer.measure(it).size.height.toFloat()
     }
+    TableCell.height =getTextHeight(table.rows.first().cells.first().text)
+
+    var previousX = 0f
+    val y = 0f
+    // table.rows[i]= i th row
+    // table.rows[i].cells= i th rows all cells
+
+    Log.i("TABLE_CELL::OLD", "$table")
+    Log.i("TABLE_CELL::OLD", "${table.getWidth()}")
+    Log.i("TABLE_CELL::OLD", "${table.getHeight()}")
+    val updatedTable = table.rows.map { row ->
+        row.cells.map { cell ->
+            cell.width = getTextWidth(cell.text)
+        }
+        row
+    }
+
+    Log.i("TABLE_CELL::Updated", "$updatedTable.")
+    Log.i("TABLE_CELL::Updated", "${table.getWidth()}")
+    Log.i("TABLE_CELL::Updated", "${table.getHeight()}")
 
 }
 
