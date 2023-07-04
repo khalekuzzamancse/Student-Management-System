@@ -11,6 +11,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
@@ -62,7 +63,7 @@ private fun Preview() {
 
     val textMeasurer = rememberTextMeasurer()
     val text = "90"
-    val layoutResult = textMeasurer.measure(text)
+    val layoutResult = textMeasurer.measure(text, style = TextStyle.Default.copy(fontSize = 20.sp))
     val textHeight = layoutResult.size.height
     val textWidth = layoutResult.size.width
     // do something with textHeight

@@ -66,7 +66,7 @@ fun Slot(
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         title()
-        Row() {
+        Row {
             Spacer(modifier = Modifier.weight(1f))
             examTypeYear()
         }

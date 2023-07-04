@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -50,7 +48,7 @@ fun MCQQuestions(modifier: Modifier = Modifier, questions: List<MCQ>) {
     ) {
         questions.forEachIndexed { index, mcq ->
             Row(modifier = Modifier.fillMaxWidth()) {
-                val questionNo = index + 1;
+                val questionNo = index + 1
                 Text(text = "$questionNo : ")
                 MCQStyle2(modifier = Modifier.weight(1f), mcq = mcq)
             }

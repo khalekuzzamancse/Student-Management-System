@@ -17,6 +17,10 @@ import ui.drawing_board.WhiteBoard
 
 @Preview
 @Composable
+private fun Preview() {
+    FullQuestions()
+}
+@Composable
 fun FullQuestions() {
     val mcqList = listOf(
         MCQ(
