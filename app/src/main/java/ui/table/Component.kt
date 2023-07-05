@@ -1,16 +1,20 @@
 package ui.table
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 /*
 Table:
@@ -39,10 +43,12 @@ Let each row  is a tuple,each tuple has column,
 the TableTuple has the properties:
     1.A fixed size List of TableCell
 
-Padding:x:
+Padding:p:
     because of padding each cell top(ordinate) will get x amount extra space
     and left
 
+Finding the text height and width
+    Using text measurer
 
  */
 data class TableCell(
@@ -50,7 +56,7 @@ data class TableCell(
 ) {
     var width: Float = 0f
         get() {
-            return field + (2*padding)
+            return field + (2 * padding)
         }
 
     companion object {
@@ -67,7 +73,6 @@ data class Row(
 
 data class Table(
     val rows: List<Row>,
-
     ) {
 
     private var columnsTopLeftX = mutableMapOf<Int, Float>()
@@ -90,9 +95,9 @@ data class Table(
         getNumbersOfRow() * (TableCell.height)
 
     private fun getColumnMaxWidth(rowNo: Int): Float {
-        val result = table.rows.map { row ->
+        val result =rows.map { row ->
             row.cells[rowNo]
-        }.maxOf { it.width}
+        }.maxOf { it.width }
         return result
     }
 
@@ -124,7 +129,7 @@ data class Table(
 
     fun getCellTopLeftCoordinate(row: Int, col: Int): Offset {
         //move the text right to padding amount
-        var x=columnsTopLeftX[col] ?: 0f
+        var x = columnsTopLeftX[col] ?: 0f
         x += TableCell.padding //later fix this
         return Offset(
             x = x,
@@ -179,93 +184,28 @@ data class Table(
 
 }
 
-val table = Table(
-    rows = listOf(
-        Row(
-            listOf(
-                TableCell("Roll"),
-                TableCell("Name"),
-                TableCell("Department")
-            )
-        ),
-        Row(
+
+class TableTestData {
+    fun getData():Table{
+        val row= Row(
             listOf(
                 TableCell("01"),
                 TableCell("Mr Bean"),
                 TableCell("CSE")
             )
-        ),
-        Row(
-            listOf(
-                TableCell("02"),
-                TableCell("Dr USA"),
-                TableCell("EEE")
-            )
-        ),
-        Row(
-            listOf(
-                TableCell("03"),
-                TableCell("Salman Ali Khan"),
-                TableCell("Mathematics")
-            )
-        ),
-
         )
-)
 
-@Preview
-@Composable
-fun TableComposable() {
-    val textMeasurer = rememberTextMeasurer()
-
-    val getTextWidth: (String) -> Float = {
-        textMeasurer.measure(it).size.width.toFloat()
-    }
-    val getTextHeight: (String) -> Float = {
-        textMeasurer.measure(it).size.height.toFloat()
-    }
-    TableCell.height = getTextHeight(table.rows.first().cells.first().text)
-
-    table.rows.map { row ->
-        row.cells.map { cell ->
-            cell.width = getTextWidth(cell.text)
+        val rows= mutableListOf<Row>(
+            Row(
+                listOf(
+                    TableCell("Roll"),
+                    TableCell("Name"),
+                    TableCell("Department")
+                )))
+        for(i in 1..40){
+            rows.add(row)
         }
-        row
-    }
-    table.calculateCoordinate()
-    table.calculateVerticalLinesCoordinates()
-    table.calculateHorizontalLinesCoordinates()
-
-    Canvas(
-        modifier = Modifier
-            .padding(10.dp)
-            .fillMaxSize()
-    ) {
-        table.rows.forEachIndexed { rowNo, row ->
-            row.cells.forEachIndexed { colNo, cell ->
-                drawText(
-                    topLeft = table.getCellTopLeftCoordinate(rowNo, colNo),
-                    textMeasurer = textMeasurer,
-                    text = cell.text,
-                )
-            }
-        }
-
-        table.verticalLinesTopLeftCoordinates.forEach {
-            //move each text horizontally as the padding
-            drawLine(
-                start = it.value.first,
-                end = it.value.second,
-                color = Color.Black
-            )
-        }
-        table.horizontalLinesTopLeftCoordinates.forEach {
-            drawLine(
-                start = it.value.first,
-                end = it.value.second,
-                color = Color.Black
-            )
-        }
+        return Table(rows)
 
     }
 
