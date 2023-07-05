@@ -10,6 +10,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 /*
@@ -51,11 +52,13 @@ data class TableCell(
     var coordinate: Offset = Offset(0f, 0f),
 ) {
     companion object {
+        val padding = 20.dp.value
         var height = 0f
-        var padding = 0.dp.value
-        var totalVerticalPadding=2* padding
-        var totalHorizontalPadding=2* padding
+        var heightWithPadding = height + (2 * padding)
     }
+
+    fun getWidthWithPadding() = width + (2 * padding)
+
 }
 
 data class Row(
@@ -105,6 +108,7 @@ data class Table(
     val rows: List<Row>,
 
     ) {
+
     private var columnsTopLeftX = mutableMapOf<Int, Float>()
     private var rowsTopLeftY = mutableMapOf<Int, Float>()
     var verticalLinesTopLeftCoordinates =
@@ -112,40 +116,43 @@ data class Table(
     var horizontalLinesTopLeftCoordinates =
         mutableMapOf<Int, Pair<Offset, Offset>>()
 
+    private fun getWidth(): Float {
+        var width = 0f
+        for (row in 0 until getNumbersOfColumn()) {
+            val eachCellWidth = getColumnMaxWidth(row)
+            width += eachCellWidth
+        }
+        return width
+    }
+
+    private fun getTableHeight() =
+        getNumbersOfRow() * (TableCell.height)
+
     private fun getColumnMaxWidth(rowNo: Int): Float {
         val result = table.rows.map { row ->
             row.cells[rowNo]
-        }.maxOf { it.width }
+        }.maxOf { it.getWidthWithPadding() }
         return result
     }
 
     private fun calculateRowTopLeftY() {
-        val verticalPadding = 2 * TableCell.padding
-        val rowsTopLeftY = mutableMapOf<Int, Float>()
-        rowsTopLeftY[0] = 0f
-        for (row in 1 until getNumbersOfRow()) {
-            val tmp = rowsTopLeftY[row - 1] ?: 0f
-            rowsTopLeftY[row] = tmp + TableCell.height + verticalPadding
+        //since row height are the same
+        for (row in 0..getNumbersOfRow()) {
+            rowsTopLeftY[row] = row * TableCell.height
         }
-        this.rowsTopLeftY = rowsTopLeftY
     }
 
     private fun calculateColumnTopLeftX() {
-        val horizontalPadding = 2 * TableCell.padding
+
         val columnsTopLeftX = mutableMapOf<Int, Float>()
         rows.first().cells.size
         columnsTopLeftX[0] = 0f
-        for (column in 1 until getNumbersOfColumn()) {
-            val tmp = columnsTopLeftX[column - 1] ?: 0f
-
+        for (column in 1..getNumbersOfColumn()) {
+            val previousColumnWidth = columnsTopLeftX[column - 1] ?: 0f
             columnsTopLeftX[column] =
-                tmp + getColumnMaxWidth(column - 1) + horizontalPadding
+                previousColumnWidth + getColumnMaxWidth(column - 1)
         }
-        //add last line X value
-        val col=getNumbersOfColumn()
-        val tmp = columnsTopLeftX[col-1] ?: 0f
-        columnsTopLeftX[col] =
-            tmp + getColumnMaxWidth(col - 1) + horizontalPadding
+
         this.columnsTopLeftX = columnsTopLeftX
     }
 
@@ -155,12 +162,11 @@ data class Table(
     }
 
     fun getCellTopLeftCoordinate(row: Int, col: Int): Offset {
-        return Offset(x = columnsTopLeftX[col] ?: 0f, y = rowsTopLeftY[row] ?: 0f)
+        return Offset(
+            x = columnsTopLeftX[col] ?: 0f,
+            y = rowsTopLeftY[row] ?: 0f
+        )
     }
-
-    private fun getTableHeight() =
-        (getNumbersOfRow() * TableCell.height) +
-                (getNumbersOfRow() * 2 * TableCell.padding)
 
 
     fun calculateVerticalLinesCoordinates() {
@@ -171,25 +177,17 @@ data class Table(
             Offset(0f, 0f),
             Offset(0f, endPointY)
         )
-        for (col in 0 .. getNumbersOfColumn()) {
+        for (col in 0..getNumbersOfColumn()) {
             val startPointX = columnsTopLeftX[col] ?: 0f
             verticalLinesTopLeftCoordinates[col] = Pair(
                 Offset(startPointX, 0f),
                 Offset(startPointX, endPointY)
             )
         }
-
         this.verticalLinesTopLeftCoordinates = verticalLinesTopLeftCoordinates
 
     }
 
-    private fun getWidth(): Float {
-        val col = getNumbersOfColumn() - 1
-        //
-        val tmp = columnsTopLeftX[col]?:0f
-        val lastColWidth = getColumnMaxWidth(col)
-        return tmp+lastColWidth
-    }
 
     fun calculateHorizontalLinesCoordinates() {
         val endPointX = getWidth()
@@ -199,20 +197,20 @@ data class Table(
             Offset(0f, 0f),
             Offset(endPointX, 0f)
         )
-        for (row in 1 .. getNumbersOfRow()) {
-            val startPointY = rowsTopLeftY[row] ?: 0f
-            val y = (row*TableCell.height)+(2*TableCell.padding)
+        for (row in 1..getNumbersOfRow()) {
+            rowsTopLeftY[row] ?: 0f
+            val y = (row * TableCell.height)
             horizontalLinesTopLeftCoordinates[row] = Pair(
                 Offset(0f, y),
                 Offset(endPointX, y)
             )
         }
         this.horizontalLinesTopLeftCoordinates = horizontalLinesTopLeftCoordinates
-        println("TABLE_CELL::CellCoor $horizontalLinesTopLeftCoordinates")
+
     }
 
-    fun getNumbersOfColumn() = rows.first().cells.size
-    fun getNumbersOfRow() = rows.size
+    private fun getNumbersOfColumn() = rows.first().cells.size
+    private fun getNumbersOfRow() = rows.size
 
 
 }
@@ -253,7 +251,7 @@ val table = Table(
 
 @Preview
 @Composable
- fun TableComposable() {
+fun TableComposable() {
     val textMeasurer = rememberTextMeasurer()
 
     val getTextWidth: (String) -> Float = {
