@@ -3,7 +3,6 @@ package ui.table
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.pager.PageSize.Fill.calculateMainAxisPageSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -11,7 +10,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 /*
@@ -52,7 +50,7 @@ data class TableCell(
 ) {
     var width: Float = 0f
         get() {
-            return field + padding
+            return field + (2*padding)
         }
 
     companion object {
@@ -127,7 +125,7 @@ data class Table(
     fun getCellTopLeftCoordinate(row: Int, col: Int): Offset {
         //move the text right to padding amount
         var x=columnsTopLeftX[col] ?: 0f
-        x += (TableCell.padding)/2 //later fix this
+        x += TableCell.padding //later fix this
         return Offset(
             x = x,
             y = rowsTopLeftY[row] ?: 0f
@@ -254,7 +252,7 @@ fun TableComposable() {
         }
 
         table.verticalLinesTopLeftCoordinates.forEach {
-            //move each text horizonllay as the padding
+            //move each text horizontally as the padding
             drawLine(
                 start = it.value.first,
                 end = it.value.second,
