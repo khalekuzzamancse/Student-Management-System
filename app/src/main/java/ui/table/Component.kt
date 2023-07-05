@@ -52,7 +52,9 @@ data class TableCell(
 ) {
     companion object {
         var height = 0f
-        var padding = 20.dp.value
+        var padding = 0.dp.value
+        var totalVerticalPadding=2* padding
+        var totalHorizontalPadding=2* padding
     }
 }
 
@@ -101,7 +103,6 @@ data class Row(
 
 data class Table(
     val rows: List<Row>,
-    val cellPadding: Float = 0f,
 
     ) {
     private var columnsTopLeftX = mutableMapOf<Int, Float>()
@@ -140,6 +141,11 @@ data class Table(
             columnsTopLeftX[column] =
                 tmp + getColumnMaxWidth(column - 1) + horizontalPadding
         }
+        //add last line X value
+        val col=getNumbersOfColumn()
+        val tmp = columnsTopLeftX[col-1] ?: 0f
+        columnsTopLeftX[col] =
+            tmp + getColumnMaxWidth(col - 1) + horizontalPadding
         this.columnsTopLeftX = columnsTopLeftX
     }
 
@@ -165,13 +171,14 @@ data class Table(
             Offset(0f, 0f),
             Offset(0f, endPointY)
         )
-        for (col in 0 until getNumbersOfColumn()) {
+        for (col in 0 .. getNumbersOfColumn()) {
             val startPointX = columnsTopLeftX[col] ?: 0f
             verticalLinesTopLeftCoordinates[col] = Pair(
                 Offset(startPointX, 0f),
                 Offset(startPointX, endPointY)
             )
         }
+
         this.verticalLinesTopLeftCoordinates = verticalLinesTopLeftCoordinates
 
     }
@@ -192,7 +199,7 @@ data class Table(
             Offset(0f, 0f),
             Offset(endPointX, 0f)
         )
-        for (row in 1 until getNumbersOfColumn()) {
+        for (row in 1 .. getNumbersOfRow()) {
             val startPointY = rowsTopLeftY[row] ?: 0f
             val y = (row*TableCell.height)+(2*TableCell.padding)
             horizontalLinesTopLeftCoordinates[row] = Pair(
@@ -244,10 +251,9 @@ val table = Table(
         )
 )
 
-
 @Preview
 @Composable
-private fun TableComposable() {
+ fun TableComposable() {
     val textMeasurer = rememberTextMeasurer()
 
     val getTextWidth: (String) -> Float = {
@@ -297,7 +303,6 @@ private fun TableComposable() {
                 color = Color.Black
             )
         }
-
 
     }
 
