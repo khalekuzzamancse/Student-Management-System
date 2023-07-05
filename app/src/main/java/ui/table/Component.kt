@@ -3,6 +3,7 @@ package ui.table
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.PageSize.Fill.calculateMainAxisPageSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -48,61 +49,23 @@ Padding:x:
  */
 data class TableCell(
     val text: String,
-    var width: Float = 0f,
-    var coordinate: Offset = Offset(0f, 0f),
 ) {
+    var width: Float = 0f
+        get() {
+            return field + padding
+        }
+
     companion object {
-        val padding = 20.dp.value
         var height = 0f
-        var heightWithPadding = height + (2 * padding)
+        var padding = 20.dp.value
     }
 
-    fun getWidthWithPadding() = width + (2 * padding)
 
 }
 
 data class Row(
     var cells: List<TableCell>,
-) {
-    fun getCell(columnNo: Int) = cells[columnNo]
-    fun updateCell(tableCell: TableCell, columnNo: Int) {
-        val updatedCells = cells.toMutableList()
-        updatedCells[columnNo] = tableCell
-        cells = updatedCells
-    }
-
-    fun updateCoordinate(coordinate: Offset, columnNo: Int) {
-        val updatedCells = cells.toMutableList()
-        val cell = updatedCells[columnNo]
-        updatedCells[columnNo] = cell.copy(coordinate = coordinate)
-        cells = updatedCells
-    }
-
-    fun updateCoordinate(ordinate: Float, columnNo: Int) {
-        val updatedCells = cells.toMutableList()
-        val cell = updatedCells[columnNo]
-        val coordinate = cell.coordinate
-        updatedCells[columnNo] = cell.copy(coordinate = coordinate.copy(y = ordinate))
-        cells = updatedCells
-    }
-
-    fun updateCoordinate(columnNo: Int, abscissa: Float) {
-        val updatedCells = cells.toMutableList()
-        val cell = updatedCells[columnNo]
-        val coordinate = cell.coordinate
-        updatedCells[columnNo] = cell.copy(coordinate = coordinate.copy(x = abscissa))
-        cells = updatedCells
-    }
-
-    fun getWidth(): Float {
-        var totalWidth = 0f
-        cells.forEach {
-            totalWidth += it.width
-        }
-        return totalWidth
-    }
-
-}
+)
 
 data class Table(
     val rows: List<Row>,
@@ -131,7 +94,7 @@ data class Table(
     private fun getColumnMaxWidth(rowNo: Int): Float {
         val result = table.rows.map { row ->
             row.cells[rowNo]
-        }.maxOf { it.getWidthWithPadding() }
+        }.maxOf { it.width}
         return result
     }
 
@@ -162,8 +125,11 @@ data class Table(
     }
 
     fun getCellTopLeftCoordinate(row: Int, col: Int): Offset {
+        //move the text right to padding amount
+        var x=columnsTopLeftX[col] ?: 0f
+        x += (TableCell.padding)/2 //later fix this
         return Offset(
-            x = columnsTopLeftX[col] ?: 0f,
+            x = x,
             y = rowsTopLeftY[row] ?: 0f
         )
     }
@@ -288,6 +254,7 @@ fun TableComposable() {
         }
 
         table.verticalLinesTopLeftCoordinates.forEach {
+            //move each text horizonllay as the padding
             drawLine(
                 start = it.value.first,
                 end = it.value.second,
