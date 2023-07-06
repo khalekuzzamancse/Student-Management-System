@@ -7,7 +7,6 @@ import User
 import UserLabels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -96,6 +95,7 @@ private fun ShowUserData(
 ) {
     Column(
         modifier = modifier
+            .padding(8.dp)
             .wrapContentSize()
 
     ) {

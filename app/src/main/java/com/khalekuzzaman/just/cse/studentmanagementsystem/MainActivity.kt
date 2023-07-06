@@ -1,16 +1,11 @@
 package com.khalekuzzaman.just.cse.studentmanagementsystem
 
+import FakeUserData
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.material3.Text
-import com.google.maps.android.compose.GoogleMap
-import com.google.maps.android.compose.MapProperties
-import com.google.maps.android.compose.MarkerInfoWindow
-import com.google.maps.android.compose.MarkerInfoWindowContent
 import com.khalekuzzaman.just.cse.studentmanagementsystem.ui.theme.StudentManagementSystemTheme
-import ui.table.Table02
+import ui.user_info.UserList
 
 
 class MainActivity : ComponentActivity() {
@@ -18,7 +13,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             StudentManagementSystemTheme {
-                Table02()
+                UserList(users = FakeUserData.users)
 
             }
         }
