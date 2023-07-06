@@ -10,14 +10,16 @@ import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MarkerInfoWindow
 import com.google.maps.android.compose.MarkerInfoWindowContent
 import com.khalekuzzaman.just.cse.studentmanagementsystem.ui.theme.StudentManagementSystemTheme
-import ui.table.TableComposable
+import ui.table.Table02
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             StudentManagementSystemTheme {
-                //TableComposable()
+                Table02()
+
             }
         }
     }
