@@ -46,12 +46,14 @@ interface MarkDistribution {
     val finalExamMarks: Int
     val classTestMarks: Int
     val classAttendanceMarks: Int
+    val totalMarks: Int
 }
 
 data class MarkDistributionImp(
     override val finalExamMarks: Int,
     override val classTestMarks: Int,
     override val classAttendanceMarks: Int,
+    override val totalMarks: Int
 ) : MarkDistribution
 
 
@@ -60,11 +62,11 @@ interface Syllabus {
     val courseCode: CourseCode
     val credit: Float
     val contactHoursPerWeek: Float
-    val totalMarks: Int
     val prerequisites: List<CourseCode>
     val markDistribution: MarkDistribution
     val objective: String
     val recommendedBooks: List<String>
+    val topicDetails: List<TopicDetails>
 }
 
 data class UniversityStyleSyllabus(
@@ -72,16 +74,13 @@ data class UniversityStyleSyllabus(
     override val courseCode: CourseCode,
     override val credit: Float,
     override val contactHoursPerWeek: Float,
-    override val totalMarks: Int,
     override val prerequisites: List<CourseCode>,
     override val markDistribution: MarkDistribution,
     override val objective: String,
     val courseLearningOutcomes: List<String>,
-    val topicDetails: List<TopicDetails>,
+    override val topicDetails: List<TopicDetails>,
     override val recommendedBooks: List<String>,
 ) : Syllabus
-
-
 
 
 data class TopicDetails(
@@ -126,7 +125,8 @@ object CourseComponentFakeData {
     val markDistribution = MarkDistributionImp(
         finalExamMarks = 72,
         classTestMarks = 20,
-        classAttendanceMarks = 8
+        classAttendanceMarks = 8,
+        totalMarks = 100
     )
 
     val topicDetails01 = TopicDetails(
@@ -149,7 +149,6 @@ object CourseComponentFakeData {
         courseCode = CourseCode.Science0901,
         credit = 4.0f,
         contactHoursPerWeek = 2.0f,
-        totalMarks = 100,
         prerequisites = listOf(
             CourseCode.Science0901,
             CourseCode.Arts0901,

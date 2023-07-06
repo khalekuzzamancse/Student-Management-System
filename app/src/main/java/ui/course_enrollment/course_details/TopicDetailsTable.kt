@@ -36,14 +36,14 @@ multi lines
 @Preview
 @Composable
 fun SyllabusTablePreview() {
-    val topic=CourseComponentFakeData.topicDetails01
-    SyllabusTable(
-        listOf(topic,topic)
+    val topic = CourseComponentFakeData.topicDetails01
+    SyllebusTopicDetailsTable(
+        listOf(topic, topic)
     )
 }
 
 @Composable
-private fun SyllabusTable(
+fun SyllebusTopicDetailsTable(
     list: List<TopicDetails>,
 ) {
     val textMeasurer = rememberTextMeasurer()
@@ -68,7 +68,7 @@ private fun SyllabusTable(
         modifier = Modifier
             .padding(10.dp)
             .fillMaxHeight()
-            .horizontalScroll(rememberScrollState())
+
     ) {
         TableRow(
             columnsWidth = headerTextWidth,
