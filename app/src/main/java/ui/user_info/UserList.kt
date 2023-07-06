@@ -6,6 +6,7 @@ import Teacher
 import User
 import UserLabels
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,7 +16,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -71,18 +74,31 @@ fun UserInfo(user: User) {
         shadowElevation = 5.dp,
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             ShowProfileImage(image = R.drawable.photo)
-            ShowUserData(labelMaxWidth=labelMaxWidth, user=user)
+            ShowUserData(
+                modifier = Modifier.align(Alignment.Start),
+                labelMaxWidth = labelMaxWidth,
+                user = user
+            )
         }
     }
 }
 
 @Composable
-private fun ShowUserData(modifier: Modifier=Modifier,labelMaxWidth: Dp, user: User) {
-    Column(modifier = modifier.wrapContentSize()) {
+private fun ShowUserData(
+    modifier: Modifier = Modifier,
+    labelMaxWidth: Dp, user: User,
+) {
+    Column(
+        modifier = modifier
+            .wrapContentSize()
+
+    ) {
         EachRow(label = UserLabels.NAME, value = user.name, labelWidth = labelMaxWidth)
         EachRow(label = UserLabels.EMAIL, value = user.email, labelWidth = labelMaxWidth)
         EachRow(label = UserLabels.PHONE, value = user.phone, labelWidth = labelMaxWidth)
@@ -137,28 +153,37 @@ private fun ShowUserData(modifier: Modifier=Modifier,labelMaxWidth: Dp, user: Us
 
 @Composable
 private fun ShowProfileImage(image: Int) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center
-    ) {
-        Image(
-            modifier = Modifier
-                .size(50.dp)
-                .clip(CircleShape),
-            painter = painterResource(id = image),
-            contentDescription = null
-        )
-    }
+    Image(
+        modifier = Modifier
+            .size(50.dp)
+            .clip(CircleShape),
+        painter = painterResource(id = image),
+        contentDescription = null
+    )
+
 }
 
+/*
+If the corresponding label data is not fit on the screen
+in the single line then we make the value only scrollable
+that is why we have to use:
+     .horizontalScroll(rememberScrollState())
+ */
 @Composable
 private fun EachRow(label: String, value: String, labelWidth: Dp) {
-    Row(modifier = Modifier.fillMaxWidth()) {
+    Row(
+        modifier = Modifier
+            .wrapContentSize(),
+    ) {
         Text(modifier = Modifier.width(labelWidth), text = label)
         Spacer(Modifier.width(4.dp))
         Text(text = ":")
         Spacer(Modifier.width(4.dp))
-        Text(modifier = Modifier.weight(1f), text = value)
+        Text(
+            modifier = Modifier
+                .horizontalScroll(rememberScrollState()),
+            text = value
+        )
     }
 }
 

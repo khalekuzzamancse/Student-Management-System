@@ -57,7 +57,7 @@ object FakeUserData{
         motherPhone = "01780-456789",
     )
     private val teacher01 = Teacher(
-        name = "Mr Bean",
+        name = "Mr Chinnay Swamming MadhaSwammi Renu Golap Aiwar",
         dateOfBirth = "13-03-2023",
         email = "abc@gmail.com",
         phone = "01780-456789",
