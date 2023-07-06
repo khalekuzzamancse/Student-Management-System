@@ -16,7 +16,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.triStateToggleable
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -67,7 +69,10 @@ fun SyllebusTopicDetailsTable(
     Column(
         modifier = Modifier
             .padding(10.dp)
-            .fillMaxHeight()
+            .fillMaxWidth()
+            //must need to use the horizontal scroll
+            //otherwise the height of the cell can be be as much as need
+            .horizontalScroll(rememberScrollState())
 
     ) {
         TableRow(

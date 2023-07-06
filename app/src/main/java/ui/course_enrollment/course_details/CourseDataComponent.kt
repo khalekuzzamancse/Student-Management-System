@@ -161,7 +161,7 @@ object CourseComponentFakeData {
             "Learn the Newtons law",
             "Learn the basic computation"
         ),
-        topicDetails = listOf(topicDetails01),
+        topicDetails = listOf(topicDetails01,topicDetails01),
         recommendedBooks = listOf("Physics 01")
     )
 

@@ -13,6 +13,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.tooling.preview.Preview
@@ -62,6 +63,7 @@ private fun SyllabusTopSectionPreview() {
 
 @Composable
 fun TopSection(
+    modifier: Modifier=Modifier,
     courseTitle: String,
     courseCode: String,
     credit: Float,
@@ -82,8 +84,10 @@ fun TopSection(
         (width / density).dp
     }
     val labelMaxWidth = TopSectionLabel.topSectionLabels.maxOf { getTextWidth(it) }
-    Column(modifier = Modifier.fillMaxWidth()) {
-        Column(modifier = Modifier.fillMaxWidth()) {
+        Column(modifier = modifier
+            .fillMaxWidth()
+        //find out why it can not make horizonal scroll able
+        ) {
             EachRow(
                 label = TopSectionLabel.COURSE_TITLE,
                 value = courseTitle,
@@ -140,8 +144,6 @@ fun TopSection(
         }
 
 
-    }
-
 }
 
 /*
@@ -162,8 +164,7 @@ private fun EachRow(label: String, value: String, labelWidth: Dp) {
         Spacer(Modifier.width(4.dp))
         Text(
             modifier = Modifier
-                .weight(1f)
-                .horizontalScroll(rememberScrollState()),
+                .weight(1f),
             text = value
         )
     }
