@@ -115,6 +115,16 @@ object CourseComponentFakeData {
             endTime = MyTime(hour = 11, min = 0, timeRule = TimeRule.AM)
         )
     )
+
+    val assessmentStrategies01 = listOf(
+        AssessmentStrategy.Assignment,
+        AssessmentStrategy.Quiz,
+        AssessmentStrategy.ShortQuestion
+    )
+    val teachingStrategies01 = listOf(
+        TeachingStrategy.Lecture,
+        TeachingStrategy.Exercise
+    )
     val markDistribution = MarkDistributionImp(
         finalExamMarks = 72,
         classTestMarks = 20,
@@ -131,15 +141,9 @@ object CourseComponentFakeData {
             "The omega notation",
             "The theta notation",
         ),
-        teachingStrategies = listOf(
-            TeachingStrategy.Lecture,
-            TeachingStrategy.Exercise
-        ),
-        assessmentStrategies = listOf(
-            AssessmentStrategy.Assignment,
-            AssessmentStrategy.Quiz,
-            AssessmentStrategy.ShortQuestion
-        )
+        teachingStrategies = teachingStrategies01,
+        assessmentStrategies = assessmentStrategies01
+
     )
 
     val syllabus01 = UniversityStyleSyllabus(
