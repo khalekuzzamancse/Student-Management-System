@@ -3,13 +3,13 @@ package ui.course_enrollment.course_details
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -35,7 +35,17 @@ multi lines
 
 @Preview
 @Composable
-private fun TableRowPreview() {
+fun SyllabusTablePreview() {
+    val topic=CourseComponentFakeData.topicDetails01
+    SyllabusTable(
+        listOf(topic,topic)
+    )
+}
+
+@Composable
+private fun SyllabusTable(
+    list: List<TopicDetails>,
+) {
     val textMeasurer = rememberTextMeasurer()
     val density = LocalDensity.current.density
     val getTextWidth: (String) -> Dp = {
@@ -75,38 +85,99 @@ private fun TableRowPreview() {
                 Text(text = headerText[3])
             }
         )
-        TableRow(
-            columnsWidth = headerTextWidth,
-            _1stCellContent = {
+        /*
+        Table Data
 
-            },
-            _2ndCellContent = {
-                CourseContentCellContent(
-                    listOf("Item 1", "Item 2", "Item 3")
-                )
-            },
-            _3rdCellContent = {
-                EnumObjectsToList(
-                    list = CourseComponentFakeData.teachingStrategies01
-                )
-            },
-            _4thCellContent = {
-                EnumObjectsToList(
-                    list = CourseComponentFakeData.assessmentStrategies01
-                )
-            }
-        )
+         */
+
+        list.forEach { topic ->
+            TableRow(
+                _1stCellContentAlignment = Alignment.TopStart,
+                columnsWidth = headerTextWidth,
+                _1stCellContent = {
+                    UnitLearningOutCome(
+                        list = topic.unitLearningOutcomes,
+                        width = headerTextWidth[0]
+                    )
+                },
+                _2ndCellContent = {
+                    CourseContentCellContent(
+                        items = topic.courseContent
+                    )
+                },
+                _3rdCellContent = {
+                    Text(
+                        text = topic.teachingStrategies.joinToString(", ")
+                    )
+
+                },
+                _4thCellContent = {
+                    Text(
+                        text = topic
+                            .assessmentStrategies.joinToString(", ")
+                    )
+                }
+            )
+        }
+
 
     }
 
 }
 
+@Preview
 @Composable
-fun <T> EnumObjectsToList(
+fun UnitLearningOutComePreview() {
+    UnitLearningOutCome(
+        list = listOf(
+            "Item 1",
+            "Item 2",
+            "Item 3"
+        ), width = 100.dp
+    )
+}
+
+@Composable
+private fun UnitLearningOutCome(
     modifier: Modifier = Modifier,
-    list: List<T>,
+    list: List<String>,
+    width: Dp,
 ) {
-    Text(modifier = modifier, text = list.joinToString(", "))
+    val textMeasurer = rememberTextMeasurer()
+    val density = LocalDensity.current.density
+    /*
+    the item has point by 'a' to 'z' instead of
+    bullet point,we need max 3 character,
+    so measure 3 character width
+     */
+    val widthInt = textMeasurer
+        .measure("aa.")
+        .size
+        .width
+
+    val _1stCellWidth = (widthInt / density).dp
+    Column(modifier = modifier.fillMaxWidth()) {
+        list.forEachIndexed { index, value ->
+            val bulletPoint = ('a' + index).toString()
+            val bulletPointText = "$bulletPoint. "
+            Row(
+                modifier = modifier
+                    .height(IntrinsicSize.Min)
+                    .wrapContentSize(),
+            ) {
+                TableCell(
+                    width = _1stCellWidth,
+                    content = { Text(text = bulletPointText) }
+                )
+                TableCell(
+                    width = width - _1stCellWidth,
+                    content = { Text(text = value) }
+                )
+            }
+        }
+    }
+
+
 }
 
 @Composable
@@ -134,22 +205,17 @@ private fun TableRow(
     _2ndCellContent: @Composable () -> Unit,
     _3rdCellContent: @Composable () -> Unit,
     _4thCellContent: @Composable () -> Unit,
+    _1stCellContentAlignment: Alignment = Alignment.Center,
     columnsWidth: List<Dp>,
-    padding: Dp = 16.dp,
 ) {
-    val getCellModifier: (Dp) -> Modifier = { width ->
-        Modifier
-            .width(width + padding)
-            .fillMaxHeight()
-            .border(width = 0.5.dp, Color.Black)
 
-    }
     Row(
         modifier = modifier
             .height(IntrinsicSize.Min)
             .wrapContentSize(),
     ) {
         TableCell(
+            contentAlignment = _1stCellContentAlignment,
             width = columnsWidth[0],
             content = _1stCellContent
         )
@@ -175,9 +241,10 @@ fun TableCell(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
     width: Dp, padding: Dp = 16.dp,
+    contentAlignment: Alignment = Alignment.Center,
 ) {
     Box(
-        contentAlignment = Alignment.Center,
+        contentAlignment = contentAlignment,
         modifier = modifier
             .width(width + padding)
             .fillMaxHeight()

@@ -82,16 +82,14 @@ data class UniversityStyleSyllabus(
 ) : Syllabus
 
 
-interface TopicDetails {
 
-}
 
-data class TopicDetailsImp(
+data class TopicDetails(
     val unitLearningOutcomes: List<String>,
     val courseContent: List<String>,
     val teachingStrategies: List<TeachingStrategy>,
     val assessmentStrategies: List<AssessmentStrategy>,
-) : TopicDetails
+)
 
 data class Course(
     val weekSchedule: List<Schedule>,
@@ -131,7 +129,7 @@ object CourseComponentFakeData {
         classAttendanceMarks = 8
     )
 
-    val topicDetails01 = TopicDetailsImp(
+    val topicDetails01 = TopicDetails(
         unitLearningOutcomes = listOf(
             "Define asymptotic notation",
             "Discuss different asymptotic notation",
