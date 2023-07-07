@@ -1,6 +1,5 @@
-package ui.course_enrollment.course_details
+package ui.syllabus
 
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -24,6 +23,7 @@ fun FullSyllabus(
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .verticalScroll(rememberScrollState())
     ) {
         TopSection(
             modifier=Modifier.padding(10.dp),
@@ -40,5 +40,6 @@ fun FullSyllabus(
         SyllebusTopicDetailsTable(
             syllabus.topicDetails
         )
+        RecommendedBooks(books = CourseComponentFakeData.books)
     }
 }

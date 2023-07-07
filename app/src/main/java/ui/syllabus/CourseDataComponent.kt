@@ -1,4 +1,4 @@
-package ui.course_enrollment.course_details
+package ui.syllabus
 
 enum class CourseTitle {
     Bangla, English, Math, Physics
@@ -53,7 +53,7 @@ data class MarkDistributionImp(
     override val finalExamMarks: Int,
     override val classTestMarks: Int,
     override val classAttendanceMarks: Int,
-    override val totalMarks: Int
+    override val totalMarks: Int,
 ) : MarkDistribution
 
 
@@ -95,6 +95,11 @@ data class Course(
     val syllabus: Syllabus,
     val markDistribution: MarkDistribution,
     val courseCode: CourseCode,
+)
+
+data class Book(
+    val title: String,
+    val authors: List<String>,
 )
 
 /*
@@ -161,7 +166,7 @@ object CourseComponentFakeData {
             "Learn the Newtons law",
             "Learn the basic computation"
         ),
-        topicDetails = listOf(topicDetails01,topicDetails01),
+        topicDetails = listOf(topicDetails01, topicDetails01),
         recommendedBooks = listOf("Physics 01")
     )
 
@@ -171,4 +176,23 @@ object CourseComponentFakeData {
         markDistribution = markDistribution,
         courseCode = CourseCode.Science0901
     )
+    val books = listOf(
+        Book(
+            "Physics for Computer Engineer",
+            authors = listOf(
+                "Md Shahjahan Tapan",
+                "Jafar Iqbal",
+                "Ishak Jahan"
+            ),
+        ),
+        Book(
+            "Physics for Computer Engineer",
+            authors = listOf(
+                "Md Shahjahan Tapan",
+                "Jafar Iqbal",
+                "Ishak Jahan"
+            ),
+        )
+    )
+
 }
