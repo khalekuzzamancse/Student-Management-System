@@ -2,6 +2,7 @@ package ui.table
 
 import android.telephony.CellIdentity
 import androidx.compose.foundation.border
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -11,6 +12,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -35,13 +38,14 @@ data class TextualTableRow(
 @Preview
 @Composable
 fun TextualTablePreview() {
+
+    val data= mutableListOf<List<String>>()
+    for (i in 1..40){
+        data.add(listOf("Mr Bean","01","Science","4.56"))
+    }
     TextualTable(
         listOf("Name", "Student Id", "Department", "Result"),
-        data = listOf(
-            listOf("Mr Bean","01","Science","4.56"),
-            listOf("Miss Bean","02","Arts","5.00"),
-            listOf("Dr Bean","03","Commerce","3.91"),
-        )
+        data =data
     )
 }
 
@@ -67,11 +71,18 @@ fun TextualTable(
         headerCells.add(TextualTableCell(headerText[i], headerTextWidths[i]))
     }
 
-    Column(modifier = Modifier.fillMaxWidth()) {
+    Column(modifier = Modifier
+        .padding(8.dp)
+        .fillMaxWidth()) {
         //Keep header  non moving
         //so takes a another column
         TextualTableRow(row = TextualTableRow(headerCells))
-        Column(modifier = Modifier.fillMaxWidth()) {
+
+        Column(modifier = Modifier
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState())
+        //find why can not make it horizontal scrollable
+        ) {
             data.forEach {rowData->
                 val rowCells = mutableListOf<TextualTableCell>()
                 for (i in rowData.indices) {
