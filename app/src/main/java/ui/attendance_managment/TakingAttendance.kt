@@ -33,27 +33,29 @@ data class Attendance(
     val studentId: Int,
     val isPresent: Boolean = false,
     val imageResource: Int = R.drawable.photo,
+    val previousAttendance:Int=10,
 )
 
+val attendances = listOf(
+    Attendance(2301, false),
+    Attendance(2302, false),
+    Attendance(2303, false),
+    Attendance(2304, false),
+    Attendance(2305, false),
+    Attendance(2306, false),
+    Attendance(2307, false),
+    Attendance(2308, false),
+    Attendance(2309, false),
+    Attendance(2310, false),
+    Attendance(2311, false),
+    Attendance(2312, false),
+)
 @Preview
 @Composable
 fun TakeAttendancePreview() {
 
-    val list = listOf(
-        Attendance(2301, false),
-        Attendance(2302, false),
-        Attendance(2303, false),
-        Attendance(2304, false),
-        Attendance(2305, false),
-        Attendance(2306, false),
-        Attendance(2307, false),
-        Attendance(2308, false),
-        Attendance(2309, false),
-        Attendance(2310, false),
-        Attendance(2311, false),
-        Attendance(2312, false),
-    )
-    AttendanceSheet(list)
+
+    AttendanceSheet(attendances)
 
 }
 
