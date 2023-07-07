@@ -1,5 +1,6 @@
 package ui.attendance_managment
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -41,6 +43,15 @@ fun TakeAttendancePreview() {
         Attendance(2301, false),
         Attendance(2302, false),
         Attendance(2303, false),
+        Attendance(2304, false),
+        Attendance(2305, false),
+        Attendance(2306, false),
+        Attendance(2307, false),
+        Attendance(2308, false),
+        Attendance(2309, false),
+        Attendance(2310, false),
+        Attendance(2311, false),
+        Attendance(2312, false),
     )
     AttendanceSheet(list)
 
@@ -62,22 +73,59 @@ fun AttendanceSheet(studentsId: List<Attendance>) {
         }
         students = updatedList.toMutableList()
     }
-
     Column(
-        modifier = Modifier
-            .verticalScroll(rememberScrollState())
-    ) {
-        students.forEach { student ->
-            EachStudent(
-                isChecked = student.isPresent,
-                label = student.studentId.toString(),
-                imageResource = student.imageResource,
-                onCheckChanged = { updateList(student.studentId) }
-            )
+        modifier = Modifier.fillMaxWidth()
+    ){
+        /*
+        to make the header not moving taking additional column
+         */
+        HeaderRow()
+        Column(
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
+        ) {
+            students.forEach { student ->
+                EachStudent(
+                    isChecked = student.isPresent,
+                    label = student.studentId.toString(),
+                    imageResource = student.imageResource,
+                    onCheckChanged = { updateList(student.studentId) }
+                )
+            }
+            Button(
+                modifier = Modifier,
+                onClick = { /*TODO*/ }
+            ) {
+                Text(text = "Submit")
+            }
         }
     }
+
 }
 
+@Composable
+private fun HeaderRow(modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier
+            .padding(8.dp)
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            modifier = Modifier
+                .width(50.dp)
+                .clip(CircleShape),
+            text = "Image"
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            modifier = Modifier
+                .weight(1f),
+            text = "Student Id"
+        )
+        Text(text = "Present")
+    }
+}
 
 @Composable
 private fun EachStudent(
@@ -88,9 +136,10 @@ private fun EachStudent(
     label: String,
 ) {
 
-    Row(modifier = modifier
-        .padding(8.dp)
-        .fillMaxWidth(),
+    Row(
+        modifier = modifier
+            .padding(8.dp)
+            .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
