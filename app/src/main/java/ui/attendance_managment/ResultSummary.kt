@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import ui.table.TextualTable
 
 @Preview
 @Composable
@@ -25,8 +26,22 @@ fun ResultSummaryPreview() {
 
 }
 
+object ResultSummaryFakeData {
+
+    private val data = mutableListOf<List<String>>()
+    fun getData(): List<List<String>> {
+        for (i in 1..40) {
+            if (i % 2 == 0)
+                data.add(listOf("01", "0", "10", "8"))
+            else
+                data.add(listOf("01", "1", "10", "8"))
+        }
+        return data
+    }
+}
+
 @Composable
-fun BoxScope.ResultSummary(
+fun ResultSummary(
     modifier: Modifier = Modifier,
     totalClass: Int,
     studentsId: List<Attendance>,
@@ -35,48 +50,13 @@ fun BoxScope.ResultSummary(
         modifier = modifier
             .fillMaxWidth()
     ) {
-        EachRow(
-            _1stCellText = "Student Id",
-            _2ndCellText = "Today Present",
-            _3rdCellText = "Total Present",
-            _4thCellText = "Total Absent",
-            _5thCellText = "Percentage"
-        )
 
+        TextualTable(
+            listOf("Student Id", "Today Present", "Total Present", "Total Absent"),
+            data = ResultSummaryFakeData.getData()
+        )
     }
 
 
 }
 
-@Composable
-private fun EachRow(
-    modifier: Modifier = Modifier,
-    _1stCellText: String,
-    _2ndCellText: String,
-    _3rdCellText: String,
-    _4thCellText: String,
-    _5thCellText: String,
-) {
-    Row(modifier = modifier.fillMaxWidth()) {
-        Text(
-            modifier = Modifier.weight(1f),
-            text = _1stCellText
-        )
-        Text(
-            modifier = Modifier.weight(1f),
-            text = _2ndCellText
-        )
-        Text(
-            modifier = Modifier.weight(1f),
-            text = _3rdCellText
-        )
-        Text(
-            modifier = Modifier.weight(1f),
-            text = _4thCellText
-        )
-        Text(
-            modifier = Modifier.weight(1f),
-            text = _5thCellText
-        )
-    }
-}
