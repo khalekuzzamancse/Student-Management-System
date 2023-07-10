@@ -11,6 +11,7 @@ fun DynamicTableRowPreview() {
     val composable: @Composable () -> Unit = {
         Text(text = "Hello")
     }
+
     MyComposableFunction(
         listOf(composable, composable)
     )
@@ -30,7 +31,6 @@ fun getTextToComposable(
 
 @Composable
 fun MyComposableFunction(composables: List<@Composable () -> Unit>) {
-
     for (composable in composables) {
         composable()
     }

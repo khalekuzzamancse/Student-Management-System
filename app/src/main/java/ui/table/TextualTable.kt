@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,7 +19,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,6 +38,7 @@ data class TextualTableRow(
     val cells: List<TextualTableCell>,
 )
 
+
 @Preview
 @Composable
 fun TextualTablePreview() {
@@ -52,38 +53,22 @@ fun TextualTablePreview() {
     )
 }
 
+
 @Composable
 fun TextualTable(
     headerText: List<String>,
     data: List<List<String>>,
 ) {
-    val textMeasurer = rememberTextMeasurer()
-    val density = LocalDensity.current.density
-    val getTextWidth: (String) -> Dp = {
-        val width = textMeasurer
-            .measure(it)
-            .size
-            .width
-        (width / density).dp
-    }
-    val headerTextWidths = remember {
-        headerText.map { getTextWidth(it) }
-    }
-    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
-    var sum = 0f
-    headerTextWidths.forEach {
-        sum += it.value
-    }
-    val hasExtraSpace = sum.dp < screenWidth
-    var extra = 0.dp
-    if (hasExtraSpace) {
-        extra = (screenWidth - sum.dp) / headerText.size
-    }
+    val headerTextWidths = textSizeMeasurer(headerText, 8.dp)
 
     val headerCells = mutableListOf<TextualTableCell>()
     for (i in headerText.indices) {
-        val cellWidth = headerTextWidths[i] + extra
-        headerCells.add(TextualTableCell(headerText[i], cellWidth))
+        val cellWidth = headerTextWidths[i]
+        headerCells.add(
+            TextualTableCell(
+                text = headerText[i], width = cellWidth
+            )
+        )
     }
     Column(
         Modifier
@@ -99,7 +84,7 @@ fun TextualTable(
                 data.forEach { rowData ->
                     val rowCells = mutableListOf<TextualTableCell>()
                     for (i in rowData.indices) {
-                        val cellWidth = headerTextWidths[i] + extra
+                        val cellWidth = headerTextWidths[i]
                         rowCells.add(TextualTableCell(rowData[i], cellWidth))
                     }
                     TextualTableRow(
@@ -126,31 +111,79 @@ ensuring that all cells in the row have the same height
 
  */
 @Composable
-fun TextualTableRow(
+private fun TextualTableRow(
     modifier: Modifier = Modifier,
     row: TextualTableRow,
-    padding: Dp = 8.dp,
 ) {
     Row(
         modifier = modifier
             .height(IntrinsicSize.Min)
     ) {
         row.cells.forEach { cell ->
-            val cellWidth = cell.width + padding + padding
-            Box(
-                modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .width(cellWidth)
-                    .fillMaxHeight()
-                    .border(width = 0.5.dp, Color.Black)
-            ) {
-                Text(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .wrapContentSize(),
-                    text = cell.text,
-                )
+            val cellWidth = cell.width
+            TableCell(cellWidth = cellWidth) {
+                Text(text = cell.text)
             }
         }
     }
+}
+
+@Composable
+private fun RowScope.TableCell(
+    modifier: Modifier = Modifier,
+    cellWidth: Dp,
+    content: @Composable () -> Unit,
+) {
+    Box(
+        modifier = modifier
+            .align(Alignment.CenterVertically)
+            .width(cellWidth)
+            .fillMaxHeight()
+            .border(width = 0.5.dp, Color.Black)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .wrapContentSize(),
+        ) {
+            content()
+        }
+    }
+}
+
+@Composable
+private fun textSizeMeasurer(
+    headerText: List<String>,
+    padding: Dp,
+): List<Dp> {
+    val textMeasurer = rememberTextMeasurer()
+    val density = LocalDensity.current.density
+    val getTextWidth: (String) -> Dp = {
+        val width = textMeasurer
+            .measure(it)
+            .size
+            .width
+        (width / density).dp
+    }
+
+    var headerTextWidths = headerText.map {
+        getTextWidth(it) + padding + padding
+    }
+
+    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+    var sum = 0f
+    headerTextWidths.forEach {
+        sum += it.value
+    }
+    val hasExtraSpace = sum.dp < screenWidth
+
+
+    if (hasExtraSpace) {
+        val extra = (screenWidth - sum.dp) / headerText.size
+        headerTextWidths = headerText.map {
+            getTextWidth(it) + extra
+        }
+
+    }
+    return headerTextWidths
 }
