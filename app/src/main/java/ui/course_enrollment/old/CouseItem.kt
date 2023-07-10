@@ -1,4 +1,4 @@
-package ui.course_enrollment
+package ui.course_enrollment.old
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
