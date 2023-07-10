@@ -54,7 +54,6 @@ val attendances = listOf(
 @Composable
 fun TakeAttendancePreview() {
 
-
     AttendanceSheet(attendances)
 
 }
