@@ -1,4 +1,4 @@
-package ui.class_room_as_google_class_room
+package class_room_as_google_class_room
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -24,8 +24,8 @@ import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.khalekuzzaman.just.cse.studentmanagementsystem.R
-import ui.drop_down_menu.TextualDropDownMenu
+import com.khalekuzzaman.just.cse.class_room.R
+import com.khalekuzzaman.just.cse.common_ui_element.drop_down_menu.TextualDropDownMenu
 
 data class PeopleItem(
     val name: String,
@@ -41,7 +41,11 @@ val fakeList = listOf(
 @Preview
 @Composable
 fun PeopleListPreview() {
-    PeopleList(peoples = fakeList)
+    Column() {
+        Text(text = "People")
+        PeopleList(peoples = fakeList)
+    }
+
 
 }
 
