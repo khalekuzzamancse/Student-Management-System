@@ -1,6 +1,7 @@
 package class_room_as_google_class_room
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,23 +10,43 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ControlPoint
+import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import com.khalekuzzaman.just.cse.class_room.R
+import com.khalekuzzaman.just.cse.common_ui_element.input_field.OutlinedTextInputField
 
 enum class StudentWorkStatus {
     ASSIGNED, MARKED
 }
 
+@Preview
 @Composable
- fun StudentWorkList() {
+private fun Preview() {
+    StudentWorkList()
+}
+
+@Composable
+fun StudentWorkList() {
     Column(
         modifier = Modifier
             .padding(8.dp)
@@ -61,8 +82,27 @@ fun StudentWorkItem(
     onCheckChanged: (Boolean) -> Unit,
     obtainedMark: String? = "",
 ) {
+    var expanded by remember { mutableStateOf(false) }
 
-    Column(modifier.fillMaxWidth()) {
+    Column(
+        modifier
+            .fillMaxWidth()
+            .clickable {
+                expanded =! expanded
+            }
+    ) {
+
+        //
+        if (expanded) {
+            MarkInputDialogueBox(
+                expand = expanded,
+                onDone = {
+                    expanded = false
+                }
+            )
+        }
+
+        //
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
@@ -91,6 +131,29 @@ fun StudentWorkItem(
             if (studentWorkStatus == StudentWorkStatus.MARKED) {
                 Text(text = "$obtainedMark/$totalMark")
             }
+        }
+    }
+
+
+}
+
+@Composable
+private fun MarkInputDialogueBox(
+    onDone: () -> Unit,
+    expand: Boolean,
+) {
+    var expanded by remember { mutableStateOf(expand) }
+    DropdownMenu(
+        expanded = expanded,
+        onDismissRequest = { expanded = false }
+    ) {
+        OutlinedTextInputField(
+            label = "Mark",
+            onTextChanged = {},
+            keyboardType = KeyboardType.Number
+        )
+        TextButton(onClick = onDone) {
+            Text(text = "Done")
         }
     }
 
