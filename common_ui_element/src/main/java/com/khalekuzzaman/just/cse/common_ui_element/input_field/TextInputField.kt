@@ -30,6 +30,7 @@ fun OutlinedTextInputField(
     hints: String = "",
     visualTransformation: VisualTransformation = VisualTransformation.None,
     initialText: String = "",
+    maxLine: Int = 1,
 
     ) {
     var text by remember { mutableStateOf(initialText) }
@@ -50,7 +51,8 @@ fun OutlinedTextInputField(
         placeholder = {
             Text(text = hints)
         },
-        visualTransformation = visualTransformation
+        visualTransformation = visualTransformation,
+        maxLines = maxLine
     )
 
 }
