@@ -1,4 +1,4 @@
-package class_room_as_google_class_room
+package teacher_section
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -10,13 +10,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ControlPoint
-import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -31,7 +26,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import com.khalekuzzaman.just.cse.class_room.R
 import com.khalekuzzaman.just.cse.common_ui_element.input_field.OutlinedTextInputField
 
@@ -57,6 +51,15 @@ fun StudentWorkList() {
             profileImage = R.drawable.photo,
             studentName = "Mr Bean",
             isChecked = false,
+            onCheckChanged = {},
+        )
+        StudentWorkItem(
+            studentWorkStatus = StudentWorkStatus.MARKED,
+            profileImage = R.drawable.photo,
+            studentName = "Mr Bean",
+            totalMark = "100",
+            obtainedMark = "15",
+            isChecked = true,
             onCheckChanged = {},
         )
         StudentWorkItem(
@@ -131,6 +134,7 @@ fun StudentWorkItem(
             if (studentWorkStatus == StudentWorkStatus.MARKED) {
                 Text(text = "$obtainedMark/$totalMark")
             }
+
         }
     }
 
@@ -156,6 +160,5 @@ private fun MarkInputDialogueBox(
             Text(text = "Done")
         }
     }
-
 
 }

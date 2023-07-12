@@ -1,4 +1,4 @@
-package class_room_as_google_class_room
+package teacher_section
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -20,7 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp

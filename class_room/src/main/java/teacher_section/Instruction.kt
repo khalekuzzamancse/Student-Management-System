@@ -1,4 +1,4 @@
-package class_room_as_google_class_room
+package teacher_section
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
