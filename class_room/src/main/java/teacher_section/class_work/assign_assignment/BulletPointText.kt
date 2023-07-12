@@ -5,8 +5,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -63,8 +65,11 @@ fun BulletList(
 @Composable
 fun EditText() {
     var textFieldText by remember { mutableStateOf(TextFieldValue()) }
-    Column() {
-        val bullet = '•'
+    var text by remember {
+        mutableStateOf("")
+    }
+    Column(modifier = Modifier.padding(8.dp)) {
+
         TextField(
             value = textFieldText,
             onValueChange = {
@@ -72,14 +77,14 @@ fun EditText() {
             }
         )
         Button(onClick = {
-            textFieldText = TextFieldValue(
-                text = UnOrderTextConverted(textFieldText.text)
-                    .getModifiedText()
-            )
-
+            text = UnOrderTextConverted(textFieldText.text).getModifiedText()
         }) {
             Text(text = "done")
         }
+        Text(
+            text = text,
+            style = MaterialTheme.typography.displayMedium
+        )
     }
 
 
