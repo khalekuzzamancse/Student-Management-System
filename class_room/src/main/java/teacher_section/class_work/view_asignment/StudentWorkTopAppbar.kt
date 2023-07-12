@@ -1,4 +1,4 @@
-package teacher_section.view_asignment
+package teacher_section.class_work.view_asignment
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer

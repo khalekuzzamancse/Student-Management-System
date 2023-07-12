@@ -1,4 +1,4 @@
-package teacher_section
+package teacher_section.class_work.assign_assignment
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row

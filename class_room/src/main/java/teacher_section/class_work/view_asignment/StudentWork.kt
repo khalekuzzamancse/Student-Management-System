@@ -1,4 +1,4 @@
-package teacher_section
+package teacher_section.class_work.view_asignment
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable

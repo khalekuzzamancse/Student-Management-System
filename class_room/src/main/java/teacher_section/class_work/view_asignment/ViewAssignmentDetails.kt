@@ -15,9 +15,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import teacher_section.Instructions
-import teacher_section.StudentWorkList
-import teacher_section.view_asignment.StudentWorkTopAppbar
+import teacher_section.class_work.view_asignment.Instructions
+import teacher_section.class_work.view_asignment.StudentWorkList
+import teacher_section.class_work.view_asignment.StudentWorkTopAppbar
 
 enum class Tabs {
     Instructions, StudentWork
