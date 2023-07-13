@@ -10,17 +10,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FormatClear
 import androidx.compose.material.icons.filled.FormatListBulleted
 import androidx.compose.material.icons.filled.FormatListNumbered
-import androidx.compose.material.icons.filled.FormatListNumberedRtl
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,10 +25,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.input.getSelectedText
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -79,7 +74,29 @@ fun BulletList(
 fun EditText() {
     var textFieldText by remember { mutableStateOf(TextFieldValue()) }
 
+    val formatSelectedTextWithBullet: () -> Unit = {
+        //if text has already bullet point then remove them
+        val text = removeBulletPoints(textFieldText.text)
+        textFieldText =
+            TextFieldValue(
+                UnOrderTextConverted(
+                    text = text,
+                    start = textFieldText.selection.start,
+                    end = textFieldText.selection.end,
+                ).formatWithBullet()
+            )
+    }
+    val clearFormat: () -> Unit = {
+        textFieldText = TextFieldValue(
+            removeBulletPoints(textFieldText.text)
+        )
+    }
     Column(modifier = Modifier.padding(8.dp)) {
+        TextEditorTopSection(
+            onBulletListClick = formatSelectedTextWithBullet,
+            onNumberListClick = {},
+            onFormatClearClick = clearFormat,
+        )
         BasicTextField(
             modifier = Modifier
                 .fillMaxWidth()
@@ -92,49 +109,46 @@ fun EditText() {
             },
             textStyle = MaterialTheme.typography.labelLarge
         )
-        Button(onClick = {
-
-
-            //if text has already bullet point then remove them
-            val text = removeBulletPoints(textFieldText.text)
-
-            textFieldText =
-                TextFieldValue(
-                    UnOrderTextConverted(
-                        text = text,
-                        start = textFieldText.selection.start,
-                        end = textFieldText.selection.end,
-                    ).getModifiedText()
-                )
-        }) {
-            Text(text = "done")
-        }
-        Button(onClick = {
-            textFieldText = TextFieldValue(removeBulletPoints(textFieldText.text))
-        }) {
-            Text(text = "Undo")
-        }
 
     }
 }
 
-@Preview
+
 @Composable
-fun TextEditorTopSection() {
-    Row(modifier = Modifier.fillMaxWidth()) {
-        IconButton(onClick = { /*TODO*/ }) {
-            Icon(
-                imageVector = Icons.Default.FormatListBulleted,
-                contentDescription = null
-            )
-        }
-        IconButton(onClick = { /*TODO*/ }) {
-            Icon(
-                imageVector = Icons.Default.FormatListNumbered ,
-                contentDescription = null
-            )
+fun TextEditorTopSection(
+    modifier: Modifier = Modifier,
+    onBulletListClick: () -> Unit,
+    onNumberListClick: () -> Unit,
+    onFormatClearClick: () -> Unit,
+) {
+    Surface(
+        //   shadowElevation = 5.dp,
+        tonalElevation = 5.dp,
+        modifier = modifier.fillMaxWidth()
+    ) {
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Spacer(modifier = Modifier.weight(1f))
+            IconButton(onClick = onBulletListClick) {
+                Icon(
+                    imageVector = Icons.Default.FormatListBulleted,
+                    contentDescription = null
+                )
+            }
+            IconButton(onClick = onNumberListClick) {
+                Icon(
+                    imageVector = Icons.Default.FormatListNumbered,
+                    contentDescription = null
+                )
+            }
+            IconButton(onClick = onFormatClearClick) {
+                Icon(
+                    imageVector = Icons.Default.FormatClear,
+                    contentDescription = null
+                )
+            }
         }
     }
+
 
 }
 

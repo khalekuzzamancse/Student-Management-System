@@ -19,25 +19,23 @@ class UnOrderTextConverted(
         return list
     }
 
-    private fun addBullets(): String {
-
-        val textBuilder = StringBuilder(text)
-        findAllNewLineIndex().forEachIndexed { i, index ->
-            //after inserting a bullet the text size will increase by 1
-            //that is why we have to shift by 1
-            val insertBulletAt = index + 1 + i
-            val isWithinRange=insertBulletAt >= 0 && insertBulletAt <= textBuilder.length - 1
-            if (isWithinRange)
-                textBuilder.insert(insertBulletAt, bulletPoint)
-        }
-        val isBeginningTextSelected=start==0
-        if(isBeginningTextSelected)
-            textBuilder.insert(0, bulletPoint)
-
-        return textBuilder.toString()
+     fun formatWithBullet(): String {
+         //add a bullet before 1st character,so add a manually bullet to it
+         val text=StringBuilder(text).insert(start,bulletPoint).toString()
+         val prefix = text.substring(0,start)
+         val suffix = text.substring(end)
+         val rangeText = text.substring(start, end)
+         val replacedText = rangeText.replace("\n", "\n$bulletPoint")
+         return prefix + replacedText + suffix
+    }
+    fun formatWithNumber(): String {
+        val l = start
+        val r = end
+        val prefix = text.substring(0, l)
+        val suffix = text.substring(r)
+        val rangeText = text.substring(l, r)
+        val replacedText = rangeText.replace("\n", "\n")
+        return prefix + replacedText + suffix
     }
 
-    fun getModifiedText(): String {
-        return addBullets()
-    }
 }
