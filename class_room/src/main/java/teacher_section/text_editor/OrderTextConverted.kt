@@ -7,33 +7,38 @@ class OrderTextConverter(
 ) {
 
     private val bulletPoint: Char = '•'
+    private val beforeSelectedText: String = originalText.substring(0, start)
+    private val afterSelectedText: String = originalText.substring(end)
+    private val selectedText: String = originalText.substring(start, end)
+    private fun getConvertedText(updatedSelectedText: String) =
+        beforeSelectedText + updatedSelectedText + afterSelectedText
+
     fun formatWithBullet(): String {
-        val beforeSelectedText = originalText.substring(0, start)
-        val afterSelectedText = originalText.substring(end)
-        val selectedText = originalText.substring(start, end)
-        //
         val replacedText = TextModifier(selectedText)
             .removeExistingBulletPoints()
             .removeExistingNumberPoints()
             .addPointBefore1stCharacter(bulletPoint.toString())
             .addBulletPoints()
             .text
-        return beforeSelectedText + replacedText + afterSelectedText
+        return getConvertedText(replacedText)
     }
 
     fun formatWithNumber(): String {
-        val text = originalText
-        val beforeSelectedText = text.substring(0, start)
-        val afterSelectedText = text.substring(end)
-        val selectedText = text.substring(start, end)
-        //
         val replacedText = TextModifier(selectedText)
             .removeExistingNumberPoints()
             .removeExistingBulletPoints()
             .addPointBefore1stCharacter("1.")
             .insertNumberPoint()
             .text
-        return beforeSelectedText + replacedText + afterSelectedText
+        return getConvertedText(replacedText)
+    }
+
+    fun clearFormat(): String {
+        val replacedText = TextModifier(selectedText)
+            .removeExistingBulletPoints()
+            .removeExistingNumberPoints()
+            .text
+        return getConvertedText(replacedText)
     }
 }
 

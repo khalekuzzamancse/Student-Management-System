@@ -91,7 +91,13 @@ fun EditText() {
                 text= OrderTextConverter(text, start, end).formatWithNumber()
                 textFieldText= TextFieldValue(text)
             },
-            onFormatClearClick = {},
+            onFormatClearClick = {
+                val start = textFieldText.selection.start
+                val end = textFieldText.selection.end
+                var text = textFieldText.text
+                text= OrderTextConverter(text, start, end).clearFormat()
+                textFieldText= TextFieldValue(text)
+            },
         )
         TextField(
             modifier = Modifier
