@@ -1,5 +1,6 @@
 package teacher_section.text_editor
 
+import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,6 +19,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -73,31 +75,25 @@ fun BulletList(
 @Composable
 fun EditText() {
     var textFieldText by remember { mutableStateOf(TextFieldValue()) }
-
-    val formatSelectedTextWithBullet: () -> Unit = {
-        //if text has already bullet point then remove them
-        val text = removeBulletPoints(textFieldText.text)
-        textFieldText =
-            TextFieldValue(
-                UnOrderTextConverted(
-                    text = text,
-                    start = textFieldText.selection.start,
-                    end = textFieldText.selection.end,
-                ).formatWithBullet()
-            )
-    }
-    val clearFormat: () -> Unit = {
-        textFieldText = TextFieldValue(
-            removeBulletPoints(textFieldText.text)
-        )
-    }
     Column(modifier = Modifier.padding(8.dp)) {
         TextEditorTopSection(
-            onBulletListClick = formatSelectedTextWithBullet,
-            onNumberListClick = {},
-            onFormatClearClick = clearFormat,
+            onBulletListClick = {
+                val start = textFieldText.selection.start
+                val end = textFieldText.selection.end
+                var text = textFieldText.text
+                text= OrderTextConverter(text, start, end).formatWithBullet()
+             textFieldText=TextFieldValue(text)
+            },
+            onNumberListClick = {
+                val start = textFieldText.selection.start
+                val end = textFieldText.selection.end
+                var text = textFieldText.text
+                text= OrderTextConverter(text, start, end).formatWithNumber()
+                textFieldText= TextFieldValue(text)
+            },
+            onFormatClearClick = {},
         )
-        BasicTextField(
+        TextField(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(300.dp)
@@ -107,7 +103,7 @@ fun EditText() {
             onValueChange = {
                 textFieldText = it
             },
-            textStyle = MaterialTheme.typography.labelLarge
+            textStyle = MaterialTheme.typography.displaySmall
         )
 
     }
@@ -152,5 +148,3 @@ fun TextEditorTopSection(
 
 }
 
-fun removeBulletPoints(text: String): String =
-    text.replace('•'.toString(), "")

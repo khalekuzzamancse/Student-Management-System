@@ -1,41 +1,68 @@
 package teacher_section.text_editor
 
-class UnOrderTextConverted(
-    private val text: String,
-    private val bulletPoint: Char = '•',
+class OrderTextConverter(
+    private val originalText: String,
     private val start: Int,
     private val end: Int,
 ) {
 
-    private fun findAllNewLineIndex(): List<Int> {
-        val list = mutableListOf<Int>()
-        for (i in start..end) {
-            val index = i - 1
-            val isWithinRange = index >= 0 && index < text.length
-            if (isWithinRange && text[index] == '\n') {
-                list.add(index)
-            }
-        }
-        return list
+    private val bulletPoint: Char = '•'
+    fun formatWithBullet(): String {
+        val beforeSelectedText = originalText.substring(0, start)
+        val afterSelectedText = originalText.substring(end)
+        val selectedText = originalText.substring(start, end)
+        //
+        val replacedText = TextModifier(selectedText)
+            .removeExistingBulletPoints()
+            .removeExistingNumberPoints()
+            .addPointBefore1stCharacter(bulletPoint.toString())
+            .addBulletPoints()
+            .text
+        return beforeSelectedText + replacedText + afterSelectedText
     }
 
-     fun formatWithBullet(): String {
-         //add a bullet before 1st character,so add a manually bullet to it
-         val text=StringBuilder(text).insert(start,bulletPoint).toString()
-         val prefix = text.substring(0,start)
-         val suffix = text.substring(end)
-         val rangeText = text.substring(start, end)
-         val replacedText = rangeText.replace("\n", "\n$bulletPoint")
-         return prefix + replacedText + suffix
-    }
     fun formatWithNumber(): String {
-        val l = start
-        val r = end
-        val prefix = text.substring(0, l)
-        val suffix = text.substring(r)
-        val rangeText = text.substring(l, r)
-        val replacedText = rangeText.replace("\n", "\n")
-        return prefix + replacedText + suffix
+        val text = originalText
+        val beforeSelectedText = text.substring(0, start)
+        val afterSelectedText = text.substring(end)
+        val selectedText = text.substring(start, end)
+        //
+        val replacedText = TextModifier(selectedText)
+            .removeExistingNumberPoints()
+            .removeExistingBulletPoints()
+            .addPointBefore1stCharacter("1.")
+            .insertNumberPoint()
+            .text
+        return beforeSelectedText + replacedText + afterSelectedText
+    }
+}
+
+data class TextModifier(
+    val text: String,
+) {
+    fun removeExistingBulletPoints(): TextModifier {
+        return TextModifier(text.replace(Regex("•"), ""))
+    }
+
+    fun removeExistingNumberPoints() =
+        TextModifier(text.replace(Regex("""\d+\.\s*"""), ""))
+
+    fun addPointBefore1stCharacter(point: String) =
+        TextModifier(StringBuilder(text).insert(0, point).toString())
+
+    fun addBulletPoints() = TextModifier(text.replace("\n", "\n•"))
+    fun insertNumberPoint(): TextModifier {
+        val lines = text.split("\n")
+        var count = 2
+        val result = StringBuilder()
+        for (line in lines) {
+            result.append(line)
+            if (count <= lines.size) {
+                result.append("\n$count.")
+                count++
+            }
+        }
+        return TextModifier(result.toString())
     }
 
 }
