@@ -13,8 +13,8 @@ import androidx.compose.ui.tooling.preview.Preview
 @Preview
 @Composable
 fun Pw() {
-    var boldIndices by remember { mutableStateOf(mutableListOf(3, 4)) }
-    var textFieldText by remember { mutableStateOf(TextFieldValue("012345678")) }
+    var boldIndices by remember { mutableStateOf(mutableListOf(3, 4,7,8)) }
+    var textFieldText by remember { mutableStateOf(TextFieldValue("0123456789")) }
     var previousText by remember { mutableStateOf("") }
     val formatter = createTextFormatter(boldIndices)
     TextField(
@@ -22,39 +22,10 @@ fun Pw() {
         onValueChange = { currentText ->
             textFieldText = currentText
 
-            val textChangeWatcher = TextChangeWatcher(
-                currentText = currentText.text,
-                previousText = previousText
-            )
-
-            if (boldIndices.isNotEmpty()) {
-                if (textChangeWatcher.isCharacterInserted()) {
-                    /*
-                    this method has bug,
-                    if you insert the character before the index 0th character
-                    then this block will not execute
-        */
-                    val index = textChangeWatcher.findInsertedCharacterIndex()
-                    Log.i(
-                        "OKAYYYYY", "character add at:$index\n" +
-                                "BoldedIndexOld:$boldIndices"
-                    )
-                    boldIndices = textChangeWatcher
-                        .rightShiftBoldedIndex(index, boldIndices)
-                        .toMutableList()
-                    Log.i("OKAYYYYY", "BoldedIndexNew:$boldIndices")
-                }
-
-                if (textChangeWatcher.is1CharacterRemoved()) {
-                    Log.i("OKAYYYYY", "removed:$boldIndices")
-                    boldIndices = updateBoldedListIfBoldedCharacterRemoved(
-                        previousText = previousText,
-                        currentText = textFieldText.text,
-                        boldedIndexes = boldIndices
-                    ).toMutableList()
-                    Log.i("OKAYYYYY", "BoldedIndexNew:$boldIndices")
-                }
-            }
+           boldIndices= updateBoldedIndices(
+                currentText=currentText.text,
+                previousText=previousText,
+                boldIndices=boldIndices).toMutableList()
 
             previousText = currentText.text
 
@@ -63,3 +34,35 @@ fun Pw() {
     )
 }
 
+fun updateBoldedIndices(
+    currentText: String,
+    previousText: String,
+    boldIndices: List<Int>,
+): List<Int> {
+    val textChangeWatcher = TextChangeWatcher(
+        currentText = currentText,
+        previousText = previousText
+    )
+
+    if (boldIndices.isNotEmpty()) {
+        if (textChangeWatcher.isCharacterInserted()) {
+            /*
+            this method has bug,
+            if you insert the character before the index 0th character
+            then this block will not execute
+*/
+            val index = textChangeWatcher.findInsertedCharacterIndex()
+            return textChangeWatcher
+                .rightShiftBoldedIndex(index, boldIndices)
+        }
+        if (textChangeWatcher.is1CharacterRemoved()) {
+            return updateBoldedListIfBoldedCharacterRemoved(
+                previousText = previousText,
+                currentText = currentText,
+                boldedIndexes = boldIndices
+            )
+        }
+    }
+    return boldIndices
+
+}
