@@ -30,8 +30,8 @@ fun updateBoldedListIfBoldedCharacterRemoved(
         .findRemovedCharacterIndex()
         .checkRemovedCharacterWasBolded()
         .removeIndexFromBoldedListIfPresent()
+        .shiftIndicesToLeftBy1()
         .boldedIndexes
-    Log.i("BOLDED_REMOVER:REC", "$list")
     return list
 }
 
@@ -45,7 +45,6 @@ data class BoldedIndexRemover(
 ) {
     companion object {
         const val INVALID_INDEX = -1
-        const val TAG = "BOLDED_REMOVER:"
     }
 
 
@@ -79,18 +78,49 @@ data class BoldedIndexRemover(
     }
 
     fun removeIndexFromBoldedListIfPresent(): BoldedIndexRemover {
-        if (!wasRemovedCharacterBolded)
+        if (!wasRemovedCharacterBolded) {
+            Log.i(
+                "BOLDED_REMOVER:\n",
+                "RemovedIndex:$removedCharacterIndex (not bolded)\n" +
+                        "PreviousText:${previousText}\n" +
+                        "CurrentText:${currentText}\n" +
+                        "RecentBoldedIndices:$boldedIndexes"
+            )
             return this
+        }
 
-        //after removing the index,shift the remaining index by 1 left
-        //filter the negative index
         val updatedBoldedIndexes = boldedIndexes
             .filterNot { it == removedCharacterIndex }
-            .toMutableList()
-        // println("Updated Indices:${updatedBoldedIndexes}")
         Log.i(
-            "BOLDED_REMOVER:SE",
-            "${previousText}\n${currentText}\n$boldedIndexes\n$updatedBoldedIndexes"
+            "BOLDED_REMOVER:\n",
+            "RemovedIndex:$removedCharacterIndex (bolded)\n" +
+                    "PreviousText:${previousText}\n" +
+                    "CurrentText:${currentText}\n" +
+                    "RecentBoldedIndices:$updatedBoldedIndexes"
+        )
+        return this.copy(boldedIndexes = updatedBoldedIndexes)
+    }
+
+    fun shiftIndicesToLeftBy1(): BoldedIndexRemover {
+        //only shift the bolded index if it any of the previous character removed
+        //
+        val isCharacterRemoved = previousText.length == currentText.length + 1
+        if (!isCharacterRemoved){
+            Log.i(
+                "BOLDED_REMOVER:\n",
+                "shift():::\n" +
+                        "RemovedIndex:$removedCharacterIndex\n" +
+                        "RecentBoldedIndices(not shifted):$boldedIndexes"
+            )
+            return this
+        }
+
+        val updatedBoldedIndexes =boldedIndexes.map { if (it >= removedCharacterIndex) it - 1 else it }
+        Log.i(
+            "BOLDED_REMOVER:\n",
+            "shift():::\n" +
+            "RemovedIndex:$removedCharacterIndex\n" +
+                    "RecentBoldedIndices(shifted):$updatedBoldedIndexes"
         )
         return this.copy(boldedIndexes = updatedBoldedIndexes)
     }
@@ -149,30 +179,3 @@ fun isCharacterRemovedBeforeIndex(
     return false
 }
 
-
-//    val formatter = VisualTransformation { textSnapshot ->
-//        val transformedText = buildAnnotatedString {
-//            with(textSnapshot) {
-//                text.forEachIndexed { index, char ->
-//                    val boldIndex = boldIndices.indexOf(index)
-//                    val fontWeight =
-//                        if (boldIndex != -1) FontWeight.Bold else FontWeight.Normal
-//                    withStyle(style = SpanStyle(fontWeight = fontWeight)) {
-//                        append(char)
-//                    }
-//                }
-//            }
-//        }
-//
-//        val offsetMapping = object : OffsetMapping {
-//            override fun originalToTransformed(offset: Int): Int {
-//                return offset
-//            }
-//
-//            override fun transformedToOriginal(offset: Int): Int {
-//                return offset
-//            }
-//        }
-//
-//        TransformedText(transformedText, offsetMapping)
-//    }
