@@ -32,33 +32,42 @@ fun Pw() {
         value = textFieldText,
         onValueChange = { currentText ->
             textFieldText = currentText
-            val charAddedBeforeIndex =
-                isCharAddedBefore(previousText, textFieldText.text, boldIndices.first())
-            val charRemovedBeforeIndex =
-                isCharacterRemovedBeforeIndex(previousText, textFieldText.text, boldIndices.first())
-            val isTextRemoved=previousText.length-textFieldText.text.length==1
-            //
-            Log.i("TEXTTTTT","$previousText\n${currentText.text}")
+
+            if (boldIndices.isNotEmpty()) {
+                val charAddedBeforeIndex =
+                    isCharAddedBefore(previousText, textFieldText.text, boldIndices.first())
+                val charRemovedBeforeIndex =
+                    isCharacterRemovedBeforeIndex(
+                        previousText,
+                        textFieldText.text,
+                        boldIndices.first()
+                    )
+                val isTextRemoved = previousText.length - textFieldText.text.length == 1
+                //
+                Log.i("TEXTTTTT", "$previousText\n${currentText.text}")
 
 
-            if(isTextRemoved){
-                boldIndices=updateBoldedListIfBoldedCharacterRemoved(
-                    previousText = previousText,
-                    currentText = textFieldText.text,
-                    boldedIndexes = boldIndices
-                ).toMutableList()
-            }
-
-            when {
-                charAddedBeforeIndex -> {
-                    boldIndices = boldIndices.map { it + 1 }.toMutableList()
+                if (isTextRemoved) {
+                    boldIndices = updateBoldedListIfBoldedCharacterRemoved(
+                        previousText = previousText,
+                        currentText = textFieldText.text,
+                        boldedIndexes = boldIndices
+                    ).toMutableList()
                 }
 
-                charRemovedBeforeIndex -> {
-                    //check if the removed character was bolded
-                    boldIndices = boldIndices.map { it - 1 }.filter { it >= 0 }.toMutableList()
+                when {
+                    charAddedBeforeIndex -> {
+                        boldIndices = boldIndices.map { it + 1 }.toMutableList()
+                    }
+
+                    charRemovedBeforeIndex -> {
+                        //check if the removed character was bolded
+                        boldIndices = boldIndices.map { it - 1 }.filter { it >= 0 }.toMutableList()
+                    }
                 }
             }
+
+
 
             previousText = currentText.text
 

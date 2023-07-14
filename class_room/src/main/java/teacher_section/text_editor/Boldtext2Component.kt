@@ -15,7 +15,13 @@ fun updateBoldedListIfBoldedCharacterRemoved(
     previousText: String,
     boldedIndexes: List<Int>,
 ): List<Int> {
-
+    if (
+        boldedIndexes.isEmpty()
+        || currentText.isEmpty()
+        || previousText.isEmpty()
+        || currentText == previousText
+    )
+        return boldedIndexes
     val list = BoldedIndexRemover(
         previousText = previousText,
         currentText = currentText,
