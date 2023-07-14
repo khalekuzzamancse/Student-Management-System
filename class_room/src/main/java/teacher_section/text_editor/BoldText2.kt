@@ -22,14 +22,17 @@ fun Pw() {
         onValueChange = { currentText ->
             textFieldText = currentText
 
+            val textChangeWatcher = TextChangeWatcher(
+                currentText = currentText.text,
+                previousText = previousText
+            )
+
             if (boldIndices.isNotEmpty()) {
-                if (isCharAddedBefore(previousText, textFieldText.text, boldIndices.first())) {
+                if (textChangeWatcher.isCharAddedBefore(boldIndices.first())) {
                     boldIndices = boldIndices.map { it + 1 }.toMutableList()
                 }
 
-
-                val isTextRemoved = previousText.length - textFieldText.text.length == 1
-                if (isTextRemoved) {
+                if (textChangeWatcher.is1CharacterRemoved()) {
                     boldIndices = updateBoldedListIfBoldedCharacterRemoved(
                         previousText = previousText,
                         currentText = textFieldText.text,
