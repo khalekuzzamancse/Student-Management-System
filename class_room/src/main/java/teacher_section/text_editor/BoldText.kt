@@ -1,98 +1,67 @@
 package teacher_section.text_editor
 
-import android.util.Log
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.text.selection.SelectionContainer
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextRange
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.input.TransformedText
-import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 
 @Preview
 @Composable
-fun P() {
+fun Pw() {
+    var boldIndices by remember { mutableStateOf(mutableListOf(3, 4,7,8)) }
+    var textFieldText by remember { mutableStateOf(TextFieldValue("0123456789")) }
+    var previousText by remember { mutableStateOf("") }
+    val formatter = createTextFormatter(boldIndices)
+    TextField(
+        value = textFieldText,
+        onValueChange = { currentText ->
+            textFieldText = currentText
 
-    var textFieldText by remember { mutableStateOf("") }
-    val boldTextFormat = Regex("bold", RegexOption.IGNORE_CASE)
+           boldIndices= updateBoldedIndices(
+                currentText=currentText.text,
+                previousText=previousText,
+                boldIndices=boldIndices).toMutableList()
 
-    val formatter = VisualTransformation { textSnapshot ->
-        val transformedText = buildAnnotatedString {
-            append(textSnapshot.text)
-            boldTextFormat.findAll(textSnapshot.text).forEach { matchResult ->
-                addStyle(
-                    style = SpanStyle(fontWeight = FontWeight.Bold),
-                    start = matchResult.range.start,
-                    end = matchResult.range.endInclusive + 1
-                )
-            }
-        }
+            previousText = currentText.text
 
-        val offsetMapping = object : OffsetMapping {
-            override fun originalToTransformed(offset: Int): Int {
-                return offset
-            }
-
-            override fun transformedToOriginal(offset: Int): Int {
-                return offset
-            }
-        }
-
-        TransformedText(transformedText, offsetMapping)
-    }
-
-
-
-
-    Column {
-        TextField(
-            value = textFieldText,
-            onValueChange = { textFieldText = it },
-            visualTransformation = formatter
-        )
-        Button(onClick = {
-            textFieldText = textFieldText.replace("bold", "**bold**")
-        }) {
-            Text(text = "Format")
-        }
-
-    }
-
-
-
-
-
+        },
+        visualTransformation = formatter
+    )
 }
 
-fun createBoldAnnotatedString(text: String, bolded: String): AnnotatedString {
-    return buildAnnotatedString {
-        append(text)
-        // Apply bold style to all occurrences of "bold"
-        var startIndex = text.indexOf(bolded)
-        while (startIndex >= 0) {
-            val endIndex = startIndex + bolded.length
-            addStyle(
-                style = SpanStyle(fontWeight = FontWeight.Bold),
-                start = startIndex,
-                end = endIndex
+fun updateBoldedIndices(
+    currentText: String,
+    previousText: String,
+    boldIndices: List<Int>,
+): List<Int> {
+    val textChangeWatcher = TextChangeWatcher(
+        currentText = currentText,
+        previousText = previousText
+    )
+
+    if (boldIndices.isNotEmpty()) {
+        if (textChangeWatcher.isCharacterInserted()) {
+            /*
+            this method has bug,
+            if you insert the character before the index 0th character
+            then this block will not execute
+*/
+            val index = textChangeWatcher.findInsertedCharacterIndex()
+            return textChangeWatcher
+                .rightShiftBoldedIndex(index, boldIndices)
+        }
+        if (textChangeWatcher.is1CharacterRemoved()) {
+            return updateBoldedListIfBoldedCharacterRemoved(
+                previousText = previousText,
+                currentText = currentText,
+                boldedIndexes = boldIndices
             )
-            startIndex = text.indexOf(bolded, startIndex + 1)
         }
     }
+    return boldIndices
+
 }
