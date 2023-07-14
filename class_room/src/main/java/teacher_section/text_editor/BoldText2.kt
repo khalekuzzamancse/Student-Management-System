@@ -24,70 +24,29 @@ import androidx.compose.ui.tooling.preview.Preview
 @Preview
 @Composable
 fun Pw() {
-    var boldIndices by remember { mutableStateOf(mutableListOf(2, 3)) }
-
-
+    var boldIndices by remember { mutableStateOf(mutableListOf(3, 4)) }
     var textFieldText by remember { mutableStateOf(TextFieldValue()) }
     var previousText by remember { mutableStateOf("") }
-
-    val formatter = VisualTransformation { textSnapshot ->
-        val transformedText = buildAnnotatedString {
-            with(textSnapshot) {
-                text.forEachIndexed { index, char ->
-                    val boldIndex = boldIndices.indexOf(index)
-                    val fontWeight =
-                        if (boldIndex != -1) FontWeight.Bold else FontWeight.Normal
-                    withStyle(style = SpanStyle(fontWeight = fontWeight)) {
-                        append(char)
-                    }
-                }
-            }
-        }
-
-        val offsetMapping = object : OffsetMapping {
-            override fun originalToTransformed(offset: Int): Int {
-                return offset
-            }
-
-            override fun transformedToOriginal(offset: Int): Int {
-                return offset
-            }
-        }
-
-        TransformedText(transformedText, offsetMapping)
-    }
-
+    val formatter = createTextFormatter(boldIndices)
     TextField(
         value = textFieldText,
         onValueChange = { newValue ->
             textFieldText = newValue
-            if(isCharAddedBefore(previousText,textFieldText.text,boldIndices.first())){
-                boldIndices= boldIndices.map { it + 1 }.toMutableList()
-            }
-            if(isCharacterRemovedBeforeIndex(previousText,textFieldText.text,boldIndices.first())){
-                boldIndices= boldIndices.map { it -1 }.toMutableList()
-            }
+            val charAddedBeforeIndex = isCharAddedBefore(previousText, textFieldText.text, boldIndices.first())
+            val charRemovedBeforeIndex = isCharacterRemovedBeforeIndex(previousText, textFieldText.text, boldIndices.first())
             previousText = newValue.text
 
+            when {
+                charAddedBeforeIndex -> {
+                    boldIndices = boldIndices.map { it + 1 }.toMutableList()
+                }
+                charRemovedBeforeIndex -> {
+                    boldIndices = boldIndices.map { it - 1 }.filter { it >= 0 }.toMutableList()
+                }
+            }
         },
         visualTransformation = formatter
     )
 }
 
-fun isCharAddedBefore(original: String, modified: String, i: Int): Boolean {
-    if (modified.length <= original.length || i < 0 || i >= original.length) {
-        return false
-    }
-    return original.substring(0, i) != modified.substring(0, i)
-}
-fun isCharacterRemovedBeforeIndex(previousText: String, currentString: String, index: Int): Boolean {
-    if (currentString.length < previousText.length) {
-        val previousChar = if (index > 0) previousText[index - 1] else null
-        val newChar = if (index > 0) currentString[index - 1] else null
-        if (previousChar != newChar) {
-            return true
-        }
-    }
-    return false
-}
 
