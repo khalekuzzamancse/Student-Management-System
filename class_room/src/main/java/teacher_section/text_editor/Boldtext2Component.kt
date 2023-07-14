@@ -53,6 +53,11 @@ fun isCharacterRemovedBeforeIndex(previousText: String, currentString: String, i
     return false
 }
 
+
+
+
+
+
 //    val formatter = VisualTransformation { textSnapshot ->
 //        val transformedText = buildAnnotatedString {
 //            with(textSnapshot) {
