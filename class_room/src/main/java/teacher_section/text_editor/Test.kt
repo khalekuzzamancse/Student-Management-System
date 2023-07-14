@@ -2,7 +2,7 @@ package teacher_section.text_editor
 
 fun main() {
     val a = "012345678"
-    val b = "01234567"
+    val b = "01235678"
     val list = listOf(3, 4)
     println(
         BoldedIndexRemover(
@@ -51,6 +51,7 @@ data class BoldedIndexRemover(
     }
 
     fun checkRemovedCharacterWasBolded(): BoldedIndexRemover {
+        //
         val isRemovedIndexPresentInBoldedIndexSet =
             boldedIndexes.contains(removedCharacterIndex)
         //  println("Removed Char was Bolded:${isRemovedIndexPresentInBoldedIndexSet}")
@@ -58,6 +59,8 @@ data class BoldedIndexRemover(
     }
 
     fun removeIndexFromBoldedListIfPresent(): BoldedIndexRemover {
+        if (!wasRemovedCharacterBolded)
+            return this
         val updatedBoldedIndexes = boldedIndexes.filterNot { it == removedCharacterIndex }
         //println("Updated Indices:${updatedBoldedIndexes}")
         return this.copy(boldedIndexes = updatedBoldedIndexes)
