@@ -14,7 +14,7 @@ data class TextChangeWatcher(
     }
 
 
-    fun is1CharacterRemoved() = previousText.length - currentText.length == 1
+    fun isSingleCharacterRemoved() = previousText.length - currentText.length == 1
     fun findInsertedCharacterIndex(): Int {
         val isSingleCharacterInserted = currentText.length - previousText.length == 1
         if (!isSingleCharacterInserted) {

@@ -1,6 +1,8 @@
 package teacher_section.text_editor
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -23,13 +25,17 @@ fun Pw() {
     var boldIndices by remember { mutableStateOf(mutableListOf<Int>()) }
     var textFieldText by remember { mutableStateOf(TextFieldValue("0123456789")) }
     var previousText by remember { mutableStateOf("") }
-    val formatter = createTextFormatter(boldIndices)
+
+    val formatter = TextEditorVisualTransformer().createTextFormatter(
+        formattedIndices = boldIndices
+    )
+
+
     Column(modifier = Modifier.padding(8.dp)) {
         TextField(
             value = textFieldText,
             onValueChange = { currentText ->
                 textFieldText = currentText
-
                 boldIndices = updateBoldedIndices(
                     currentText = currentText.text,
                     previousText = previousText,
@@ -41,12 +47,13 @@ fun Pw() {
             },
             visualTransformation = formatter
         )
+        Spacer(modifier = Modifier.height(100.dp))
         Button(onClick = {
-
-            boldIndices=getBoldedIndices(
+            boldIndices = getBoldedIndices(
                 selectedTextRange = textFieldText.selection,
                 boldIndices = boldIndices
             ).toMutableList()
+
         }) {
             Text(text = "Bold")
         }
@@ -89,7 +96,7 @@ fun updateBoldedIndices(
             return textChangeWatcher
                 .rightShiftBoldedIndex(index, boldIndices)
         }
-        if (textChangeWatcher.is1CharacterRemoved()) {
+        if (textChangeWatcher.isSingleCharacterRemoved()) {
             return updateIndicesOnCharacterRemoval(
                 previousText = previousText,
                 currentText = currentText,
