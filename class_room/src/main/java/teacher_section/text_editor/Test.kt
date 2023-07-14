@@ -3,13 +3,13 @@ package teacher_section.text_editor
 import android.util.Log
 
 fun main() {
-    val a = "012345678"
-    val b = "01235678"
+    val a = "0123"
+    val b = "0123"
     val list = listOf(3, 4)
     println(
-        modifyBoldedIndices(list,3)
+        TextChangeWatcher(previousText = a, currentText = b)
+            .findInsertedCharacterIndex()
     )
-
 }
 fun modifyBoldedIndices(boldedIndices: List<Int>, index: Int): List<Int> {
     return boldedIndices.map { if (it >= index) it - 1 else it }

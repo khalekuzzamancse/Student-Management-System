@@ -14,7 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 @Composable
 fun Pw() {
     var boldIndices by remember { mutableStateOf(mutableListOf(3, 4)) }
-    var textFieldText by remember { mutableStateOf(TextFieldValue()) }
+    var textFieldText by remember { mutableStateOf(TextFieldValue("012345678")) }
     var previousText by remember { mutableStateOf("") }
     val formatter = createTextFormatter(boldIndices)
     TextField(
@@ -28,16 +28,31 @@ fun Pw() {
             )
 
             if (boldIndices.isNotEmpty()) {
-                if (textChangeWatcher.isCharAddedBefore(boldIndices.first())) {
-                    boldIndices = boldIndices.map { it + 1 }.toMutableList()
+                if (textChangeWatcher.isCharacterInserted()) {
+                    /*
+                    this method has bug,
+                    if you insert the character before the index 0th character
+                    then this block will not execute
+        */
+                    val index = textChangeWatcher.findInsertedCharacterIndex()
+                    Log.i(
+                        "OKAYYYYY", "character add at:$index\n" +
+                                "BoldedIndexOld:$boldIndices"
+                    )
+                    boldIndices = textChangeWatcher
+                        .rightShiftBoldedIndex(index, boldIndices)
+                        .toMutableList()
+                    Log.i("OKAYYYYY", "BoldedIndexNew:$boldIndices")
                 }
 
                 if (textChangeWatcher.is1CharacterRemoved()) {
+                    Log.i("OKAYYYYY", "removed:$boldIndices")
                     boldIndices = updateBoldedListIfBoldedCharacterRemoved(
                         previousText = previousText,
                         currentText = textFieldText.text,
                         boldedIndexes = boldIndices
                     ).toMutableList()
+                    Log.i("OKAYYYYY", "BoldedIndexNew:$boldIndices")
                 }
             }
 
