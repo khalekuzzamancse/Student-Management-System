@@ -5,7 +5,7 @@ import android.util.Log
 data class BoldedIndexRemover(
     private val currentText: String,
     private val previousText: String,
-    val boldedIndexes: List<Int>,
+    val formattedTextIndices: List<Int>,
     private val removedCharacterIndex: Int = INVALID_INDEX,
     private val wasRemovedCharacterBolded: Boolean = false,
 ) {
@@ -38,7 +38,7 @@ data class BoldedIndexRemover(
     fun checkRemovedCharacterWasBolded(): BoldedIndexRemover {
         //
         val isRemovedIndexPresentInBoldedIndexSet =
-            boldedIndexes.contains(removedCharacterIndex)
+            formattedTextIndices.contains(removedCharacterIndex)
         //  println("Removed Char was Bolded:${isRemovedIndexPresentInBoldedIndexSet}")
         return this.copy(wasRemovedCharacterBolded = isRemovedIndexPresentInBoldedIndexSet)
     }
@@ -50,12 +50,12 @@ data class BoldedIndexRemover(
                 "RemovedIndex:$removedCharacterIndex (not bolded)\n" +
                         "PreviousText:${previousText}\n" +
                         "CurrentText:${currentText}\n" +
-                        "RecentBoldedIndices:$boldedIndexes"
+                        "RecentBoldedIndices:$formattedTextIndices"
             )
             return this
         }
 
-        val updatedBoldedIndexes = boldedIndexes
+        val updatedBoldedIndexes = formattedTextIndices
             .filterNot { it == removedCharacterIndex }
         Log.i(
             "BOLDED_REMOVER:\n",
@@ -64,7 +64,7 @@ data class BoldedIndexRemover(
                     "CurrentText:${currentText}\n" +
                     "RecentBoldedIndices:$updatedBoldedIndexes"
         )
-        return this.copy(boldedIndexes = updatedBoldedIndexes)
+        return this.copy(formattedTextIndices = updatedBoldedIndexes)
     }
 
     fun shiftIndicesToLeftBy1(): BoldedIndexRemover {
@@ -76,20 +76,20 @@ data class BoldedIndexRemover(
                 "BOLDED_REMOVER:\n",
                 "shift():::\n" +
                         "RemovedIndex:$removedCharacterIndex\n" +
-                        "RecentBoldedIndices(not shifted):$boldedIndexes"
+                        "RecentBoldedIndices(not shifted):$formattedTextIndices"
             )
             return this
         }
 
-        val updatedBoldedIndexes =boldedIndexes.map { if (it >= removedCharacterIndex) it - 1 else it }
+        val updatedBoldedIndexes =formattedTextIndices
+            .map { if (it >= removedCharacterIndex) it - 1 else it }
         Log.i(
             "BOLDED_REMOVER:\n",
             "shift():::\n" +
                     "RemovedIndex:$removedCharacterIndex\n" +
                     "RecentBoldedIndices(shifted):$updatedBoldedIndexes"
         )
-        return this.copy(boldedIndexes = updatedBoldedIndexes)
+        return this.copy(formattedTextIndices = updatedBoldedIndexes)
     }
-
 
 }

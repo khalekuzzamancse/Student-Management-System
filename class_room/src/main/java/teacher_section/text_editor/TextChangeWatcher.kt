@@ -11,9 +11,19 @@ data class TextChangeWatcher(
         }
         return previousText.substring(0, i) != currentText.substring(0, i)
     }
-    fun rightShiftBoldedIndex(index: Int, boldedIndices: List<Int>): List<Int> {
-        return boldedIndices.map {  if(index<=it)it + 1 else it }
+
+    fun rightShiftBoldedIndex(index: Int, formattedTextIndices: List<Int>): List<Int> {
+        /*
+        this method seems okay,but it has a bug
+        when after launch the editor,if user add a character
+        at the begging then it showing unwanted behaviour fix it.
+        example as:
+        let we have: 012345678 ,boldIndices[3,4]
+        if we add the very 1st character before 0,then it showing not shifting the character
+         */
+        return formattedTextIndices.map { if (index <= it) it + 1 else it }
     }
+
     fun isCharacterInserted(): Boolean {
         return currentText.length == previousText.length + 1
     }
