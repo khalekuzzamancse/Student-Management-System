@@ -1,4 +1,4 @@
-package teacher_section.text_editor
+package teacher_section.text_editor.text_formatting
 
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.buildAnnotatedString

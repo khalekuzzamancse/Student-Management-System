@@ -20,11 +20,11 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import teacher_section.text_editor.CharacterFormatter
-import teacher_section.text_editor.Formatter
-import teacher_section.text_editor.TextChangeWatcher
-import teacher_section.text_editor.TextEditorVisualTransformer
-import teacher_section.text_editor.updateIndicesOnCharacterRemoval
+import teacher_section.text_editor.text_formatting.CharacterFormatter
+import teacher_section.text_editor.text_formatting.Formatter
+import teacher_section.text_editor.text_formatting.TextChangeWatcher
+import teacher_section.text_editor.text_formatting.TextEditorVisualTransformer
+import teacher_section.text_editor.text_formatting.updateIndicesOnCharacterRemoval
 
 @Preview
 @Composable

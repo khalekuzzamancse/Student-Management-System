@@ -1,4 +1,4 @@
-package teacher_section.text_editor
+package teacher_section.text_editor.text_formatting
 
 import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
@@ -11,7 +11,7 @@ class TextEditorVisualTransformer {
     ): VisualTransformation {
         val visualTransformation =
             VisualTransformation {fieldText->
-                val transformedText =TextEditorTextFormatter(formatters,fieldText).format()
+                val transformedText = TextEditorTextFormatter(formatters,fieldText).format()
                 TransformedText(transformedText, TextEditorOffsetMapper.offsetMapping)
             }
         return visualTransformation

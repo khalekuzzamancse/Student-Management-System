@@ -8,9 +8,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
-import teacher_section.text_editor.CharacterFormatter
-import teacher_section.text_editor.Formatter
-import teacher_section.text_editor.TextEditorTextFormatter
+import teacher_section.text_editor.text_formatting.CharacterFormatter
+import teacher_section.text_editor.text_formatting.Formatter
+import teacher_section.text_editor.text_formatting.TextEditorTextFormatter
 
 @Preview
 @Composable

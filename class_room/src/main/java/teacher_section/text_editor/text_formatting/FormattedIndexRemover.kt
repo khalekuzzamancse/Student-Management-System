@@ -1,4 +1,4 @@
-package teacher_section.text_editor
+package teacher_section.text_editor.text_formatting
 
 import android.util.Log
 
