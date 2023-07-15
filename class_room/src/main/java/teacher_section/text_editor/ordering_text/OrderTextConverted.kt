@@ -1,4 +1,4 @@
-package teacher_section.text_editor
+package teacher_section.text_editor.ordering_text
 
 class OrderTextConverter(
     private val originalText: String,

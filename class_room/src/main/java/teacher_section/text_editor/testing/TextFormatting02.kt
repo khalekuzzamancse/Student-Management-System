@@ -1,7 +1,10 @@
-package teacher_section.text_editor
+package teacher_section.text_editor.testing
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
@@ -17,17 +20,38 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import teacher_section.text_editor.CharacterFormatter
+import teacher_section.text_editor.Formatter
+import teacher_section.text_editor.TextChangeWatcher
+import teacher_section.text_editor.TextEditorVisualTransformer
+import teacher_section.text_editor.updateIndicesOnCharacterRemoval
 
 @Preview
 @Composable
-fun Pw() {
-    // var boldIndices by remember { mutableStateOf(mutableListOf(3, 4, 7, 8)) }
+private fun Preview() {
     var boldIndices by remember { mutableStateOf(mutableListOf<Int>()) }
+    var colorIndices by remember { mutableStateOf(mutableListOf<Int>()) }
+    var italicIndices by remember { mutableStateOf(mutableListOf<Int>()) }
+
     var textFieldText by remember { mutableStateOf(TextFieldValue("0123456789")) }
     var previousText by remember { mutableStateOf("") }
+    val formatters = listOf(
+        Formatter(
+            indices = boldIndices,
+            formatter = CharacterFormatter.BoldFormatter
+        ),
+        Formatter(
+            indices = colorIndices,
+            formatter = CharacterFormatter.RedColorFormatter
+        ),
+        Formatter(
+            indices = italicIndices,
+            formatter = CharacterFormatter.ItalicFormatter
+        ),
+    )
 
     val formatter = TextEditorVisualTransformer().createTextFormatter(
-        formattedIndices = boldIndices
+        formatters = formatters
     )
 
 
@@ -36,10 +60,21 @@ fun Pw() {
             value = textFieldText,
             onValueChange = { currentText ->
                 textFieldText = currentText
-                boldIndices = updateBoldedIndices(
+                boldIndices = updateFormattedIndices(
                     currentText = currentText.text,
                     previousText = previousText,
                     boldIndices = boldIndices
+                ).toMutableList()
+
+                colorIndices = updateFormattedIndices(
+                    currentText = currentText.text,
+                    previousText = previousText,
+                    boldIndices = colorIndices
+                ).toMutableList()
+                italicIndices = updateFormattedIndices(
+                    currentText = currentText.text,
+                    previousText = previousText,
+                    boldIndices = italicIndices
                 ).toMutableList()
 
                 previousText = currentText.text
@@ -48,24 +83,48 @@ fun Pw() {
             visualTransformation = formatter
         )
         Spacer(modifier = Modifier.height(100.dp))
-        Button(onClick = {
-            boldIndices = getBoldedIndices(
-                selectedTextRange = textFieldText.selection,
-                boldIndices = boldIndices
-            ).toMutableList()
 
-        }) {
-            Text(text = "Bold")
+        Row(modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Button(onClick = {
+                boldIndices = getFormattedIndices(
+                    selectedTextRange = textFieldText.selection,
+                    formattedIndices = boldIndices
+                ).toMutableList()
+
+
+            }) {
+                Text(text = "Bold")
+            }
+
+            Button(onClick = {
+                colorIndices = getFormattedIndices(
+                    selectedTextRange = textFieldText.selection,
+                    formattedIndices = colorIndices
+                ).toMutableList()
+            }) {
+                Text(text = "Red Color")
+            }
+            Button(onClick = {
+                italicIndices = getFormattedIndices(
+                    selectedTextRange = textFieldText.selection,
+                    formattedIndices = italicIndices
+                ).toMutableList()
+            }) {
+                Text(text = "Italic")
+            }
         }
+
     }
 
 }
 
-fun getBoldedIndices(selectedTextRange: TextRange, boldIndices: List<Int>): List<Int> {
+fun getFormattedIndices(selectedTextRange: TextRange, formattedIndices: List<Int>): List<Int> {
     val start = selectedTextRange.start
     val end = selectedTextRange.end
     val isSelectedSomeText = start != end
-    val updatedIndices = boldIndices.toMutableList()
+    val updatedIndices = formattedIndices.toMutableList()
     if (isSelectedSomeText)
         for (i in start until end) {
             updatedIndices.add(i)
@@ -75,7 +134,7 @@ fun getBoldedIndices(selectedTextRange: TextRange, boldIndices: List<Int>): List
 
 }
 
-fun updateBoldedIndices(
+fun updateFormattedIndices(
     currentText: String,
     previousText: String,
     boldIndices: List<Int>,

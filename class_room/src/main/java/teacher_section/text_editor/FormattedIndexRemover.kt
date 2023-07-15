@@ -2,7 +2,7 @@ package teacher_section.text_editor
 
 import android.util.Log
 
-data class BoldedIndexRemover(
+data class FormattedIndexRemover(
     private val currentText: String,
     private val previousText: String,
     val formattedTextIndices: List<Int>,
@@ -16,7 +16,7 @@ data class BoldedIndexRemover(
 
     //For using the chaining we return the new instance of the class
     //by updating data
-    fun findRemovedCharacterIndex(): BoldedIndexRemover {
+    fun findRemovedCharacterIndex(): FormattedIndexRemover {
         val isMultipleCharacterRemoved = (previousText.length - currentText.length != 1)
         if (isMultipleCharacterRemoved) {
             //    println("Removed From:${INVALID_INDEX}")
@@ -35,7 +35,7 @@ data class BoldedIndexRemover(
 
     }
 
-    fun checkRemovedCharacterWasBolded(): BoldedIndexRemover {
+    fun checkRemovedCharacterWasBolded(): FormattedIndexRemover {
         //
         val isRemovedIndexPresentInBoldedIndexSet =
             formattedTextIndices.contains(removedCharacterIndex)
@@ -43,7 +43,7 @@ data class BoldedIndexRemover(
         return this.copy(wasRemovedCharacterBolded = isRemovedIndexPresentInBoldedIndexSet)
     }
 
-    fun removeIndexFromBoldedListIfPresent(): BoldedIndexRemover {
+    fun removeIndexFromBoldedListIfPresent(): FormattedIndexRemover {
         if (!wasRemovedCharacterBolded) {
             Log.i(
                 "BOLDED_REMOVER:\n",
@@ -67,7 +67,7 @@ data class BoldedIndexRemover(
         return this.copy(formattedTextIndices = updatedBoldedIndexes)
     }
 
-    fun shiftIndicesToLeftBy1(): BoldedIndexRemover {
+    fun shiftIndicesToLeftBy1(): FormattedIndexRemover {
         //only shift the bolded index if it any of the previous character removed
         //
         val isCharacterRemoved = previousText.length == currentText.length + 1

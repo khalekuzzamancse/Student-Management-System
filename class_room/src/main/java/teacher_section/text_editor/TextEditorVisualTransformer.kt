@@ -5,21 +5,13 @@ import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 
 
-
 class TextEditorVisualTransformer {
     fun createTextFormatter(
-        formattedIndices: List<Int>,
+        formatters: List<Formatter>,
     ): VisualTransformation {
         val visualTransformation =
-            VisualTransformation {
-                val textFormatter = TextEditorTextFormatter(
-                    text = it,
-                    formattedIndices = formattedIndices,
-                    characterFormatter = CharacterFormatters.CharacterBoldFormatter
-                )
-                val transformedText = textFormatter
-                    .formatWholeText()
-                    .text
+            VisualTransformation {fieldText->
+                val transformedText =TextEditorTextFormatter(formatters,fieldText).format()
                 TransformedText(transformedText, TextEditorOffsetMapper.offsetMapping)
             }
         return visualTransformation

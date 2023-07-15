@@ -1,39 +1,43 @@
 package teacher_section.text_editor
 
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
+
 
 data class TextEditorTextFormatter(
-    private val formattedIndices: List<Int>,
-    val text: AnnotatedString,
-    val characterFormatter: CharacterFormatter,
+    private val formatter: List<Formatter>,
+    private val text: AnnotatedString,
 ) {
-    fun formatWholeText(): TextEditorTextFormatter {
+    fun format(): AnnotatedString {
         val annotatedString = buildAnnotatedString {
-            text.forEachIndexed { index, char ->
-                if (shouldThisIndexBeFormatted(index)) {
-                   // append(formatCharacter(char))
-                    append(characterFormatter.formatCharacter(char))
-                } else {
-                    //need not to format character
-                    append(char)
+            append(text)
+            text.forEachIndexed { index, c ->
+                formatter.forEach {
+                    if (shouldThisIndexBeFormatted(it.indices, index)) {
+                        addStyle(
+                            it.formatter.getStyle(),
+                            start = index, end = index + 1
+                        )
+                    }
                 }
             }
         }
-        return this.copy(text = annotatedString)
+        return annotatedString
     }
-
-    private fun shouldThisIndexBeFormatted(index: Int): Boolean {
+    private fun shouldThisIndexBeFormatted(
+        formattedIndices: List<Int>,
+        index: Int,
+    ): Boolean {
         val formattedIndex = formattedIndices.indexOf(index)
         return formattedIndex != -1
     }
 
-    private fun formatCharacter(char: Char): AnnotatedString {
-        return AnnotatedString(
-            text = char.toString(),
-            spanStyle = SpanStyle(fontWeight = FontWeight.Bold)
-        )
-    }
 }
+
+
+
+
+data class Formatter(
+    val indices: List<Int>,
+    val formatter: CharacterFormatter,
+)

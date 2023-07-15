@@ -1,30 +1,22 @@
 package teacher_section.text_editor
 
-import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 
-interface CharacterFormatter{
-    fun formatCharacter(char: Char): AnnotatedString
-}
+interface CharacterFormatter {
+    fun getStyle(): SpanStyle
 
-object CharacterFormatters{
-        object CharacterBoldFormatter:CharacterFormatter {
-            override fun formatCharacter(char: Char): AnnotatedString {
-                return AnnotatedString(
-                    text = char.toString(),
-                    spanStyle = SpanStyle(fontWeight = FontWeight.Bold)
-                )
-            }
-        }
-        object CharacterItalicFormatter:CharacterFormatter {
-            override fun formatCharacter(char: Char): AnnotatedString {
-                return AnnotatedString(
-                    text = char.toString(),
-                    spanStyle = SpanStyle(fontStyle = FontStyle.Italic)
-                )
-            }
+    object BoldFormatter : CharacterFormatter {
+        override fun getStyle() = SpanStyle(fontWeight = FontWeight.Bold)
+    }
 
+    object ItalicFormatter : CharacterFormatter {
+        override fun getStyle() = SpanStyle(fontStyle = FontStyle.Italic)
+    }
+
+    object RedColorFormatter : CharacterFormatter {
+        override fun getStyle() = SpanStyle(color = Color.Red)
     }
 }
