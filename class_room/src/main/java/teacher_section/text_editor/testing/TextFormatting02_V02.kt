@@ -41,7 +41,7 @@ private fun TextFormattingV02() {
                         CharacterFormatter.BoldFormatter
                     ),
                     TextStyleInfo(
-                        TextStyleType.RED,
+                        TextStyleType.COLOR,
                         listOf(),
                         CharacterFormatter.RedColorFormatter
                     ),
@@ -88,7 +88,7 @@ private fun TextFormattingV02() {
 
             Button(onClick = {
                 textStyleManager = textStyleManager.
-                formatSelectedText(TextStyleType.RED, textFieldText.selection)
+                formatSelectedText(TextStyleType.COLOR, textFieldText.selection)
             }) {
                 Text(text = "Red Color")
             }

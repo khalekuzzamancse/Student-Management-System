@@ -4,7 +4,7 @@ import androidx.compose.ui.text.TextRange
 
 
 enum class TextStyleType {
-    BOLD, RED, ITALIC,UNDERLINE,LINE_THROUGH
+    BOLD, COLOR, ITALIC,UNDERLINE,LINE_THROUGH
 }
 
 

@@ -1,24 +1,29 @@
-package teacher_section.text_editor
+package teacher_section.text_editor.editor_ui
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material3.TextField
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import teacher_section.text_editor.editor_ui.TextEditorTopSection
+import com.khalekuzzaman.just.cse.common_ui_element.drop_down_menu.TextualDropDownMenu
 import teacher_section.text_editor.text_formatting.CharacterFormatter
+import teacher_section.text_editor.text_formatting.ColorFormatter
 import teacher_section.text_editor.text_formatting.TextEditorVisualTransformer
 import teacher_section.text_editor.text_formatting.TextStyleInfo
 import teacher_section.text_editor.text_formatting.TextStyleManager
@@ -33,9 +38,9 @@ val getTextStyleManager = TextStyleManager(
             CharacterFormatter.BoldFormatter
         ),
         TextStyleInfo(
-            TextStyleType.RED,
+            TextStyleType.COLOR,
             listOf(),
-            CharacterFormatter.RedColorFormatter
+            ColorFormatter(Color.Blue)
         ),
         TextStyleInfo(
             TextStyleType.ITALIC,
@@ -62,6 +67,9 @@ fun TextEditorVersion01() {
     var previousText by remember { mutableStateOf("") }
     var textStyleManager by remember { mutableStateOf(getTextStyleManager) }
 
+    var showColorPicker by remember { mutableStateOf(false) }
+    var pickedColor by remember { mutableStateOf(ColorFormatter(Color.Blue)) }
+
     val formatters = textStyleManager.createFormatters()
     val visualTransformation = TextEditorVisualTransformer()
         .createTextFormatter(formatters = formatters)
@@ -78,9 +86,10 @@ fun TextEditorVersion01() {
         textStyleManager = textStyleManager
             .formatSelectedText(TextStyleType.ITALIC, textFieldText.selection)
     }
-    val redText: () -> Unit = {
+    val COLORText: () -> Unit = {
+        showColorPicker = true
         textStyleManager = textStyleManager
-            .formatSelectedText(TextStyleType.RED, textFieldText.selection)
+            .formatSelectedText(TextStyleType.COLOR, textFieldText.selection)
     }
     val underLineText: () -> Unit = {
         textStyleManager = textStyleManager
@@ -101,9 +110,20 @@ fun TextEditorVersion01() {
             onBoldIconClick = boldText,
             onItalicIconClick = italicText,
             onUnderLineIconClick = underLineText,
-            onTextColorChangeIconClick = redText,
+            onTextColorChangeIconClick = COLORText,
             onLineThroughIconClick = lineThrough,
         )
+        if (showColorPicker) {
+            ColorPicker(
+                modifier = Modifier.
+                wrapContentSize(Alignment.TopCenter),
+                onColorPicked = {
+                    showColorPicker = false
+                },
+                shouldShowPicker = true
+            )
+
+        }
         BasicTextField(
             modifier = Modifier
                 .padding(top = 50.dp)

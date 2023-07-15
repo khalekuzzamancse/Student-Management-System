@@ -20,14 +20,23 @@ interface CharacterFormatter {
     object RedColorFormatter : CharacterFormatter {
         override fun getStyle() = SpanStyle(color = Color.Red)
     }
+
     object UnderLineFormatter : CharacterFormatter {
         override fun getStyle() = SpanStyle(
             textDecoration = TextDecoration.Underline
         )
     }
+
     object LineThroughFormatter : CharacterFormatter {
         override fun getStyle() = SpanStyle(
             textDecoration = TextDecoration.LineThrough
         )
     }
+}
+
+data class ColorFormatter(
+    val color: Color,
+) : CharacterFormatter {
+    override fun getStyle() = SpanStyle(color)
+
 }
