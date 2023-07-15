@@ -30,45 +30,51 @@ import teacher_section.text_editor.text_formatting.TextStyleManager
 import teacher_section.text_editor.text_formatting.TextStyleType
 
 
-val getTextStyleManager = TextStyleManager(
-    listOf(
-        TextStyleInfo(
-            TextStyleType.BOLD,
-            listOf(),
-            CharacterFormatter.BoldFormatter
-        ),
-        TextStyleInfo(
-            TextStyleType.COLOR,
-            listOf(),
-            ColorFormatter(Color.Blue)
-        ),
-        TextStyleInfo(
-            TextStyleType.ITALIC,
-            listOf(),
-            CharacterFormatter.ItalicFormatter
-        ),
-        TextStyleInfo(
-            TextStyleType.UNDERLINE,
-            listOf(),
-            CharacterFormatter.UnderLineFormatter
-        ),
-        TextStyleInfo(
-            TextStyleType.LINE_THROUGH,
-            listOf(),
-            CharacterFormatter.LineThroughFormatter
+data class TextStyleMangerProvider(val color: Color) {
+    val textStyleManager = TextStyleManager(
+        listOf(
+            TextStyleInfo(
+                TextStyleType.BOLD,
+                listOf(),
+                CharacterFormatter.BoldFormatter
+            ),
+            TextStyleInfo(
+                TextStyleType.COLOR,
+                listOf(),
+                ColorFormatter(color)
+            ),
+            TextStyleInfo(
+                TextStyleType.ITALIC,
+                listOf(),
+                CharacterFormatter.ItalicFormatter
+            ),
+            TextStyleInfo(
+                TextStyleType.UNDERLINE,
+                listOf(),
+                CharacterFormatter.UnderLineFormatter
+            ),
+            TextStyleInfo(
+                TextStyleType.LINE_THROUGH,
+                listOf(),
+                CharacterFormatter.LineThroughFormatter
+            )
         )
     )
-)
+}
+
 
 @Preview
 @Composable
 fun TextEditorVersion01() {
     var textFieldText by remember { mutableStateOf(TextFieldValue("012345678910111213")) }
     var previousText by remember { mutableStateOf("") }
-    var textStyleManager by remember { mutableStateOf(getTextStyleManager) }
+
+    var textStyleManager by remember {
+        mutableStateOf(TextStyleMangerProvider(Color.Blue).textStyleManager)
+    }
 
     var showColorPicker by remember { mutableStateOf(false) }
-    var pickedColor by remember { mutableStateOf(ColorFormatter(Color.Blue)) }
+    var pickedColor by remember { mutableStateOf(Color.Blue) }
 
     val formatters = textStyleManager.createFormatters()
     val visualTransformation = TextEditorVisualTransformer()
@@ -88,6 +94,7 @@ fun TextEditorVersion01() {
     }
     val COLORText: () -> Unit = {
         showColorPicker = true
+        //
         textStyleManager = textStyleManager
             .formatSelectedText(TextStyleType.COLOR, textFieldText.selection)
     }
@@ -115,10 +122,10 @@ fun TextEditorVersion01() {
         )
         if (showColorPicker) {
             ColorPicker(
-                modifier = Modifier.
-                wrapContentSize(Alignment.TopCenter),
+                modifier = Modifier.wrapContentSize(Alignment.TopCenter),
                 onColorPicked = {
                     showColorPicker = false
+                    pickedColor = it
                 },
                 shouldShowPicker = true
             )
