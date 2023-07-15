@@ -21,20 +21,20 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import teacher_section.text_editor.text_formatting.CharacterFormatter
+import teacher_section.text_editor.text_formatting.FormattedIndicesUpdater
 import teacher_section.text_editor.text_formatting.Formatter
-import teacher_section.text_editor.text_formatting.TextChangeWatcher
 import teacher_section.text_editor.text_formatting.TextEditorVisualTransformer
-import teacher_section.text_editor.text_formatting.updateIndicesOnCharacterRemoval
+
 
 @Preview
 @Composable
-private fun Preview() {
+private fun TextFormatter_V01() {
+    var textFieldText by remember { mutableStateOf(TextFieldValue("012345678910111213")) }
+    var previousText by remember { mutableStateOf("") }
     var boldIndices by remember { mutableStateOf(mutableListOf<Int>()) }
     var colorIndices by remember { mutableStateOf(mutableListOf<Int>()) }
     var italicIndices by remember { mutableStateOf(mutableListOf<Int>()) }
 
-    var textFieldText by remember { mutableStateOf(TextFieldValue("0123456789")) }
-    var previousText by remember { mutableStateOf("") }
     val formatters = listOf(
         Formatter(
             indices = boldIndices,
@@ -60,21 +60,22 @@ private fun Preview() {
             value = textFieldText,
             onValueChange = { currentText ->
                 textFieldText = currentText
-                boldIndices = updateFormattedIndices(
+
+                boldIndices = FormattedIndicesUpdater.updateFormattedIndices(
                     currentText = currentText.text,
                     previousText = previousText,
-                    boldIndices = boldIndices
+                    formattedIndices = boldIndices
                 ).toMutableList()
 
-                colorIndices = updateFormattedIndices(
+                colorIndices = FormattedIndicesUpdater.updateFormattedIndices(
                     currentText = currentText.text,
                     previousText = previousText,
-                    boldIndices = colorIndices
+                    formattedIndices = colorIndices
                 ).toMutableList()
-                italicIndices = updateFormattedIndices(
+                italicIndices = FormattedIndicesUpdater.updateFormattedIndices(
                     currentText = currentText.text,
                     previousText = previousText,
-                    boldIndices = italicIndices
+                    formattedIndices = italicIndices
                 ).toMutableList()
 
                 previousText = currentText.text
@@ -84,22 +85,22 @@ private fun Preview() {
         )
         Spacer(modifier = Modifier.height(100.dp))
 
-        Row(modifier = Modifier.fillMaxWidth(),
+        Row(
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Button(onClick = {
-                boldIndices = getFormattedIndices(
+                boldIndices =FormattedIndicesUpdater.updateFormattedIndicesWithSelection(
                     selectedTextRange = textFieldText.selection,
                     formattedIndices = boldIndices
                 ).toMutableList()
-
 
             }) {
                 Text(text = "Bold")
             }
 
             Button(onClick = {
-                colorIndices = getFormattedIndices(
+                colorIndices = FormattedIndicesUpdater.updateFormattedIndicesWithSelection(
                     selectedTextRange = textFieldText.selection,
                     formattedIndices = colorIndices
                 ).toMutableList()
@@ -107,7 +108,7 @@ private fun Preview() {
                 Text(text = "Red Color")
             }
             Button(onClick = {
-                italicIndices = getFormattedIndices(
+                italicIndices = FormattedIndicesUpdater.updateFormattedIndicesWithSelection(
                     selectedTextRange = textFieldText.selection,
                     formattedIndices = italicIndices
                 ).toMutableList()
@@ -120,49 +121,5 @@ private fun Preview() {
 
 }
 
-fun getFormattedIndices(selectedTextRange: TextRange, formattedIndices: List<Int>): List<Int> {
-    val start = selectedTextRange.start
-    val end = selectedTextRange.end
-    val isSelectedSomeText = start != end
-    val updatedIndices = formattedIndices.toMutableList()
-    if (isSelectedSomeText)
-        for (i in start until end) {
-            updatedIndices.add(i)
-        }
-    //remove the duplicate element if present
-    return updatedIndices.distinct()
 
-}
 
-fun updateFormattedIndices(
-    currentText: String,
-    previousText: String,
-    boldIndices: List<Int>,
-): List<Int> {
-    val textChangeWatcher = TextChangeWatcher(
-        currentText = currentText,
-        previousText = previousText
-    )
-
-    if (boldIndices.isNotEmpty()) {
-        if (textChangeWatcher.isCharacterInserted()) {
-            /*
-            this method has bug,
-            if you insert the character before the index 0th character
-            then this block will not execute
-*/
-            val index = textChangeWatcher.findInsertedCharacterIndex()
-            return textChangeWatcher
-                .rightShiftBoldedIndex(index, boldIndices)
-        }
-        if (textChangeWatcher.isSingleCharacterRemoved()) {
-            return updateIndicesOnCharacterRemoval(
-                previousText = previousText,
-                currentText = currentText,
-                boldedIndexes = boldIndices
-            )
-        }
-    }
-    return boldIndices
-
-}

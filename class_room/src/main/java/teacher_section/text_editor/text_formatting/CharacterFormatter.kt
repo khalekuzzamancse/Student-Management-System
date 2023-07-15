@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 
 interface CharacterFormatter {
     fun getStyle(): SpanStyle
@@ -18,5 +19,15 @@ interface CharacterFormatter {
 
     object RedColorFormatter : CharacterFormatter {
         override fun getStyle() = SpanStyle(color = Color.Red)
+    }
+    object UnderLineFormatter : CharacterFormatter {
+        override fun getStyle() = SpanStyle(
+            textDecoration = TextDecoration.Underline
+        )
+    }
+    object LineThroughFormatter : CharacterFormatter {
+        override fun getStyle() = SpanStyle(
+            textDecoration = TextDecoration.LineThrough
+        )
     }
 }
