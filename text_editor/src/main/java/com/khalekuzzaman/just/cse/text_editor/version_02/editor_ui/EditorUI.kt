@@ -44,8 +44,6 @@ fun TextEditorVersion01() {
     var pickedColor by remember { mutableStateOf(Color.Blue) }
 
 
-
-
     /*
 
      */
@@ -59,11 +57,10 @@ fun TextEditorVersion01() {
             .addFormatter(textFieldText.selection, Formatters.Italic)
             .formattedIndices
     }
-    val COLORText: () -> Unit = {
+    val colorText: (Color) -> Unit = {
         map = FormatterHolder(map)
-            .addFormatter(textFieldText.selection, Formatters.RedColor)
+            .addFormatter(textFieldText.selection, Formatters.Colored(it))
             .formattedIndices
-        showColorPicker = true
 
     }
     val underLineText: () -> Unit = {
@@ -87,7 +84,9 @@ fun TextEditorVersion01() {
             onBoldIconClick = boldText,
             onItalicIconClick = italicText,
             onUnderLineIconClick = underLineText,
-            onTextColorChangeIconClick = COLORText,
+            onTextColorChangeIconClick = {
+                showColorPicker = true
+            },
             onLineThroughIconClick = lineThrough,
         )
         if (showColorPicker) {
@@ -96,6 +95,7 @@ fun TextEditorVersion01() {
                 onColorPicked = {
                     showColorPicker = false
                     pickedColor = it
+                    colorText(pickedColor)
                 },
                 shouldShowPicker = true
             )
@@ -112,19 +112,20 @@ fun TextEditorVersion01() {
             onValueChange = { currentText ->
                 textFieldText = currentText
                 val utils = SingleCharacterChangeUtils(
-                    currentText= currentText.text,
-                    previousText = previousText)
+                    currentText = currentText.text,
+                    previousText = previousText
+                )
                 map = SingleCharacterChangeListener(utils, map).onTextChange()
                 for ((key, value) in map) {
                     val names = value.map { it.javaClass.simpleName }
-                    Log.i("FORMATTERS:","$key:${names.joinToString(",", "[", "]")}")
+                    Log.i("FORMATTERS:", "$key:${names.joinToString(",", "[", "]")}")
                 }
 
                 //
                 previousText = currentText.text
 
             },
-           visualTransformation = visualTransformation
+            visualTransformation = visualTransformation
         )
 
     }

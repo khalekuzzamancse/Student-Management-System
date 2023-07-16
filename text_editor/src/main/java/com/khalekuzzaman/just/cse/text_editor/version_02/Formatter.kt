@@ -7,10 +7,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 
 
-interface Formatter{
+interface Formatter {
     fun getStyle(): SpanStyle
 }
-object Formatters{
+
+object Formatters {
     object Bold : Formatter {
         override fun getStyle() = SpanStyle(fontWeight = FontWeight.Bold)
     }
@@ -33,6 +34,13 @@ object Formatters{
         override fun getStyle() = SpanStyle(
             textDecoration = TextDecoration.LineThrough
         )
+    }
+
+    data class Colored(
+        val color: Color,
+    ) : Formatter {
+        override fun getStyle() = SpanStyle(color = color)
+
     }
 
 }
