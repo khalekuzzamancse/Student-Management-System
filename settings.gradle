@@ -17,3 +17,4 @@ include ':app'
 
 include ':class_room'
 include ':common_ui_element'
+include ':text_editor'
