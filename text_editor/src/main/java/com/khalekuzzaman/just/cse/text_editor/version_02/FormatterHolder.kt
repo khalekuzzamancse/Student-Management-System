@@ -21,15 +21,6 @@ data class FormatterHolder(
 
         return this.copy(formattedIndices = newFormattedIndicesMap)
     }
-
-    fun addFormatter(index: Int, formatter: Formatter): FormatterHolder {
-        val newFormattedIndicesMap = TreeMap(formattedIndices)
-        val existingFormatters = newFormattedIndicesMap[index] ?: emptySet()
-        val newFormatters = existingFormatters + formatter
-        newFormattedIndicesMap[index] = newFormatters
-        return this.copy(formattedIndices = newFormattedIndicesMap)
-    }
-
     override fun toString(): String {
         for ((key, value) in formattedIndices) {
             val names = value.map { it.javaClass.simpleName }
