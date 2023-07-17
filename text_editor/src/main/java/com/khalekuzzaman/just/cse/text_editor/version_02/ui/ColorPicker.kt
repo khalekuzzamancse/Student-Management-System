@@ -7,18 +7,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FormatColorText
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -53,30 +49,28 @@ fun ColorPicker(
     val showWindow: () -> Unit = {
         show = true
     }
-    Box(
-        modifier = modifier
-            .wrapContentSize(Alignment.TopCenter)
-    ) {
-        IconButton(
-            icon = Icons.Default.FormatColorText,
-            onClick = {
-                showWindow()
-            }
-        )
 
-        DropdownMenu(
-            expanded = show,
-            onDismissRequest = dismissWindow
-        ) {
-            ColorPlate(
-                onColorChooseBoxClick = {
-                    onColorPicked(it)
-                    dismissWindow()
-                },
-                list = coloredBoxes
+    DropDownMenu(
+        modifier = modifier,
+        showWindow = show,
+        onDismiss = dismissWindow,
+        floatingWindowLanucher = {
+            IconButton(
+                icon = Icons.Default.FormatColorText,
+                onClick = {
+                    showWindow()
+                }
             )
-        }
+        }) {
+        ColorPlate(
+            onColorChooseBoxClick = {
+                onColorPicked(it)
+                dismissWindow()
+            },
+            list = coloredBoxes
+        )
     }
+
 
 }
 

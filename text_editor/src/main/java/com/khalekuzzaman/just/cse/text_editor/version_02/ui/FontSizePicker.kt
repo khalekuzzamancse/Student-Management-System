@@ -60,9 +60,9 @@ fun FontSizePicker(
     for (i in 15..24)
         list.add("$i")
 
-    TextualDropDownMenu(
-        options = list,
-        shouldExpanded = show,
+    DropDownMenu(
+        floatingWindowItems = list,
+        show = show,
         onOptionSelected = {
             selected = it.toInt()
             onFontSelected(selected)

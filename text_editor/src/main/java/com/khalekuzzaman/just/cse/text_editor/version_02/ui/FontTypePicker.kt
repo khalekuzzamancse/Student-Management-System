@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -46,8 +45,8 @@ fun FontTypePicker(modifier: Modifier = Modifier) {
         trailingIcon = Icons.Default.ArrowDropUp
     }
     Column(modifier=modifier) {
-        TextualDropDownMenu(
-            resultShower = {
+        DropDownMenu(
+            floatingWindowLauncher = {
                 TextField(
 
                     modifier = Modifier.width(130.dp),
@@ -68,8 +67,8 @@ fun FontTypePicker(modifier: Modifier = Modifier) {
 
                     )
             },
-            options = listOf("Roboto", "Arial", "Mono", "QuickSand"),
-            shouldExpanded = show,
+            floatingWindowItems = listOf("Roboto", "Arial", "Mono", "QuickSand"),
+            show = show,
             onOptionSelected = {
                 selected = it
                 dismissWindow()

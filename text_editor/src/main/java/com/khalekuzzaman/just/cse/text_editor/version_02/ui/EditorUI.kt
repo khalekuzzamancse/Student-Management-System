@@ -10,7 +10,6 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -35,14 +34,7 @@ fun TextEditorVersion01() {
     var textFieldText by remember { mutableStateOf(TextFieldValue("012345678910111213")) }
     var previousText by remember { mutableStateOf("") }
     var map by remember { mutableStateOf(TreeMap<Int, Set<Formatter>>()) }
-
-    /*
-
-     */
-
-    var pickedColor by remember { mutableStateOf(Color.Blue) }
     var pickedAlignment by remember { mutableStateOf(TextAlign.Start) }
-    var fontSize by remember { mutableIntStateOf(13) }
 
     val visualTransformation = EditorVisualTransformer()
         .createTextFormatter(formatterMap = map)
@@ -88,21 +80,14 @@ fun TextEditorVersion01() {
             onBoldIconClick = boldText,
             onItalicIconClick = italicText,
             onUnderLineIconClick = underLineText,
-            onColorPicked = {
-                pickedColor = it
-            },
+            onColorPicked = colorText,
             onLineThroughIconClick = lineThrough,
             onBulletListClick = {},
             onNumberListClick = {},
             onFormatClearClick = {},
-            onAlignmentPicked = {
-                pickedAlignment = it
-            },
-            onFontSelected = {
-                fontSize = it
-            },
-
-            )
+            onAlignmentPicked = { pickedAlignment = it },
+            onFontSelected = updateFontSize
+        )
 
 
         BasicTextField(
@@ -120,12 +105,7 @@ fun TextEditorVersion01() {
                     previousText = previousText
                 )
                 map = SingleCharacterChangeListener(utils, map).onTextChange()
-                for ((key, value) in map) {
-                    val names = value.map { it.javaClass.simpleName }
-                    Log.i("FORMATTERS:", "$key:${names.joinToString(",", "[", "]")}")
-                }
-
-                //
+                printMap(map)
                 previousText = currentText.text
 
             },
@@ -135,4 +115,12 @@ fun TextEditorVersion01() {
         )
 
     }
+}
+
+fun printMap(map: TreeMap<Int, Set<Formatter>>) {
+    for ((key, value) in map) {
+        val names = value.map { it.javaClass.simpleName }
+        Log.i("FORMATTERS:", "$key:${names.joinToString(",", "[", "]")}")
+    }
+
 }
