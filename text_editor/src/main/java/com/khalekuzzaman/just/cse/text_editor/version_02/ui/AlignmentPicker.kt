@@ -9,56 +9,95 @@ import androidx.compose.material.icons.filled.FormatAlignCenter
 import androidx.compose.material.icons.filled.FormatAlignJustify
 import androidx.compose.material.icons.filled.FormatAlignLeft
 import androidx.compose.material.icons.filled.FormatAlignRight
+import androidx.compose.material.icons.filled.FormatColorText
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+
+@Preview
+@Composable
+private fun Preview() {
+    AlignmentPicker(onAlignmentPicked = {})
+}
 
 @Composable
 fun AlignmentPicker(
     modifier: Modifier = Modifier,
     onAlignmentPicked: (TextAlign) -> Unit,
-    shouldShowPicker: Boolean,
 ) {
+    var show by remember {
+        mutableStateOf(false)
+    }
+    var icon by remember {
+        mutableStateOf( Icons.Default.FormatAlignLeft,)
+    }
+    val dismissWindow: () -> Unit = {
+        show = false
+    }
+    val showWindow: () -> Unit = {
+        show = true
+    }
     Box(
         modifier = modifier
-            .fillMaxWidth()
-            .wrapContentSize()
+            .wrapContentSize(Alignment.TopCenter)
     ) {
+        IconButton(
+            icon = icon,
+            onClick = {
+                showWindow()
+            }
+        )
+
         DropdownMenu(
-            expanded = shouldShowPicker,
-            onDismissRequest = { }
+            expanded = show,
+            onDismissRequest = dismissWindow
         ) {
             Row() {
-                IconButton(onClick = { onAlignmentPicked(TextAlign.Start) }) {
-                    Icon(
-                        imageVector = Icons.Default.FormatAlignLeft,
-                        contentDescription = null
-                    )
-                }
-                IconButton(onClick = { onAlignmentPicked(TextAlign.Center) }) {
-                    Icon(
-                        imageVector = Icons.Default.FormatAlignCenter,
-                        contentDescription = null
-                    )
-                }
-                IconButton(onClick = { onAlignmentPicked(TextAlign.Right) }) {
-                    Icon(
-                        imageVector = Icons.Default.FormatAlignRight,
-                        contentDescription = null
-                    )
-                }
-                IconButton(onClick = { onAlignmentPicked(TextAlign.Justify) }) {
-                    Icon(
-                        imageVector = Icons.Default.FormatAlignJustify,
-                        contentDescription = null
-                    )
-                }
+                IconButton(
+                    icon = Icons.Default.FormatAlignLeft,
+                    onClick = {
 
+                        onAlignmentPicked(TextAlign.Start)
+                        dismissWindow()
+                    })
+
+                IconButton(
+                    icon = Icons.Default.FormatAlignCenter,
+                    onClick = {
+                        onAlignmentPicked(TextAlign.Center)
+                        icon=Icons.Default.FormatAlignCenter
+                        dismissWindow()
+                    }
+                )
+
+                IconButton(
+                    icon = Icons.Default.FormatAlignRight,
+                    onClick = {
+                        onAlignmentPicked(TextAlign.Right)
+                        icon=Icons.Default.FormatAlignRight
+                        dismissWindow()
+                    })
+
+                IconButton(
+                    icon = Icons.Default.FormatAlignJustify,
+                    onClick = {
+                        onAlignmentPicked(TextAlign.Justify)
+                        icon=Icons.Default.FormatAlignJustify
+                        dismissWindow()
+                    })
             }
-
         }
     }
+
+
 }

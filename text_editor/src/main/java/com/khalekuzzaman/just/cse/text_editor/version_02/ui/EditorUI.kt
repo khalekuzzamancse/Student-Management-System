@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.runtime.Composable
@@ -15,7 +14,6 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
@@ -41,11 +39,9 @@ fun TextEditorVersion01() {
     /*
 
      */
-    var showColorPicker by remember { mutableStateOf(false) }
+
     var pickedColor by remember { mutableStateOf(Color.Blue) }
-    var showAlignmentPicker by remember { mutableStateOf(false) }
     var pickedAlignment by remember { mutableStateOf(TextAlign.Start) }
-    var showFontSizePicker by remember { mutableStateOf(false) }
     var fontSize by remember { mutableIntStateOf(13) }
 
     val visualTransformation = EditorVisualTransformer()
@@ -79,7 +75,7 @@ fun TextEditorVersion01() {
             .addFormatter(textFieldText.selection, Formatters.LineThrough)
             .formattedIndices
     }
-    val updateFontSize:(Int)->Unit={
+    val updateFontSize: (Int) -> Unit = {
         map = FormatterHolder(map)
             .addFormatter(textFieldText.selection, Formatters.FontSize(it))
             .formattedIndices
@@ -92,58 +88,22 @@ fun TextEditorVersion01() {
             onBoldIconClick = boldText,
             onItalicIconClick = italicText,
             onUnderLineIconClick = underLineText,
-            onTextColorChangeIconClick = {
-                showColorPicker = true
+            onColorPicked = {
+                pickedColor = it
             },
             onLineThroughIconClick = lineThrough,
             onBulletListClick = {},
             onNumberListClick = {},
             onFormatClearClick = {},
-            onTextAlignIconClick = { showAlignmentPicker = true },
-            onFontSizeClick = {
-                showFontSizePicker = true
+            onAlignmentPicked = {
+                pickedAlignment = it
             },
-            onFontSizePlusIconClick = {
-                fontSize += 2
-                fontSize=fontSize.coerceIn(10,24)
-                updateFontSize(fontSize)
+            onFontSelected = {
+                fontSize = it
             },
-            onFontSizeMinusIconClick = {
-                fontSize -= 2
-                fontSize=fontSize.coerceIn(10,24)
-                updateFontSize(fontSize)
-            },
-            selectedTextSize = fontSize,
-        )
-        if (showColorPicker) {
-            ColorPicker(
-                modifier = Modifier.wrapContentSize(Alignment.TopCenter),
-                onColorPicked = {
-                    showColorPicker = false
-                    pickedColor = it
-                    colorText(pickedColor)
-                },
-                shouldShowPicker = true
+
             )
 
-        }
-        if (showAlignmentPicker) {
-            AlignmentPicker(
-                onAlignmentPicked = {
-                    pickedAlignment = it
-                    showAlignmentPicker = false
-                },
-                shouldShowPicker = true
-            )
-        }
-        if (showFontSizePicker) {
-            FontSizePicker(
-                onFontSelected = {
-                    updateFontSize(it)
-                    showFontSizePicker = false
-                },
-                shouldShowPicker = true)
-        }
 
         BasicTextField(
             modifier = Modifier

@@ -1,37 +1,30 @@
 package com.khalekuzzaman.just.cse.text_editor.version_02.ui
 
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.FormatAlignLeft
 import androidx.compose.material.icons.filled.FormatBold
 import androidx.compose.material.icons.filled.FormatClear
-import androidx.compose.material.icons.filled.FormatColorText
 import androidx.compose.material.icons.filled.FormatItalic
 import androidx.compose.material.icons.filled.FormatListBulleted
 import androidx.compose.material.icons.filled.FormatListNumbered
 import androidx.compose.material.icons.filled.FormatStrikethrough
 import androidx.compose.material.icons.filled.FormatUnderlined
-import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -43,142 +36,120 @@ private fun Preview() {
         onBoldIconClick = {},
         onItalicIconClick = {},
         onUnderLineIconClick = {},
-        onTextColorChangeIconClick = {},
+        onColorPicked = {},
         onLineThroughIconClick = {},
         onBulletListClick = { /*TODO*/ },
         onNumberListClick = { /*TODO*/ },
         onFormatClearClick = {},
-        onTextAlignIconClick = {},
-        onFontSizeClick = {},
-        onFontSizePlusIconClick = {},
-        onFontSizeMinusIconClick = {},
-        selectedTextSize =10
+        onAlignmentPicked = {},
+        onFontSelected = {},
     )
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun TextEditorTopSection(
     modifier: Modifier = Modifier,
     onBoldIconClick: () -> Unit,
     onItalicIconClick: () -> Unit,
     onUnderLineIconClick: () -> Unit,
-    onTextColorChangeIconClick: () -> Unit,
+    onColorPicked: (Color) -> Unit,
     onLineThroughIconClick: () -> Unit,
     onBulletListClick: () -> Unit,
     onNumberListClick: () -> Unit,
     onFormatClearClick: () -> Unit,
-    onTextAlignIconClick: () -> Unit,
+    onAlignmentPicked: (TextAlign) -> Unit,
     tonalElevation: Dp = 5.dp,
-    onFontSizeClick: () -> Unit,
-    onFontSizePlusIconClick: () -> Unit,
-    onFontSizeMinusIconClick: () -> Unit,
-    selectedTextSize: Int,
+    onFontSelected: (Int) -> Unit,
 ) {
     Surface(
         tonalElevation = tonalElevation,
         modifier = modifier.fillMaxWidth()
     ) {
-        Row(
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .horizontalScroll(rememberScrollState())
+
         ) {
-            Spacer(modifier = Modifier.weight(1f))
-            Row() {
-                IconButton(onClick = onFontSizeMinusIconClick) {
-                    Icon(
-                        imageVector = Icons.Default.Remove,
-                        contentDescription = null
-                    )
-                }
-                Box(
-                    modifier = Modifier
-                        .padding(4.dp)
-                        .size(40.dp)
-                        .border(width = 1.dp, Color.Black),
-                ) {
-                    Text(
-                        modifier = Modifier
-                            .clickable {
-                                onFontSizeClick()
-                            }
-                            .fillMaxSize()
-                            .wrapContentSize(),
-                        text = selectedTextSize.toString())
-                }
-                IconButton(onClick = onFontSizePlusIconClick) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = null
-                    )
-                }
-            }
+            Row(
+                modifier = Modifier
+                    .padding(4.dp)
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState())
 
-            IconButton(onClick = onBoldIconClick) {
-                Icon(
-                    imageVector = Icons.Default.FormatBold,
-                    contentDescription = null
+            ) {
+
+                FontTypePicker()
+                FontSizePicker(
+                    onFontSelected =onFontSelected ,
                 )
-            }
-            IconButton(onClick = onItalicIconClick) {
-                Icon(
-                    imageVector = Icons.Default.FormatItalic,
-                    contentDescription = null
+                IconButton(
+                    icon = Icons.Default.FormatBold,
+                    onClick = onBoldIconClick
                 )
-            }
-            IconButton(onClick = onUnderLineIconClick) {
-                Icon(
-                    imageVector = Icons.Default.FormatUnderlined,
-                    contentDescription = null
+                IconButton(
+                    icon = Icons.Default.FormatItalic,
+                    onClick = onItalicIconClick
                 )
-            }
-            IconButton(onClick = onLineThroughIconClick) {
-                Icon(
-                    imageVector = Icons.Default.FormatStrikethrough,
-                    contentDescription = null
+                IconButton(
+                    icon = Icons.Default.FormatUnderlined,
+                    onClick = onUnderLineIconClick
                 )
-            }
-            IconButton(onClick = onTextColorChangeIconClick) {
-                Icon(
-                    imageVector = Icons.Default.FormatColorText,
-                    contentDescription = null
-                )
-            }
-            IconButton(onClick = onTextAlignIconClick) {
-                Row() {
-                    Icon(
-                        imageVector = Icons.Default.FormatAlignLeft,
-                        contentDescription = null
-                    )
-                    Icon(
-                        imageVector = Icons.Default.ArrowDropDown,
-                        contentDescription = null
-                    )
-                }
             }
 
 
-            IconButton(onClick = onBulletListClick) {
-                Icon(
-                    imageVector = Icons.Default.FormatListBulleted,
-                    contentDescription = null
+            Row(
+                modifier = Modifier
+                    .padding(4.dp)
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState())
+            ) {
+
+                IconButton(
+                    icon = Icons.Default.FormatStrikethrough,
+                    onClick = onLineThroughIconClick
                 )
-            }
-            IconButton(onClick = onNumberListClick) {
-                Icon(
-                    imageVector = Icons.Default.FormatListNumbered,
-                    contentDescription = null
+
+                ColorPicker(onColorPicked =onColorPicked )
+                AlignmentPicker(onAlignmentPicked = onAlignmentPicked)
+
+                IconButton(
+                    icon = Icons.Default.FormatListBulleted,
+                    onClick = onBulletListClick
                 )
-            }
-            IconButton(onClick = onFormatClearClick) {
-                Icon(
-                    imageVector = Icons.Default.FormatClear,
-                    contentDescription = null
+
+                IconButton(
+                    icon = Icons.Default.FormatListNumbered,
+                    onClick = onNumberListClick
                 )
+                IconButton(
+                    icon = Icons.Default.FormatClear,
+                    onClick = onFormatClearClick
+                )
+
             }
+
         }
+
     }
 }
 
+
+
+@Composable
+ fun IconButton(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+    icon: ImageVector,
+) {
+    IconButton(
+        modifier = modifier,
+        onClick = onClick
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null
+        )
+    }
+}
 
 
