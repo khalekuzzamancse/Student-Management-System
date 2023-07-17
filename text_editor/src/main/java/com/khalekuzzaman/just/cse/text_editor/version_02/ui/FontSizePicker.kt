@@ -27,7 +27,10 @@ fun FontSizePicker(
     shouldShowPicker: Boolean,
 ) {
 
-    val list = listOf("10", "15", "20","24")
+    val list= mutableListOf<String>()
+    for(i in 10..24)
+        list.add("$i")
+
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -35,7 +38,7 @@ fun FontSizePicker(
     ) {
         DropdownMenu(
             expanded = shouldShowPicker,
-            onDismissRequest = {  onFontSelected(10) }
+            onDismissRequest = {  onFontSelected(13) }
         ) {
             list.forEach {
                 DropdownMenuItem(
