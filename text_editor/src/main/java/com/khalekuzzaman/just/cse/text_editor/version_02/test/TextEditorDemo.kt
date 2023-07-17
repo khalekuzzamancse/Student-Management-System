@@ -23,7 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.khalekuzzaman.just.cse.text_editor.version_02.EditorVisualTransformer
 import com.khalekuzzaman.just.cse.text_editor.version_02.Formatter
-import com.khalekuzzaman.just.cse.text_editor.version_02.FormatterHolder
+import com.khalekuzzaman.just.cse.text_editor.version_02.FormattedIndicesManager
 import com.khalekuzzaman.just.cse.text_editor.version_02.Formatters
 import com.khalekuzzaman.just.cse.text_editor.version_02.SingleCharacterChangeListener
 import com.khalekuzzaman.just.cse.text_editor.version_02.SingleCharacterChangeUtils
@@ -71,7 +71,7 @@ private fun TextEditorDemo() {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Button(onClick = {
-                map = FormatterHolder(map)
+                map = FormattedIndicesManager(map)
                     .addFormatter(textFieldText.selection, Formatters.Bold)
                     .formattedIndices
             }) {
@@ -79,14 +79,14 @@ private fun TextEditorDemo() {
             }
 
             Button(onClick = {
-                map = FormatterHolder(map)
+                map = FormattedIndicesManager(map)
                     .addFormatter(textFieldText.selection, Formatters.RedColor)
                     .formattedIndices
             }) {
                 Text(text = "Red Color")
             }
             Button(onClick = {
-                map = FormatterHolder(map)
+                map = FormattedIndicesManager(map)
                     .addFormatter(textFieldText.selection, Formatters.Italic)
                     .formattedIndices
             }) {

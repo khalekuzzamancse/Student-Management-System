@@ -21,7 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.khalekuzzaman.just.cse.text_editor.version_02.EditorVisualTransformer
 import com.khalekuzzaman.just.cse.text_editor.version_02.Formatter
-import com.khalekuzzaman.just.cse.text_editor.version_02.FormatterHolder
+import com.khalekuzzaman.just.cse.text_editor.version_02.FormattedIndicesManager
 import com.khalekuzzaman.just.cse.text_editor.version_02.SingleCharacterChangeListener
 import com.khalekuzzaman.just.cse.text_editor.version_02.SingleCharacterChangeUtils
 import java.util.TreeMap
@@ -41,38 +41,38 @@ fun TextEditorVersion01() {
 
      */
     val boldText: () -> Unit = {
-        map = FormatterHolder(map)
+        map = FormattedIndicesManager(map)
             .addBoldFormatter(textFieldText.selection)
             .formattedIndices
     }
     val italicText: () -> Unit = {
-        map = FormatterHolder(map)
+        map = FormattedIndicesManager(map)
             .addItalicFormatter(textFieldText.selection)
             .formattedIndices
     }
     val colorText: (Color) -> Unit = {
-        map = FormatterHolder(map)
+        map = FormattedIndicesManager(map)
             .addColorFormatter(textFieldText.selection, it)
             .formattedIndices
 
     }
     val highLightColor: (Color) -> Unit = {
-        map = FormatterHolder(map)
+        map = FormattedIndicesManager(map)
             .addHighlightFormatter(textFieldText.selection, it)
             .formattedIndices
     }
     val underLineText: () -> Unit = {
-        map = FormatterHolder(map)
+        map = FormattedIndicesManager(map)
             .addUnderLineFormatter(textFieldText.selection)
             .formattedIndices
     }
     val lineThrough: () -> Unit = {
-        map = FormatterHolder(map)
+        map = FormattedIndicesManager(map)
             .addLineThroughFormatter(textFieldText.selection)
             .formattedIndices
     }
     val updateFontSize: (Int) -> Unit = {
-        map = FormatterHolder(map)
+        map = FormattedIndicesManager(map)
             .addFontSizeFormatter(textFieldText.selection, it)
             .formattedIndices
     }
@@ -111,7 +111,7 @@ fun TextEditorVersion01() {
                     previousText = previousText
                 )
                 map = SingleCharacterChangeListener(utils, map).onTextChange()
-                printMap(map)
+                debugPrint(map)
                 previousText = currentText.text
 
             },
@@ -123,7 +123,7 @@ fun TextEditorVersion01() {
     }
 }
 
-fun printMap(map: TreeMap<Int, Set<Formatter>>) {
+fun debugPrint(map: TreeMap<Int, Set<Formatter>>) {
     for ((key, value) in map) {
         val names = value.map { it.javaClass.simpleName }
         Log.i("FORMATTERS:", "$key:${names.joinToString(",", "[", "]")}")
