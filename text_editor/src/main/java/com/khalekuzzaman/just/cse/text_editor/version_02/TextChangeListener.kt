@@ -22,6 +22,12 @@ data class SingleCharacterChangeListener(
             if (manager.isFormatted(removedFrom))
                 formattedIndices = manager.removeIndex(removedFrom)
         }
+//        if (changeUtils.hasInsertion()) {
+//            val manager = FormattedIndicesManager(formattedIndices)
+//            val insertedAt = changeUtils.getChangeIndex()
+//            if (manager.isIndexWithinFormattedRange(insertedAt))
+//                formattedIndices = manager.useSameFormatAsNeighbors(insertedAt)
+//        }
 
         return FormattedIndicesManager(formattedIndices)
             .shiftFormattedIndices(

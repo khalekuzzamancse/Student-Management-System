@@ -75,6 +75,15 @@ data class FormattedIndicesManager(
 
     fun removeIndex(index: Int) = TreeMapUtilsImp(formattedIndices).remove(key = index)
     fun isFormatted(key: Int) = TreeMapUtilsImp(formattedIndices).doesExits(key)
+    fun isIndexWithinFormattedRange(key: Int) =
+        TreeMapUtilsImp(formattedIndices).areNeighborsEqual(key)
+
+    fun useSameFormatAsNeighbors(index: Int): TreeMap<Int, Set<Formatter>> {
+        val newMap = TreeMap(formattedIndices)
+        newMap[index] = TreeMapUtilsImp(newMap).getNeighbourCommons(key = index)
+        return newMap
+    }
+
     override fun toString(): String {
         for ((key, value) in formattedIndices) {
             val names = value.map { it.javaClass.simpleName }

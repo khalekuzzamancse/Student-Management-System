@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.khalekuzzaman.just.cse.text_editor.version_02.Formatter
+import com.khalekuzzaman.just.cse.text_editor.version_02.Formatters
 import java.util.TreeMap
 
 
@@ -15,6 +16,11 @@ interface TreeMapUtils {
     fun remove(key: Int, formatter: Formatter): TreeMap<Int, Set<Formatter>>
     fun shiftKey(shiftAmount: Int, predicate: (key: Int) -> Boolean): TreeMap<Int, Set<Formatter>>
     fun doesExits(key: Int): Boolean
+    fun doesNotExits(key: Int): Boolean
+    fun getPreviousOf(key: Int): Set<Formatter>
+    fun getNextOf(key: Int): Set<Formatter>
+    fun areNeighborsEqual(key: Int): Boolean
+    fun getNeighbourCommons(key: Int): Set<Formatter>
 }
 /*
   We don't allow to insert key with empty formatter
@@ -107,12 +113,34 @@ data class TreeMapUtilsImp(
     }
 
     override fun doesExits(key: Int) = map.containsKey(key)
+    override fun doesNotExits(key: Int) = !doesExits(key)
+    override fun getPreviousOf(key: Int) = get(key - 1)
+
+    override fun getNextOf(key: Int) = get(key + 1)
+
+    override fun areNeighborsEqual(key: Int): Boolean {
+        if (doesNotExits(key))
+            return false
+        return getNextOf(key) == getPreviousOf(key)
+    }
+
+    override fun getNeighbourCommons(key: Int) = getPreviousOf(key).intersect(getNextOf(key))
 
 }
 
 @Preview
 @Composable
 private fun Test() {
+    val map = TreeMap<Int, Set<Formatter>>()
+    map[1] = setOf(Formatters.Bold, Formatters.Italic)
+    map[2] = setOf(Formatters.Bold, Formatters.Italic)
+    val x = TreeMapUtilsImp(map)
+    Log.i(
+        "TextChangeListener:",
+        "next=${x.getNextOf(5)}\n" +
+                "prev=${x.getPreviousOf(5)}\n" +
+                "equal=${x.areNeighborsEqual(5)}"
+    )
 
 
 }
