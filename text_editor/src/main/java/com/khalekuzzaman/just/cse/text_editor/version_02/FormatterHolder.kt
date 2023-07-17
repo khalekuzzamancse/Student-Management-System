@@ -5,6 +5,16 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.unit.TextUnit
 import java.util.TreeMap
 
+/*
+FormatterHolder Class Responsibility:
+    It take a map that could be empty
+    then you can give a text range and ask him to format the range with a formatter.
+    after applying formatter you can take the updated formatter from it.
+
+It does not and need not know:
+    In which position character was inserted or deleted.
+
+ */
 data class FormatterHolder(
     val formattedIndices: TreeMap<Int, Set<Formatter>>,
 ) {
