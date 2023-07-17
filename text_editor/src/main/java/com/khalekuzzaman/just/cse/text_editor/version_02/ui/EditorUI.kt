@@ -1,4 +1,4 @@
-package com.khalekuzzaman.just.cse.text_editor.version_02.editor_ui
+package com.khalekuzzaman.just.cse.text_editor.version_02.ui
 
 import android.util.Log
 import androidx.compose.foundation.border
@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -17,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.khalekuzzaman.just.cse.text_editor.version_02.EditorVisualTransformer
@@ -35,15 +38,18 @@ fun TextEditorVersion01() {
     var previousText by remember { mutableStateOf("") }
     var map by remember { mutableStateOf(TreeMap<Int, Set<Formatter>>()) }
 
+    /*
+
+     */
+    var showColorPicker by remember { mutableStateOf(false) }
+    var pickedColor by remember { mutableStateOf(Color.Blue) }
+    var showAlignmentPicker by remember { mutableStateOf(false) }
+    var pickedAlignment by remember { mutableStateOf(TextAlign.Start) }
+    var showFontSizePicker by remember { mutableStateOf(false) }
+    var fontSize by remember { mutableIntStateOf(13) }
 
     val visualTransformation = EditorVisualTransformer()
         .createTextFormatter(formatterMap = map)
-
-
-    var showColorPicker by remember { mutableStateOf(false) }
-    var pickedColor by remember { mutableStateOf(Color.Blue) }
-
-
     /*
 
      */
@@ -73,14 +79,16 @@ fun TextEditorVersion01() {
             .addFormatter(textFieldText.selection, Formatters.LineThrough)
             .formattedIndices
     }
+    val updateFontSize:(Int)->Unit={
+        map = FormatterHolder(map)
+            .addFormatter(textFieldText.selection, Formatters.FontSize(it))
+            .formattedIndices
+    }
     /*
 
      */
     Column(modifier = Modifier.padding(8.dp)) {
         TextEditorTopSection(
-            onBulletListClick = {},
-            onNumberListClick = {},
-            onFormatClearClick = {},
             onBoldIconClick = boldText,
             onItalicIconClick = italicText,
             onUnderLineIconClick = underLineText,
@@ -88,6 +96,24 @@ fun TextEditorVersion01() {
                 showColorPicker = true
             },
             onLineThroughIconClick = lineThrough,
+            onBulletListClick = {},
+            onNumberListClick = {},
+            onFormatClearClick = {},
+            onTextAlignIconClick = { showAlignmentPicker = true },
+            onFontSizeClick = {
+                showFontSizePicker = true
+            },
+            onFontSizePlusIconClick = {
+                fontSize += 2
+                fontSize=fontSize.coerceIn(10,24)
+                updateFontSize(fontSize)
+            },
+            onFontSizeMinusIconClick = {
+                fontSize -= 2
+                fontSize=fontSize.coerceIn(10,24)
+                updateFontSize(fontSize)
+            },
+            selectedTextSize = fontSize,
         )
         if (showColorPicker) {
             ColorPicker(
@@ -101,6 +127,24 @@ fun TextEditorVersion01() {
             )
 
         }
+        if (showAlignmentPicker) {
+            AlignmentPicker(
+                onAlignmentPicked = {
+                    pickedAlignment = it
+                    showAlignmentPicker = false
+                },
+                shouldShowPicker = true
+            )
+        }
+        if (showFontSizePicker) {
+            FontSizePicker(
+                onFontSelected = {
+                    updateFontSize(it)
+                    showFontSizePicker = false
+                },
+                shouldShowPicker = true)
+        }
+
         BasicTextField(
             modifier = Modifier
                 .padding(top = 50.dp)
@@ -125,7 +169,9 @@ fun TextEditorVersion01() {
                 previousText = currentText.text
 
             },
-            visualTransformation = visualTransformation
+            visualTransformation = visualTransformation,
+            textStyle = LocalTextStyle.current.copy(textAlign = pickedAlignment)
+
         )
 
     }

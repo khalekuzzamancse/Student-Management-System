@@ -5,6 +5,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.unit.sp
 
 
 interface Formatter {
@@ -40,6 +41,15 @@ object Formatters {
         val color: Color,
     ) : Formatter {
         override fun getStyle() = SpanStyle(color = color)
+
+    }
+    data class FontSize(
+        val fontSize: Int,
+    ) : Formatter {
+        override fun getStyle() =
+            SpanStyle(
+            fontSize = fontSize.sp
+            )
 
     }
 

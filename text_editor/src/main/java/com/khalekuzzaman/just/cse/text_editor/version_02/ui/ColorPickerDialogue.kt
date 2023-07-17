@@ -1,4 +1,4 @@
-package com.khalekuzzaman.just.cse.text_editor.version_02.editor_ui
+package com.khalekuzzaman.just.cse.text_editor.version_02.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -15,7 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 
@@ -26,16 +26,23 @@ private val coloredBoxes = listOf(
 )
 
 
+@Preview
+@Composable
+private fun Preview() {
+    ColorPicker(onColorPicked = {}, shouldShowPicker = true)
+}
+
 @Composable
 fun ColorPicker(
-    modifier: Modifier=Modifier,
+    modifier: Modifier = Modifier,
     onColorPicked: (Color) -> Unit,
     shouldShowPicker: Boolean,
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .wrapContentSize()
     ) {
-    LocalContext.current
-    Box(modifier = modifier
-        .fillMaxWidth()
-        .wrapContentSize()) {
         DropdownMenu(
             expanded = shouldShowPicker,
             onDismissRequest = { onColorPicked(Color.Unspecified) }
@@ -51,7 +58,7 @@ fun ColorPicker(
 }
 
 @Composable
- fun ColorPlate(
+fun ColorPlate(
     onColorChooseBoxClick: (Color) -> Unit,
     list: List<Color>,
 ) {
