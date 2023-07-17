@@ -7,6 +7,8 @@ interface StringUtils {
     fun isTextUnchanged(): Boolean
     fun getShiftAmount(): Int
     fun getChangeIndex(): Int
+    fun getCurrentText(): String
+    fun getPreviousText(): String
 }
 
 data class SingleCharacterChangeUtils(
@@ -73,6 +75,9 @@ data class SingleCharacterChangeUtils(
         else -> NO_CHANGE_INDEX
     }
 
+    override fun getCurrentText() = currentText
+
+    override fun getPreviousText() = previousText
 }
 
 fun main() {

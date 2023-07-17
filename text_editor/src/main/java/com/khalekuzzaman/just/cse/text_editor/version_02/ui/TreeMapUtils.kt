@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.khalekuzzaman.just.cse.text_editor.version_02.Formatter
-import com.khalekuzzaman.just.cse.text_editor.version_02.Formatters
 import java.util.TreeMap
 
 
@@ -14,7 +13,8 @@ interface TreeMapUtils {
     fun remove(key: Int): TreeMap<Int, Set<Formatter>>
     fun get(key: Int): Set<Formatter>
     fun remove(key: Int, formatter: Formatter): TreeMap<Int, Set<Formatter>>
-    fun shiftKey(keys: List<Int>, shiftAmount: Int): TreeMap<Int, Set<Formatter>>
+    fun shiftKey(shiftAmount: Int, predicate: (key: Int) -> Boolean): TreeMap<Int, Set<Formatter>>
+    fun doesExits(key: Int): Boolean
 }
 /*
   We don't allow to insert key with empty formatter
@@ -80,30 +80,40 @@ data class TreeMapUtilsImp(
         return map[key] ?: emptySet()
     }
 
-    override fun shiftKey(keys: List<Int>, shiftAmount: Int): TreeMap<Int, Set<Formatter>> {
+    override fun shiftKey(
+        shiftAmount: Int,
+        predicate: (key: Int) -> Boolean,
+    ): TreeMap<Int, Set<Formatter>> {
+
         val updatedMap = map
             .mapKeys {
-                if (it.key in keys) {
+                if (predicate(it.key)) {
                     it.key + shiftAmount
                 } else {
                     it.key
                 }
             }
             .filterKeys { it >= 0 }
+
+        Log.i(
+            "TextChangeListener:MapUtil", "\n" +
+                    "currentMapIndices=${map.map { it.key }}\n" +
+                    "shiftAmount=$shiftAmount\n" +
+                    "updatedMapIndices=${updatedMap.map { it.key }}}\n\n"
+        )
+
+
         return TreeMap(updatedMap)
     }
+
+    override fun doesExits(key: Int) = map.containsKey(key)
 
 }
 
 @Preview
 @Composable
 private fun Test() {
-    val map = TreeMap<Int, Set<Formatter>>()
-    map[1] = setOf(Formatters.Bold, Formatters.Italic)
-    Log.i(
-        TreeMapUtilsImp.TAG,
-        "${TreeMapUtilsImp(map).shiftKey(listOf(4,2),-2)}"
-    )
+
 
 }
 

@@ -2,6 +2,7 @@ package com.khalekuzzaman.just.cse.text_editor.version_02
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextRange
+import com.khalekuzzaman.just.cse.text_editor.version_02.ui.TreeMapUtilsImp
 import java.util.TreeMap
 
 /*
@@ -70,21 +71,10 @@ data class FormattedIndicesManager(
     fun shiftFormattedIndices(
         characterChangedAt: Int,
         shiftAmount: Int,
-    ): FormattedIndicesManager {
-        val updatedFormattedIndices = mutableMapOf<Int, Set<Formatter>>()
-        for ((key, value) in formattedIndices) {
-            val newKey = if (characterChangedAt <= key) key + shiftAmount else key
-            updatedFormattedIndices[newKey] = value
-        }
-        return this.copy(formattedIndices = TreeMap(updatedFormattedIndices))
-    }
+    ) = TreeMapUtilsImp(formattedIndices).shiftKey(shiftAmount) { characterChangedAt <= it }
 
-    fun removeFormattedIndex(index: Int): FormattedIndicesManager {
-        val updatedFormattedIndices = formattedIndices.filterKeys { it != index }
-        return this.copy(formattedIndices = TreeMap(updatedFormattedIndices))
-    }
-
-
+    fun removeIndex(index: Int) = TreeMapUtilsImp(formattedIndices).remove(key = index)
+    fun isFormatted(key: Int) = TreeMapUtilsImp(formattedIndices).doesExits(key)
     override fun toString(): String {
         for ((key, value) in formattedIndices) {
             val names = value.map { it.javaClass.simpleName }
