@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.FormatAlignLeft
 import androidx.compose.material.icons.filled.FormatBold
 import androidx.compose.material.icons.filled.FormatClear
 import androidx.compose.material.icons.filled.FormatItalic
@@ -42,8 +40,8 @@ private fun Preview() {
         onNumberListClick = { /*TODO*/ },
         onFormatClearClick = {},
         onAlignmentPicked = {},
-        onFontSelected = {},
-    )
+        onHighLightColorPick = {  },
+    ) {}
 }
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -60,6 +58,7 @@ fun TextEditorTopSection(
     onFormatClearClick: () -> Unit,
     onAlignmentPicked: (TextAlign) -> Unit,
     tonalElevation: Dp = 5.dp,
+    onHighLightColorPick: (Color) -> Unit,
     onFontSelected: (Int) -> Unit,
 ) {
     Surface(
@@ -110,6 +109,7 @@ fun TextEditorTopSection(
                 )
 
                 ColorPicker(onColorPicked =onColorPicked )
+                ColorHighLighterPicker(onColorPicked = onHighLightColorPick)
                 AlignmentPicker(onAlignmentPicked = onAlignmentPicked)
 
                 IconButton(

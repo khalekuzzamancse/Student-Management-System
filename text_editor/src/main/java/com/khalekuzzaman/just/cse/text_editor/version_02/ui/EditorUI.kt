@@ -22,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import com.khalekuzzaman.just.cse.text_editor.version_02.EditorVisualTransformer
 import com.khalekuzzaman.just.cse.text_editor.version_02.Formatter
 import com.khalekuzzaman.just.cse.text_editor.version_02.FormatterHolder
-import com.khalekuzzaman.just.cse.text_editor.version_02.Formatters
 import com.khalekuzzaman.just.cse.text_editor.version_02.SingleCharacterChangeListener
 import com.khalekuzzaman.just.cse.text_editor.version_02.SingleCharacterChangeUtils
 import java.util.TreeMap
@@ -43,33 +42,38 @@ fun TextEditorVersion01() {
      */
     val boldText: () -> Unit = {
         map = FormatterHolder(map)
-            .addFormatter(textFieldText.selection, Formatters.Bold)
+            .addBoldFormatter(textFieldText.selection)
             .formattedIndices
     }
     val italicText: () -> Unit = {
         map = FormatterHolder(map)
-            .addFormatter(textFieldText.selection, Formatters.Italic)
+            .addItalicFormatter(textFieldText.selection)
             .formattedIndices
     }
     val colorText: (Color) -> Unit = {
         map = FormatterHolder(map)
-            .addFormatter(textFieldText.selection, Formatters.Colored(it))
+            .addColorFormatter(textFieldText.selection, it)
             .formattedIndices
 
     }
+    val highLightColor: (Color) -> Unit = {
+        map = FormatterHolder(map)
+            .addHighlightFormatter(textFieldText.selection, it)
+            .formattedIndices
+    }
     val underLineText: () -> Unit = {
         map = FormatterHolder(map)
-            .addFormatter(textFieldText.selection, Formatters.UnderLine)
+            .addUnderLineFormatter(textFieldText.selection)
             .formattedIndices
     }
     val lineThrough: () -> Unit = {
         map = FormatterHolder(map)
-            .addFormatter(textFieldText.selection, Formatters.LineThrough)
+            .addLineThroughFormatter(textFieldText.selection)
             .formattedIndices
     }
     val updateFontSize: (Int) -> Unit = {
         map = FormatterHolder(map)
-            .addFormatter(textFieldText.selection, Formatters.FontSize(it))
+            .addFontSizeFormatter(textFieldText.selection, it)
             .formattedIndices
     }
     /*
@@ -82,10 +86,12 @@ fun TextEditorVersion01() {
             onUnderLineIconClick = underLineText,
             onColorPicked = colorText,
             onLineThroughIconClick = lineThrough,
+
             onBulletListClick = {},
             onNumberListClick = {},
             onFormatClearClick = {},
             onAlignmentPicked = { pickedAlignment = it },
+            onHighLightColorPick = highLightColor,
             onFontSelected = updateFontSize
         )
 
