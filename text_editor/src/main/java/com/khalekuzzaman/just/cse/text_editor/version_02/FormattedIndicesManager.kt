@@ -1,6 +1,5 @@
 package com.khalekuzzaman.just.cse.text_editor.version_02
 
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextRange
 import com.khalekuzzaman.just.cse.text_editor.version_02.ui.TreeMapUtilsImp
 import java.util.TreeMap
@@ -21,8 +20,9 @@ It Can do:
 
  */
 data class FormattedIndicesManager(
-    val formattedIndices: TreeMap<Int, Set<Formatter>>,
+    val indices: TreeMap<Int, Set<Formatter>>,
 ) {
+
 
     companion object {
         private const val SINGLE_CHAR_ADD_SHIFT_AMOUNT = 1
@@ -34,93 +34,88 @@ data class FormattedIndicesManager(
             this
                 .removeIndex(index)
                 .shiftFormattedIndices(index, SINGLE_CHAR_REMOVE_SHIFT_AMOUNT)
-                .formattedIndices
+                .indices
         else
             this
                 .shiftFormattedIndices(index, SINGLE_CHAR_REMOVE_SHIFT_AMOUNT)
-                .formattedIndices
+                .indices
                 )
     }
 
     fun onCharacterInsertion(index: Int): TreeMap<Int, Set<Formatter>> {
         return if (isIndexWithinFormattedRange(index))
-            useSameFormatAsNeighbors(index).formattedIndices
+            useSameFormatAsNeighbors(index).indices
         else this
             .shiftFormattedIndices(index, SINGLE_CHAR_ADD_SHIFT_AMOUNT)
-            .formattedIndices
+            .indices
 
     }
 
 
-    fun addFormatter(selectedTextRange: TextRange, formatter: Formatter): FormattedIndicesManager {
-        var newMap = TreeMap(formattedIndices)
-        val start = selectedTextRange.start
-        val end = selectedTextRange.end
-        val isSelectedSomeText = start != end
-        if (isSelectedSomeText) {
-            newMap = TreeMapUtilsImp(newMap).add(start.until(end).toList(), formatter)
-        }
-        return this.copy(formattedIndices = newMap)
+    fun addFormatter(indices: List<Int>, formatter: Formatter): FormattedIndicesManager {
+        var newMap = TreeMap(this.indices)
+        newMap = TreeMapUtilsImp(newMap).add(indices, formatter)
+        return this.copy(indices = newMap)
     }
 
     private fun addFormatter(index: Int, formatters: Set<Formatter>): FormattedIndicesManager {
-        formattedIndices[index] = formatters
-        return this.copy(formattedIndices = formattedIndices)
+        indices[index] = formatters
+        return this.copy(indices = indices)
     }
 
-    fun addBoldFormatter(selectedTextRange: TextRange): FormattedIndicesManager {
-        return addFormatter(selectedTextRange, Formatters.Bold)
-    }
-
-    fun addItalicFormatter(selectedTextRange: TextRange): FormattedIndicesManager {
-        return addFormatter(selectedTextRange, Formatters.Italic)
-    }
-
-    fun addLineThroughFormatter(selectedTextRange: TextRange): FormattedIndicesManager {
-        return addFormatter(selectedTextRange, Formatters.LineThrough)
-    }
-
-    fun addUnderLineFormatter(selectedTextRange: TextRange): FormattedIndicesManager {
-        return addFormatter(selectedTextRange, Formatters.UnderLine)
-    }
-
-    fun addColorFormatter(selectedTextRange: TextRange, color: Color): FormattedIndicesManager {
-        return addFormatter(selectedTextRange, Formatters.Colored(color))
-    }
-
-    fun addHighlightFormatter(selectedTextRange: TextRange, color: Color): FormattedIndicesManager {
-        return addFormatter(selectedTextRange, Formatters.HighLight(color))
-    }
-
-    fun addFontSizeFormatter(selectedTextRange: TextRange, fontSize: Int): FormattedIndicesManager {
-        return addFormatter(selectedTextRange, Formatters.FontSize(fontSize))
-    }
 
     private fun shiftFormattedIndices(
         characterChangedAt: Int,
         shiftAmount: Int,
     ): FormattedIndicesManager {
         return this.copy(
-            formattedIndices = TreeMapUtilsImp(formattedIndices).shiftKey(shiftAmount) { characterChangedAt <= it }
+            indices = TreeMapUtilsImp(indices).shiftKey(shiftAmount) { characterChangedAt <= it }
         )
     }
 
     private fun removeIndex(index: Int): FormattedIndicesManager {
-        return this.copy(formattedIndices = TreeMapUtilsImp(formattedIndices).remove(key = index))
+        return this.copy(indices = TreeMapUtilsImp(indices).remove(key = index))
     }
 
-    private fun isFormatted(key: Int) = TreeMapUtilsImp(formattedIndices).doesExits(key)
+    private fun isFormatted(key: Int) = TreeMapUtilsImp(indices).doesExits(key)
+    fun doesExits(key: Int, formatter: Formatter) =
+        TreeMapUtilsImp(indices).doesExits(key, formatter)
+
+    fun doesExits(keys: List<Int>, formatter: Formatter): Boolean {
+        var exits = true
+        keys.forEach { key ->
+            exits = exits && doesExits(key, formatter)
+        }
+        return exits
+    }
+
+
     private fun isIndexWithinFormattedRange(key: Int) =
-        TreeMapUtilsImp(formattedIndices).hasNeighbourCommon(key)
+        TreeMapUtilsImp(indices).hasNeighbourCommon(key)
 
     private fun useSameFormatAsNeighbors(index: Int): FormattedIndicesManager {
-        val commonFormat = TreeMapUtilsImp(formattedIndices).getPreviousOf(key = index)
+        val commonFormat = TreeMapUtilsImp(indices).getPreviousOf(key = index)
         return this.copy(
-            formattedIndices = this
+            indices = this
                 .shiftFormattedIndices(index, 1)
                 .addFormatter(index, commonFormat)
-                .formattedIndices
+                .indices
         )
+    }
+
+    fun removeFormat(index: Int): FormattedIndicesManager {
+        return this.copy(indices = TreeMapUtilsImp(indices).remove(index))
+    }
+
+    fun removeFormat(index: Int, formatter: Formatter): FormattedIndicesManager {
+        return this.copy(indices = TreeMapUtilsImp(indices).remove(index, formatter))
+    }
+
+    fun removeFormat(keys: List<Int>, formatter: Formatter): FormattedIndicesManager {
+        return this.copy(indices = TreeMapUtilsImp(indices).remove(keys, formatter))
+    }
+    fun removeFormat(keys: List<Int>): FormattedIndicesManager {
+        return this.copy(indices = TreeMapUtilsImp(indices).remove(keys))
     }
 
 }

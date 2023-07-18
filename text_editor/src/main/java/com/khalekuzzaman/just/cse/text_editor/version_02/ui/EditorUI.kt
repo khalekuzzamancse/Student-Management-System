@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import com.khalekuzzaman.just.cse.text_editor.version_02.EditorVisualTransformer
 import com.khalekuzzaman.just.cse.text_editor.version_02.Formatter
 import com.khalekuzzaman.just.cse.text_editor.version_02.FormattedIndicesManager
+import com.khalekuzzaman.just.cse.text_editor.version_02.Formatters
 import com.khalekuzzaman.just.cse.text_editor.version_02.SingleCharacterChangeListener
 import com.khalekuzzaman.just.cse.text_editor.version_02.SingleCharacterChangeUtils
 import java.util.TreeMap
@@ -40,59 +41,45 @@ fun TextEditorVersion01() {
     /*
 
      */
-    val boldText: () -> Unit = {
-        map = FormattedIndicesManager(map)
-            .addBoldFormatter(textFieldText.selection)
-            .formattedIndices
-    }
-    val italicText: () -> Unit = {
-        map = FormattedIndicesManager(map)
-            .addItalicFormatter(textFieldText.selection)
-            .formattedIndices
-    }
-    val colorText: (Color) -> Unit = {
-        map = FormattedIndicesManager(map)
-            .addColorFormatter(textFieldText.selection, it)
-            .formattedIndices
+    val addFormatter: (Formatter) -> Unit = {
+        val manager = FormattedIndicesManager(map)
+        val start = textFieldText.selection.start
+        val end = textFieldText.selection.end
+        val list = start.until(end).toList()
+        map = if (manager.doesExits(list, it)) {
+            manager.removeFormat(list, it).indices
+        } else {
+            FormattedIndicesManager(map)
+                .addFormatter(list, it)
+                .indices
+        }
 
     }
-    val highLightColor: (Color) -> Unit = {
+    val clearFormat: () -> Unit = {
+        val start = textFieldText.selection.start
+        val end = textFieldText.selection.end
+        val list = start.until(end).toList()
         map = FormattedIndicesManager(map)
-            .addHighlightFormatter(textFieldText.selection, it)
-            .formattedIndices
+            .removeFormat(list)
+            .indices
     }
-    val underLineText: () -> Unit = {
-        map = FormattedIndicesManager(map)
-            .addUnderLineFormatter(textFieldText.selection)
-            .formattedIndices
-    }
-    val lineThrough: () -> Unit = {
-        map = FormattedIndicesManager(map)
-            .addLineThroughFormatter(textFieldText.selection)
-            .formattedIndices
-    }
-    val updateFontSize: (Int) -> Unit = {
-        map = FormattedIndicesManager(map)
-            .addFontSizeFormatter(textFieldText.selection, it)
-            .formattedIndices
-    }
+
     /*
 
      */
     Column(modifier = Modifier.padding(8.dp)) {
         TextEditorTopSection(
-            onBoldIconClick = boldText,
-            onItalicIconClick = italicText,
-            onUnderLineIconClick = underLineText,
-            onColorPicked = colorText,
-            onLineThroughIconClick = lineThrough,
-
+            onBoldIconClick = { addFormatter(Formatters.Bold) },
+            onItalicIconClick = { addFormatter(Formatters.Italic) },
+            onUnderLineIconClick = { addFormatter(Formatters.UnderLine) },
+            onColorPicked = { addFormatter(Formatters.Colored(it)) },
+            onLineThroughIconClick = { addFormatter(Formatters.LineThrough) },
             onBulletListClick = {},
             onNumberListClick = {},
-            onFormatClearClick = {},
+            onFormatClearClick = clearFormat,
             onAlignmentPicked = { pickedAlignment = it },
-            onHighLightColorPick = highLightColor,
-            onFontSelected = updateFontSize
+            onHighLightColorPick = { addFormatter(Formatters.HighLight(it)) },
+            onFontSelected = { addFormatter(Formatters.FontSize(it)) }
         )
 
 

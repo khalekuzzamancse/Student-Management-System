@@ -10,7 +10,7 @@ import java.util.TreeMap
 
 interface TreeMapUtils {
     fun add(key: Int, set: Set<Formatter>): TreeMap<Int, Set<Formatter>>
-    fun add(keys:List<Int>,formatter: Formatter): TreeMap<Int, Set<Formatter>>
+    fun add(keys: List<Int>, formatter: Formatter): TreeMap<Int, Set<Formatter>>
     fun add(key: Int, formatter: Formatter): TreeMap<Int, Set<Formatter>>
     fun remove(key: Int): TreeMap<Int, Set<Formatter>>
     fun get(key: Int): Set<Formatter>
@@ -23,7 +23,7 @@ interface TreeMapUtils {
     fun areNeighborsEqual(key: Int): Boolean
 
     fun getNeighbourCommons(key: Int): Set<Formatter>
-    fun hasNeighbourCommon(key: Int):Boolean
+    fun hasNeighbourCommon(key: Int): Boolean
 }
 /*
   We don't allow to insert key with empty formatter
@@ -60,8 +60,8 @@ data class TreeMapUtilsImp(
     }
 
     override fun add(keys: List<Int>, formatter: Formatter): TreeMap<Int, Set<Formatter>> {
-        val newMap=map
-        keys.forEach {key->
+        val newMap = map
+        keys.forEach { key ->
             if (key < 0) {
                 throw IllegalArgumentException("add():Negative key not allowed($key)")
             }
@@ -92,7 +92,32 @@ data class TreeMapUtilsImp(
             return TreeMap(map)
         val set = get(key).filter { it != formatter }.toSet()
         val updatedMap = TreeMap(map)
-        updatedMap[key] = set
+        if (set.isEmpty())
+            remove(key)
+        else
+            updatedMap[key] = set
+        return updatedMap
+    }
+
+    fun remove(keys: List<Int>, formatter: Formatter): TreeMap<Int, Set<Formatter>> {
+        val updatedMap = TreeMap(map)
+        keys.forEach { key ->
+            if (map.containsKey(key)) {
+                val set = get(key).filter { it != formatter }.toSet()
+                if (set.isEmpty())
+                    remove(key)
+                else
+                    updatedMap[key] = set
+            }
+        }
+        return updatedMap
+    }
+
+    fun remove(keys: List<Int>): TreeMap<Int, Set<Formatter>> {
+        val updatedMap =TreeMap(map)
+        keys.forEach { key ->
+            updatedMap.remove(key)
+        }
         return updatedMap
     }
 
@@ -121,6 +146,8 @@ data class TreeMapUtilsImp(
 
     override fun doesExits(key: Int) = map.containsKey(key)
     override fun doesNotExits(key: Int) = !doesExits(key)
+    fun doesExits(key: Int, formatter: Formatter) = get(key).contains(formatter)
+
     override fun getPreviousOf(key: Int) = get(key - 1)
 
     override fun getNextOf(key: Int) = get(key + 1)
@@ -138,7 +165,7 @@ data class TreeMapUtilsImp(
     }
 
     override fun getNeighbourCommons(key: Int) = getPreviousOf(key).intersect(getNextOf(key))
-    override fun hasNeighbourCommon(key: Int)= getNeighbourCommons(key) != emptySet<Formatter>()
+    override fun hasNeighbourCommon(key: Int) = getNeighbourCommons(key) != emptySet<Formatter>()
 
 }
 

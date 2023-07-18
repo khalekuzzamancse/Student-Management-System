@@ -1,7 +1,6 @@
 package com.khalekuzzaman.just.cse.text_editor.version_02.test
 
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -38,8 +37,6 @@ private fun TextEditorDemo() {
     var map by remember { mutableStateOf(TreeMap<Int, Set<Formatter>>()) }
 
 
-
-
     val visualTransformation = EditorVisualTransformer()
         .createTextFormatter(formatterMap = map)
 
@@ -50,8 +47,9 @@ private fun TextEditorDemo() {
             onValueChange = { currentText ->
                 textFieldText = currentText
                 val utils = SingleCharacterChangeUtils(
-                   currentText= currentText.text,
-                    previousText = previousText)
+                    currentText = currentText.text,
+                    previousText = previousText
+                )
                 map = SingleCharacterChangeListener(utils, map).onTextChange()
 
 
@@ -68,24 +66,33 @@ private fun TextEditorDemo() {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Button(onClick = {
+                val start = textFieldText.selection.start
+                val end = textFieldText.selection.end
+                val list = start.until(end).toList()
                 map = FormattedIndicesManager(map)
-                    .addFormatter(textFieldText.selection, Formatters.Bold)
-                    .formattedIndices
+                    .addFormatter(list, Formatters.Bold)
+                    .indices
             }) {
                 Text(text = "Bold")
             }
 
             Button(onClick = {
+                val start = textFieldText.selection.start
+                val end = textFieldText.selection.end
+                val list = start.until(end).toList()
                 map = FormattedIndicesManager(map)
-                    .addFormatter(textFieldText.selection, Formatters.RedColor)
-                    .formattedIndices
+                    .addFormatter(list, Formatters.RedColor)
+                    .indices
             }) {
                 Text(text = "Red Color")
             }
             Button(onClick = {
+                val start = textFieldText.selection.start
+                val end = textFieldText.selection.end
+                val list = start.until(end).toList()
                 map = FormattedIndicesManager(map)
-                    .addFormatter(textFieldText.selection, Formatters.Italic)
-                    .formattedIndices
+                    .addFormatter(list, Formatters.Italic)
+                    .indices
             }) {
                 Text(text = "Italic")
             }
