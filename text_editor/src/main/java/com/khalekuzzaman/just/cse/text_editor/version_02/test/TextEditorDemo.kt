@@ -53,10 +53,7 @@ private fun TextEditorDemo() {
                    currentText= currentText.text,
                     previousText = previousText)
                 map = SingleCharacterChangeListener(utils, map).onTextChange()
-                for ((key, value) in map) {
-                    val names = value.map { it.javaClass.simpleName }
-                    Log.i("FORMATTERS:","$key:${names.joinToString(",", "[", "]")}")
-                }
+
 
                 //
                 previousText = currentText.text

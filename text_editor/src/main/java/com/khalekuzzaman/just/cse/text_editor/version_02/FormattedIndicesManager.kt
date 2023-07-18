@@ -24,20 +24,48 @@ data class FormattedIndicesManager(
     val formattedIndices: TreeMap<Int, Set<Formatter>>,
 ) {
 
+    companion object {
+        private const val SINGLE_CHAR_ADD_SHIFT_AMOUNT = 1
+        private const val SINGLE_CHAR_REMOVE_SHIFT_AMOUNT = -1
+    }
+
+    fun onCharacterRemoval(index: Int): TreeMap<Int, Set<Formatter>> {
+        return (if (isFormatted(index))
+            this
+                .removeIndex(index)
+                .shiftFormattedIndices(index, SINGLE_CHAR_REMOVE_SHIFT_AMOUNT)
+                .formattedIndices
+        else
+            this
+                .shiftFormattedIndices(index, SINGLE_CHAR_REMOVE_SHIFT_AMOUNT)
+                .formattedIndices
+                )
+    }
+
+    fun onCharacterInsertion(index: Int): TreeMap<Int, Set<Formatter>> {
+        return if (isIndexWithinFormattedRange(index))
+            useSameFormatAsNeighbors(index).formattedIndices
+        else this
+            .shiftFormattedIndices(index, SINGLE_CHAR_ADD_SHIFT_AMOUNT)
+            .formattedIndices
+
+    }
+
 
     fun addFormatter(selectedTextRange: TextRange, formatter: Formatter): FormattedIndicesManager {
-        val newFormattedIndicesMap = TreeMap(formattedIndices)
+        var newMap = TreeMap(formattedIndices)
         val start = selectedTextRange.start
         val end = selectedTextRange.end
         val isSelectedSomeText = start != end
-        if (isSelectedSomeText)
-            for (i in start until end) {
-                val existingFormatters = newFormattedIndicesMap[i] ?: emptySet()
-                val newFormatters = existingFormatters + formatter
-                newFormattedIndicesMap[i] = newFormatters
-            }
+        if (isSelectedSomeText) {
+            newMap = TreeMapUtilsImp(newMap).add(start.until(end).toList(), formatter)
+        }
+        return this.copy(formattedIndices = newMap)
+    }
 
-        return this.copy(formattedIndices = newFormattedIndicesMap)
+    private fun addFormatter(index: Int, formatters: Set<Formatter>): FormattedIndicesManager {
+        formattedIndices[index] = formatters
+        return this.copy(formattedIndices = formattedIndices)
     }
 
     fun addBoldFormatter(selectedTextRange: TextRange): FormattedIndicesManager {
@@ -68,45 +96,31 @@ data class FormattedIndicesManager(
         return addFormatter(selectedTextRange, Formatters.FontSize(fontSize))
     }
 
-    fun shiftFormattedIndices(
+    private fun shiftFormattedIndices(
         characterChangedAt: Int,
         shiftAmount: Int,
-    ) = TreeMapUtilsImp(formattedIndices).shiftKey(shiftAmount) { characterChangedAt <= it }
-
-    fun removeIndex(index: Int) = TreeMapUtilsImp(formattedIndices).remove(key = index)
-    fun isFormatted(key: Int) = TreeMapUtilsImp(formattedIndices).doesExits(key)
-    fun isIndexWithinFormattedRange(key: Int) =
-        TreeMapUtilsImp(formattedIndices).areNeighborsEqual(key)
-
-    fun useSameFormatAsNeighbors(index: Int): TreeMap<Int, Set<Formatter>> {
-        val newMap = TreeMap(formattedIndices)
-        newMap[index] = TreeMapUtilsImp(newMap).getNeighbourCommons(key = index)
-        return newMap
+    ): FormattedIndicesManager {
+        return this.copy(
+            formattedIndices = TreeMapUtilsImp(formattedIndices).shiftKey(shiftAmount) { characterChangedAt <= it }
+        )
     }
 
-    override fun toString(): String {
-        for ((key, value) in formattedIndices) {
-            val names = value.map { it.javaClass.simpleName }
-            println("$key:${names.joinToString(",", "[", "]")}")
-        }
-        return super.toString()
+    private fun removeIndex(index: Int): FormattedIndicesManager {
+        return this.copy(formattedIndices = TreeMapUtilsImp(formattedIndices).remove(key = index))
     }
+
+    private fun isFormatted(key: Int) = TreeMapUtilsImp(formattedIndices).doesExits(key)
+    private fun isIndexWithinFormattedRange(key: Int) =
+        TreeMapUtilsImp(formattedIndices).hasNeighbourCommon(key)
+
+    private fun useSameFormatAsNeighbors(index: Int): FormattedIndicesManager {
+        val commonFormat = TreeMapUtilsImp(formattedIndices).getPreviousOf(key = index)
+        return this.copy(
+            formattedIndices = this
+                .shiftFormattedIndices(index, 1)
+                .addFormatter(index, commonFormat)
+                .formattedIndices
+        )
+    }
+
 }
-
-//fun main() {
-//   val h=FormatterHolder(TreeMap())
-//        .addFormatter(TextRange(3, 5), Formatters.RedColor)
-//    val a = "012345678"
-//    val b = "0123456718"
-//
-//    val listener = SingleCharacterChangeListener(
-//        SingleCharacterChangeUtils(previousText = a, currentText = b),
-//        TreeMap(h.formattedIndices)
-//    )
-//   val map= listener.onTextChange()
-//    for ((key, value) in map) {
-//        val names = value.map { it.javaClass.simpleName }
-//        println("$key:${names.joinToString(",", "[", "]")}")
-//    }
-//
-//}

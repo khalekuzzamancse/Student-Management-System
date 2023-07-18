@@ -10,6 +10,7 @@ import java.util.TreeMap
 
 interface TreeMapUtils {
     fun add(key: Int, set: Set<Formatter>): TreeMap<Int, Set<Formatter>>
+    fun add(keys:List<Int>,formatter: Formatter): TreeMap<Int, Set<Formatter>>
     fun add(key: Int, formatter: Formatter): TreeMap<Int, Set<Formatter>>
     fun remove(key: Int): TreeMap<Int, Set<Formatter>>
     fun get(key: Int): Set<Formatter>
@@ -20,7 +21,9 @@ interface TreeMapUtils {
     fun getPreviousOf(key: Int): Set<Formatter>
     fun getNextOf(key: Int): Set<Formatter>
     fun areNeighborsEqual(key: Int): Boolean
+
     fun getNeighbourCommons(key: Int): Set<Formatter>
+    fun hasNeighbourCommon(key: Int):Boolean
 }
 /*
   We don't allow to insert key with empty formatter
@@ -54,6 +57,17 @@ data class TreeMapUtilsImp(
         val updatedMap = TreeMap(map)
         updatedMap[key] = get(key).plus(set)
         return updatedMap
+    }
+
+    override fun add(keys: List<Int>, formatter: Formatter): TreeMap<Int, Set<Formatter>> {
+        val newMap=map
+        keys.forEach {key->
+            if (key < 0) {
+                throw IllegalArgumentException("add():Negative key not allowed($key)")
+            }
+            newMap[key] = get(key).plus(formatter)
+        }
+        return newMap
     }
 
     override fun add(key: Int, formatter: Formatter): TreeMap<Int, Set<Formatter>> {
@@ -101,13 +115,6 @@ data class TreeMapUtilsImp(
             }
             .filterKeys { it >= 0 }
 
-        Log.i(
-            "TextChangeListener:MapUtil", "\n" +
-                    "currentMapIndices=${map.map { it.key }}\n" +
-                    "shiftAmount=$shiftAmount\n" +
-                    "updatedMapIndices=${updatedMap.map { it.key }}}\n\n"
-        )
-
 
         return TreeMap(updatedMap)
     }
@@ -119,31 +126,22 @@ data class TreeMapUtilsImp(
     override fun getNextOf(key: Int) = get(key + 1)
 
     override fun areNeighborsEqual(key: Int): Boolean {
-        if (doesNotExits(key))
+        /*
+        in case neighbour the key may be  is not inserted yet so
+        it is not map yet.
+        so does not need to check if the key is exits or not
+        but if it any one of the neighbour not exits then return false
+         */
+        if (doesNotExits(key - 1) || doesExits(key + 1))
             return false
         return getNextOf(key) == getPreviousOf(key)
     }
 
     override fun getNeighbourCommons(key: Int) = getPreviousOf(key).intersect(getNextOf(key))
+    override fun hasNeighbourCommon(key: Int)= getNeighbourCommons(key) != emptySet<Formatter>()
 
 }
 
-@Preview
-@Composable
-private fun Test() {
-    val map = TreeMap<Int, Set<Formatter>>()
-    map[1] = setOf(Formatters.Bold, Formatters.Italic)
-    map[2] = setOf(Formatters.Bold, Formatters.Italic)
-    val x = TreeMapUtilsImp(map)
-    Log.i(
-        "TextChangeListener:",
-        "next=${x.getNextOf(5)}\n" +
-                "prev=${x.getPreviousOf(5)}\n" +
-                "equal=${x.areNeighborsEqual(5)}"
-    )
-
-
-}
 
 
 
