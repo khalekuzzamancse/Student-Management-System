@@ -1,12 +1,10 @@
 package com.khalekuzzaman.just.cse.text_editor.version_02.test
 
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -23,7 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.khalekuzzaman.just.cse.text_editor.text_ordering.BulletInsertionManager
+import com.khalekuzzaman.just.cse.text_editor.text_ordering.BulletManager
 import com.khalekuzzaman.just.cse.text_editor.version_02.EditorVisualTransformer
 import com.khalekuzzaman.just.cse.text_editor.version_02.Formatter
 import com.khalekuzzaman.just.cse.text_editor.version_02.FormattedIndicesManager
@@ -104,15 +102,29 @@ private fun TextEditorDemo() {
             Button(onClick = {
                 val start = textFieldText.selection.start
                 val end = textFieldText.selection.end
-                BulletInsertionManager(text = textFieldText.text, start = start, end)
-                    .insertBullets { text, index ->
+                BulletManager(text = textFieldText.text, start = start, end)
+                  //  .insertBullets { text, index ->
+                    .insertBullet { text, index ->
                         textFieldText = TextFieldValue(text)
                         previousText = text
                         map = FormattedIndicesManager(map).shiftFormattedIndices(index, 1).indices
                     }
 
             }) {
-                Text(text = "Bullet")
+                Text(text = "Bullet Add")
+            }
+            Button(onClick = {
+                val start = textFieldText.selection.start
+                val end = textFieldText.selection.end
+                BulletManager(text = textFieldText.text, start = start, end)
+                    .removeBullets{ text, index ->
+                        textFieldText = TextFieldValue(text)
+                        previousText = text
+                        map = FormattedIndicesManager(map).shiftFormattedIndices(index, -1).indices
+                    }
+
+            }) {
+                Text(text = "Bullet Remove")
             }
         }
 
