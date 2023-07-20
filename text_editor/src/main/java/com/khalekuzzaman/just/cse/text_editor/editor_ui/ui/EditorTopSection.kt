@@ -1,12 +1,9 @@
-package com.khalekuzzaman.just.cse.text_editor.version_02.ui
+package com.khalekuzzaman.just.cse.text_editor.editor_ui.ui
 
-import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FormatBold
 import androidx.compose.material.icons.filled.FormatClear
@@ -65,16 +62,10 @@ fun TextEditorTopSection(
         tonalElevation = tonalElevation,
         modifier = modifier.fillMaxWidth()
     ) {
-        Column(
-            modifier = Modifier
-
-        ) {
-            Row(
+            FlowRow(
                 modifier = Modifier
                     .padding(4.dp)
                     .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState())
-
             ) {
 
                 FontTypePicker()
@@ -93,16 +84,6 @@ fun TextEditorTopSection(
                     icon = Icons.Default.FormatUnderlined,
                     onClick = onUnderLineIconClick
                 )
-            }
-
-
-            Row(
-                modifier = Modifier
-                    .padding(4.dp)
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState())
-            ) {
-
                 IconButton(
                     icon = Icons.Default.FormatStrikethrough,
                     onClick = onLineThroughIconClick
@@ -127,10 +108,8 @@ fun TextEditorTopSection(
                 )
 
             }
+            }
 
-        }
-
-    }
 }
 
 

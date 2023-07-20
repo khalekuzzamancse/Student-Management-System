@@ -1,4 +1,4 @@
-package com.khalekuzzaman.just.cse.text_editor.version_02.ui
+package com.khalekuzzaman.just.cse.text_editor.editor_ui.ui
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.wrapContentSize

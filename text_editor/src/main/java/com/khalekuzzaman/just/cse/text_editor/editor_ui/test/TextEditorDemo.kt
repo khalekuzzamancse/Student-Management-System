@@ -1,4 +1,4 @@
-package com.khalekuzzaman.just.cse.text_editor.version_02.test
+package com.khalekuzzaman.just.cse.text_editor.editor_ui.test
 
 
 import androidx.compose.foundation.layout.Arrangement

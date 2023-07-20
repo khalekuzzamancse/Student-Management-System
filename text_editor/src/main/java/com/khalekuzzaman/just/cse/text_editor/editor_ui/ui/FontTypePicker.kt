@@ -1,4 +1,4 @@
-package com.khalekuzzaman.just.cse.text_editor.version_02.ui
+package com.khalekuzzaman.just.cse.text_editor.editor_ui.ui
 
 import android.widget.Toast
 import androidx.compose.foundation.clickable
