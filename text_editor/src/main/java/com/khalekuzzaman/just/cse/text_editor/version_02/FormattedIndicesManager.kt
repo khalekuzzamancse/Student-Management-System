@@ -64,7 +64,7 @@ data class FormattedIndicesManager(
     }
 
 
-    private fun shiftFormattedIndices(
+     fun shiftFormattedIndices(
         characterChangedAt: Int,
         shiftAmount: Int,
     ): FormattedIndicesManager {

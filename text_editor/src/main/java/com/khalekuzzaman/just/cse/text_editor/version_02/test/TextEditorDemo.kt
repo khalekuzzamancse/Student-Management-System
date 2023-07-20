@@ -1,8 +1,11 @@
 package com.khalekuzzaman.just.cse.text_editor.version_02.test
 
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.khalekuzzaman.just.cse.text_editor.text_ordering.BulletInsertionManager
 import com.khalekuzzaman.just.cse.text_editor.version_02.EditorVisualTransformer
 import com.khalekuzzaman.just.cse.text_editor.version_02.Formatter
 import com.khalekuzzaman.just.cse.text_editor.version_02.FormattedIndicesManager
@@ -29,6 +33,7 @@ import com.khalekuzzaman.just.cse.text_editor.version_02.SingleCharacterChangeUt
 import java.util.TreeMap
 
 
+@OptIn(ExperimentalLayoutApi::class)
 @Preview
 @Composable
 private fun TextEditorDemo() {
@@ -61,7 +66,7 @@ private fun TextEditorDemo() {
         )
         Spacer(modifier = Modifier.height(100.dp))
 
-        Row(
+        FlowRow(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -95,6 +100,19 @@ private fun TextEditorDemo() {
                     .indices
             }) {
                 Text(text = "Italic")
+            }
+            Button(onClick = {
+                val start = textFieldText.selection.start
+                val end = textFieldText.selection.end
+                BulletInsertionManager(text = textFieldText.text, start = start, end)
+                    .insertBullets { text, index ->
+                        textFieldText = TextFieldValue(text)
+                        previousText = text
+                        map = FormattedIndicesManager(map).shiftFormattedIndices(index, 1).indices
+                    }
+
+            }) {
+                Text(text = "Bullet")
             }
         }
 
