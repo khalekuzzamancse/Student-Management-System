@@ -1,10 +1,9 @@
-package com.khalekuzzaman.just.cse.text_editor.version_02
+package com.khalekuzzaman.just.cse.text_editor.text_formatting
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.sp
 

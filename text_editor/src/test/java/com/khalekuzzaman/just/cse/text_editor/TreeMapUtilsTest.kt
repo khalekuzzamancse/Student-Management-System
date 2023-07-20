@@ -1,8 +1,8 @@
 package com.khalekuzzaman.just.cse.text_editor
 
-import com.khalekuzzaman.just.cse.text_editor.version_02.Formatter
-import com.khalekuzzaman.just.cse.text_editor.version_02.Formatters
-import com.khalekuzzaman.just.cse.text_editor.version_02.ui.TreeMapUtilsImp
+import com.khalekuzzaman.just.cse.text_editor.text_formatting.Formatter
+import com.khalekuzzaman.just.cse.text_editor.text_formatting.Formatters
+import com.khalekuzzaman.just.cse.text_editor.text_formatting.TreeMapUtilsImp
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import java.util.TreeMap

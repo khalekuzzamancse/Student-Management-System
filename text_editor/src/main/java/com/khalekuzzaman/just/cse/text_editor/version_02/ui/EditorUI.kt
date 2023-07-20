@@ -1,6 +1,5 @@
 package com.khalekuzzaman.just.cse.text_editor.version_02.ui
 
-import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,12 +18,13 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.khalekuzzaman.just.cse.text_editor.version_02.EditorVisualTransformer
-import com.khalekuzzaman.just.cse.text_editor.version_02.Formatter
-import com.khalekuzzaman.just.cse.text_editor.version_02.FormattedIndicesManager
-import com.khalekuzzaman.just.cse.text_editor.version_02.Formatters
-import com.khalekuzzaman.just.cse.text_editor.version_02.SingleCharacterChangeListener
-import com.khalekuzzaman.just.cse.text_editor.version_02.SingleCharacterChangeUtils
+import com.khalekuzzaman.just.cse.text_editor.text_ordering.BulletManager
+import com.khalekuzzaman.just.cse.text_editor.text_formatting.EditorVisualTransformer
+import com.khalekuzzaman.just.cse.text_editor.text_formatting.Formatter
+import com.khalekuzzaman.just.cse.text_editor.text_formatting.FormattedIndicesManager
+import com.khalekuzzaman.just.cse.text_editor.text_formatting.Formatters
+import com.khalekuzzaman.just.cse.text_editor.text_formatting.SingleCharacterChangeListener
+import com.khalekuzzaman.just.cse.text_editor.text_formatting.SingleCharacterChangeUtils
 import java.util.TreeMap
 
 
@@ -63,6 +63,26 @@ fun TextEditorVersion01() {
             .removeFormat(list)
             .indices
     }
+    val insertBullet:()->Unit={
+        val start = textFieldText.selection.start
+        val end = textFieldText.selection.end
+        BulletManager(text = textFieldText.text, start = start, end)
+            .insertBullet { text, index ->
+                textFieldText = TextFieldValue(text)
+                previousText = text
+                map = FormattedIndicesManager(map).shiftFormattedIndices(index, 1).indices
+            }
+    }
+    val removeBullet:()->Unit={
+        val start = textFieldText.selection.start
+        val end = textFieldText.selection.end
+        BulletManager(text = textFieldText.text, start = start, end)
+            .removeBullets{ text, index ->
+                textFieldText = TextFieldValue(text)
+                previousText = text
+                map = FormattedIndicesManager(map).shiftFormattedIndices(index, -1).indices
+            }
+    }
 
     /*
 
@@ -74,7 +94,7 @@ fun TextEditorVersion01() {
             onUnderLineIconClick = { addFormatter(Formatters.UnderLine) },
             onColorPicked = { addFormatter(Formatters.Colored(it)) },
             onLineThroughIconClick = { addFormatter(Formatters.LineThrough) },
-            onBulletListClick = {},
+            onBulletListClick = insertBullet,
             onNumberListClick = {},
             onFormatClearClick = clearFormat,
             onAlignmentPicked = { pickedAlignment = it },
@@ -98,7 +118,6 @@ fun TextEditorVersion01() {
                     previousText = previousText
                 )
                 map = SingleCharacterChangeListener(utils, map).onTextChange()
-                debugPrint(map)
                 previousText = currentText.text
 
             },
@@ -110,10 +129,3 @@ fun TextEditorVersion01() {
     }
 }
 
-fun debugPrint(map: TreeMap<Int, Set<Formatter>>) {
-    for ((key, value) in map) {
-        val names = value.map { it.javaClass.simpleName }
-        Log.i("FORMATTERS:", "$key:${names.joinToString(",", "[", "]")}")
-    }
-
-}

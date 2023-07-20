@@ -1,10 +1,5 @@
-package com.khalekuzzaman.just.cse.text_editor.version_02.ui
+package com.khalekuzzaman.just.cse.text_editor.text_formatting
 
-import android.util.Log
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
-import com.khalekuzzaman.just.cse.text_editor.version_02.Formatter
-import com.khalekuzzaman.just.cse.text_editor.version_02.Formatters
 import java.util.TreeMap
 
 

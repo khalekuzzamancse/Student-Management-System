@@ -22,12 +22,12 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.khalekuzzaman.just.cse.text_editor.text_ordering.BulletManager
-import com.khalekuzzaman.just.cse.text_editor.version_02.EditorVisualTransformer
-import com.khalekuzzaman.just.cse.text_editor.version_02.Formatter
-import com.khalekuzzaman.just.cse.text_editor.version_02.FormattedIndicesManager
-import com.khalekuzzaman.just.cse.text_editor.version_02.Formatters
-import com.khalekuzzaman.just.cse.text_editor.version_02.SingleCharacterChangeListener
-import com.khalekuzzaman.just.cse.text_editor.version_02.SingleCharacterChangeUtils
+import com.khalekuzzaman.just.cse.text_editor.text_formatting.EditorVisualTransformer
+import com.khalekuzzaman.just.cse.text_editor.text_formatting.Formatter
+import com.khalekuzzaman.just.cse.text_editor.text_formatting.FormattedIndicesManager
+import com.khalekuzzaman.just.cse.text_editor.text_formatting.Formatters
+import com.khalekuzzaman.just.cse.text_editor.text_formatting.SingleCharacterChangeListener
+import com.khalekuzzaman.just.cse.text_editor.text_formatting.SingleCharacterChangeUtils
 import java.util.TreeMap
 
 

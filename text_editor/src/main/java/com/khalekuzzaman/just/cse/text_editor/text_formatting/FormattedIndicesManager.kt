@@ -1,7 +1,5 @@
-package com.khalekuzzaman.just.cse.text_editor.version_02
+package com.khalekuzzaman.just.cse.text_editor.text_formatting
 
-import androidx.compose.ui.text.TextRange
-import com.khalekuzzaman.just.cse.text_editor.version_02.ui.TreeMapUtilsImp
 import java.util.TreeMap
 
 /*

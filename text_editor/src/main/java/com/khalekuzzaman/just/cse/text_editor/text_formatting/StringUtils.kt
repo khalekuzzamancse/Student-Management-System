@@ -1,4 +1,4 @@
-package com.khalekuzzaman.just.cse.text_editor.version_02
+package com.khalekuzzaman.just.cse.text_editor.text_formatting
 
 interface StringUtils {
     fun hasInsertion(): Boolean
