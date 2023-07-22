@@ -12,6 +12,8 @@ import androidx.compose.material.icons.filled.FormatListBulleted
 import androidx.compose.material.icons.filled.FormatListNumbered
 import androidx.compose.material.icons.filled.FormatStrikethrough
 import androidx.compose.material.icons.filled.FormatUnderlined
+import androidx.compose.material.icons.filled.Subscript
+import androidx.compose.material.icons.filled.Superscript
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
@@ -38,7 +40,10 @@ private fun Preview() {
         onFormatClearClick = {},
         onAlignmentPicked = {},
         onHighLightColorPick = {  },
-    ) {}
+        onSuperscriptClick = {},
+        onSubscriptClick = {},
+        onFontSelected = {}
+    )
 }
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -57,6 +62,8 @@ fun TextEditorTopSection(
     tonalElevation: Dp = 5.dp,
     onHighLightColorPick: (Color) -> Unit,
     onFontSelected: (Int) -> Unit,
+    onSuperscriptClick:()->Unit,
+    onSubscriptClick:()->Unit,
 ) {
     Surface(
         tonalElevation = tonalElevation,
@@ -105,6 +112,14 @@ fun TextEditorTopSection(
                 IconButton(
                     icon = Icons.Default.FormatClear,
                     onClick = onFormatClearClick
+                )
+                IconButton(
+                    icon = Icons.Default.Superscript,
+                    onClick = onSuperscriptClick
+                )
+                IconButton(
+                    icon = Icons.Default.Subscript,
+                    onClick = onSubscriptClick
                 )
 
             }

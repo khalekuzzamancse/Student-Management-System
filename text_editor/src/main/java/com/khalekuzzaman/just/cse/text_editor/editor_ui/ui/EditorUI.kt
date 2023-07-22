@@ -99,7 +99,9 @@ fun TextEditorVersion01() {
             onFormatClearClick = clearFormat,
             onAlignmentPicked = { pickedAlignment = it },
             onHighLightColorPick = { addFormatter(Formatters.HighLight(it)) },
-            onFontSelected = { addFormatter(Formatters.FontSize(it)) }
+            onFontSelected = { addFormatter(Formatters.FontSize(it)) },
+            onSuperscriptClick = {addFormatter(Formatters.SuperScript)},
+            onSubscriptClick = {addFormatter(Formatters.SubScript)},
         )
 
 

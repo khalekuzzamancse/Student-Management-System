@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.sp
 
@@ -34,6 +35,18 @@ object Formatters {
     object LineThrough : Formatter {
         override fun getStyle() = SpanStyle(
             textDecoration = TextDecoration.LineThrough
+        )
+    }
+
+    object SuperScript : Formatter {
+        override fun getStyle() = SpanStyle(
+            baselineShift = BaselineShift.Superscript
+        )
+    }
+
+    object SubScript : Formatter {
+        override fun getStyle() = SpanStyle(
+            baselineShift = BaselineShift.Subscript
         )
     }
 
