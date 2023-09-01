@@ -2,9 +2,11 @@ package com.khalekuzzamanjustcse.auth.ui.login
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -48,11 +50,13 @@ fun Login() {
         mutableStateOf(false)
     }
 
+
     Column(
         modifier = Modifier
             .padding(8.dp)
-            .fillMaxWidth()
+            .fillMaxSize()
     ) {
+
         LoginInputField(
             label = "Username",
             leadingIcon = Icons.Default.Person,
@@ -74,7 +78,22 @@ fun Login() {
         LoginButton(Modifier.padding(8.dp))
         OtherSignInOptions()
 
+        WaterMoleculeAnimation(
+            modifier = Modifier
+        )
+        WaterMoleculeAnimation(
+            modifier = Modifier,
+            durationX = 5000,
+            durationY = 5000,
+            initialValue = 0f,
+            targetValue = 500f
+        )
+
     }
+
+
+
+
 
 
 }
@@ -82,8 +101,9 @@ fun Login() {
 @Composable
 private fun OtherSignInOptions(modifier: Modifier = Modifier) {
     Column(
-        modifier=modifier,
-        horizontalAlignment = Alignment.CenterHorizontally) {
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Text(
             text = "Or Sign in using"
         )
