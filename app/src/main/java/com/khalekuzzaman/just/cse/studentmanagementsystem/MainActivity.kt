@@ -4,7 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import com.khalekuzzaman.just.cse.class_room.ClassRoom
-import com.khalekuzzaman.just.cse.studentmanagementsystem.ui.theme.StudentManagementSystemTheme
+import com.khalekuzzaman.just.cse.class_room.ui.theme.StudentManagementSystemTheme
+
 import ui.syllabus.CourseComponentFakeData
 import ui.syllabus.FullSyllabus
 

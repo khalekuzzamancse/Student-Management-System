@@ -1,4 +1,4 @@
-package com.khalekuzzaman.just.cse.auth
+package com.khalekuzzamanjustcse.auth
 
 import org.junit.Test
 
