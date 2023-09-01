@@ -78,7 +78,7 @@ object PasswordVisualTransformation : VisualTransformation {
     override fun filter(text: AnnotatedString): TransformedText {
         val builder = AnnotatedString.Builder()
         for (i in text.indices) {
-            val transformedChar = "+"
+            val transformedChar = "*"
             builder.append(transformedChar)
         }
         val transformed = builder.toAnnotatedString()
