@@ -78,9 +78,11 @@ fun Login() {
         LoginButton(Modifier.padding(8.dp))
         OtherSignInOptions()
 
+
         WaterMoleculeAnimation(
             modifier = Modifier
         )
+        FormulaAnimation()
         WaterMoleculeAnimation(
             modifier = Modifier,
             durationX = 5000,
@@ -88,6 +90,7 @@ fun Login() {
             initialValue = 0f,
             targetValue = 500f
         )
+
 
     }
 
